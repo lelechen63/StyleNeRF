@@ -107,7 +107,6 @@ def project(
             kwargs = G2.get_additional_params(ws)
 
         synth_images = G2(styles=ws, noise_mode='const', **kwargs)
-        print (synth_image.shape, '+++++++')
         # Downsample image to 256x256 if it's larger than that. VGG was built for 224x224 images.
         synth_images = (synth_images + 1) * (255/2)
         if synth_images.shape[2] > 256:
