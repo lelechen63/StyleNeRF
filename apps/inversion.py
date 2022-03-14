@@ -19,6 +19,9 @@ import torch.nn.functional as F
 
 import torch.optim as optim
 import click
+import sys
+sys.path.append('/nfs/home/uss00022/lelechen/github/StyleNeRF')
+
 import dnnlib
 import legacy
 import copy
