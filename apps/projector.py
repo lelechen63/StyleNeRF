@@ -107,7 +107,7 @@ def project(
             kwargs = G2.get_additional_params(ws)
 
         synth_images = G2(styles=ws, noise_mode='const', **kwargs)
-
+        print (synth_image.shape, '+++++++')
         # Downsample image to 256x256 if it's larger than that. VGG was built for 224x224 images.
         synth_images = (synth_images + 1) * (255/2)
         if synth_images.shape[2] > 256:
@@ -209,8 +209,8 @@ def run_projection(
         video = imageio.get_writer(f'{outdir}/proj.mp4', mode='I', fps=10, codec='libx264', bitrate='16M')
         print (f'Saving optimization progress video "{outdir}/proj.mp4"')
         for projected_w in projected_w_steps:
-            synth_image = G.synthesis(projected_w.unsqueeze(0), noise_mode='const')
-            print  (synth_image.keys(),'++++')
+            synth_image = G.synthesis(projected_w.unsqueeze(0), noise_mode='const')['img']
+            
             synth_image = (synth_image + 1) * (255/2)
             synth_image = synth_image.permute(0, 2, 3, 1).clamp(0, 255).to(torch.uint8)[0].cpu().numpy()
             video.append_data(np.concatenate([target_uint8, synth_image], axis=1))
@@ -219,7 +219,7 @@ def run_projection(
     # Save final projected frame and W vector.
     target_pil.save(f'{outdir}/target.png')
     projected_w = projected_w_steps[-1]
-    synth_image = G.synthesis(projected_w.unsqueeze(0), noise_mode='const')
+    synth_image = G.synthesis(projected_w.unsqueeze(0), noise_mode='const')['img']
     
     synth_image = (synth_image + 1) * (255/2)
     synth_image = synth_image.permute(0, 2, 3, 1).clamp(0, 255).to(torch.uint8)[0].cpu().numpy()
