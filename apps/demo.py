@@ -167,7 +167,7 @@ def f_synthesis(model_name, model_find, render_option, trunc, seed1, seed2, mix1
 model_name = gr.inputs.Dropdown(['FFHQ512', 'FFHQ512v2', 'AFHQ512', 'MetFaces512', 'CompCars256', 'FFHQ1024'])
 model_find = gr.inputs.Textbox(label="checkpoint path", default="")
 render_option = gr.inputs.Textbox(label="rendering options", default='freeze_bg,steps:40')
-trunc  = gr.inputs.Slider(default=0.7, maximum=1.0, minimum=0.0, label='truncation trick')
+trunc  = gr.inputs.Slider(default=0.7, maximum=1.0, mi         nimum=0.0, label='truncation trick')
 seed1  = gr.inputs.Number(default=1, label="seed1")
 seed2  = gr.inputs.Number(default=9, label="seed2")
 mix1   = gr.inputs.Slider(minimum=0, maximum=1, default=0, label="linear mixing ratio (geometry)")

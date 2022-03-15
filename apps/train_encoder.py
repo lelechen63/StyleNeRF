@@ -9,6 +9,9 @@ import copy
 import torch.distributed as dist
 import torchvision
 import click
+import sys
+sys.path.append('/nfs/home/uss00022/lelechen/github/StyleNeRF')
+
 import dnnlib
 import legacy
 import pickle
