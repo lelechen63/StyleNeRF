@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import sys
+sys.path.append('/nfs/home/uss00022/lelechen/github/StyleNeRF')
 
 from random import random
 from dnnlib import camera
@@ -9,8 +11,6 @@ import copy
 import torch.distributed as dist
 import torchvision
 import click
-import sys
-sys.path.append('/nfs/home/uss00022/lelechen/github/StyleNeRF')
 
 import dnnlib
 import legacy
