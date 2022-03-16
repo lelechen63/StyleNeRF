@@ -1441,7 +1441,9 @@ class ResNetEncoder(torch.nn.Module):
         return x
 
     def forward(self, input):
-        out = self.convs(self.preprocess_tensor(input))
+        input = self.preprocess_tensor(input)
+        print (input.shape)
+        out = self.convs(input)
         print (out.shape, '=====')
         # return out[:, :, 0, 0]
         out = self.projector(out)
