@@ -125,8 +125,8 @@ def main(
         ws = ws.clone()
         ws.requires_grad = True
 
-    MSE_Loss        = nn.MSELoss(reduction="mean")
-    # MSE_Loss        = nn.SmoothL1Loss(reduction='mean')
+    # MSE_Loss        = nn.MSELoss(reduction="mean")
+    MSE_Loss        = nn.SmoothL1Loss(reduction='mean')
     perceptual_net  = VGG16_for_Perceptual(n_layers=[2,4,14,21]).to(device)
     target_image    = target_image.clone().unsqueeze(0).to(torch.float32) / 255.
     target_image_p  = F.interpolate(target_image, size=(256, 256), mode='area')
@@ -148,7 +148,7 @@ def main(
             opt_weights += [{'params': kwargs['latent_codes'][3]}]
 
     print (kwargs.keys(), '++++++')
-    
+
     optimizer = optim.Adam(opt_weights, lr=0.01, betas=(0.9,0.999), eps=1e-8)
     
     print("Start...")
