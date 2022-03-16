@@ -1433,7 +1433,7 @@ class ResNetEncoder(torch.nn.Module):
         self.size = size
         self.n_latents = n_latents
         self.w_dim = w_dim
-
+        print (convs)
         self.projector = EqualConv2d(in_channel, self.n_latents*self.w_dim + add_dim, 4, padding=0, bias=False)
 
     def preprocess_tensor(self, x):
