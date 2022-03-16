@@ -120,7 +120,7 @@ def main(
             # from fairseq import pdb;pdb.set_trace()
             zs, cm = E(target_image[None,:].to(torch.float32) / 127.5 - 1)
             
-            ws = G.mapping(zs.squeeze(0), None)
+            ws = G.mapping(zs[:,0,:], None)
         print (ws.shape, '+++++')
         ws = ws.clone()
         ws.requires_grad = True
