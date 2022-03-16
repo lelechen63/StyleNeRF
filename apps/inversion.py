@@ -96,6 +96,7 @@ def main(
         w, h = target_pil.size
         s = min(w, h)
         target_pil = target_pil.crop(((w - s) // 2, (h - s) // 2, (w + s) // 2, (h + s) // 2))
+        print (G.img_resolution,'============')
         target_pil = target_pil.resize((G.img_resolution, G.img_resolution), PIL.Image.LANCZOS)
         target_uint8 = np.array(target_pil, dtype=np.uint8)
         target_image = torch.tensor(target_uint8.transpose([2, 0, 1]), device=device)
@@ -119,9 +120,9 @@ def main(
         else:
             # from fairseq import pdb;pdb.set_trace()
             zs, cm = E(target_image[None,:].to(torch.float32) / 127.5 - 1)
-            print (zs[:,0,:] == zs[:,1,:])
+            print "buggie!!, zs's shape is [1,17,512], but mapping requires shape of [1,512]"
             ws = G.mapping(zs[:,0,:], None)
-        print (ws.shape, '+++++')
+            # ws = G.mapping(zs, None)
         ws = ws.clone()
         ws.requires_grad = True
 
