@@ -96,7 +96,6 @@ def main(
         w, h = target_pil.size
         s = min(w, h)
         target_pil = target_pil.crop(((w - s) // 2, (h - s) // 2, (w + s) // 2, (h + s) // 2))
-        print (G.img_resolution,'============')
         target_pil = target_pil.resize((G.img_resolution, G.img_resolution), PIL.Image.LANCZOS)
         target_uint8 = np.array(target_pil, dtype=np.uint8)
         target_image = torch.tensor(target_uint8.transpose([2, 0, 1]), device=device)
@@ -133,6 +132,7 @@ def main(
     target_image_p  = F.interpolate(target_image, size=(256, 256), mode='area')
     target_features = perceptual_net(target_image_p)
 
+    print (ws.shape, '======')
     opt_weights = [{'params': ws}]
     kwargs = G2.get_additional_params(ws)
     if cm is not None:
