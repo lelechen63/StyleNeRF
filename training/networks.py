@@ -1437,7 +1437,7 @@ class ResNetEncoder(torch.nn.Module):
         self.projector = EqualConv2d(512, self.n_latents*self.w_dim + add_dim, 4, padding=0, bias=False)
 
     def preprocess_tensor(self, x):
-        x = F.interpolate(x, size=(self.size, self.size), mode='bicubic', align_corners=False)
+        x = F.interpolate(x, size=(self.size * 2, self.size * 2), mode='bicubic', align_corners=False)
         return x
 
     def forward(self, input):
