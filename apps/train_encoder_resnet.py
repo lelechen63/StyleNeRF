@@ -240,7 +240,7 @@ def main(data, outdir, g_ckpt, e_ckpt,
                     range=(-1, 1),
                 )
 
-        if i % 1000 == 0:
+        if i % 10000 == 0:
             os.makedirs(f'{outdir}/checkpoints', exist_ok=True)
             snapshot_pkl = os.path.join(f'{outdir}/checkpoints/', f'network-snapshot-{i // 1000:06d}.pkl')
             # snapshot_data = dict(training_set_kwargs=dict(training_set_kwargs))
