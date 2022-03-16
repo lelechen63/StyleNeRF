@@ -119,6 +119,7 @@ def main(
         else:
             # from fairseq import pdb;pdb.set_trace()
             zs, cm = E(target_image[None,:].to(torch.float32) / 127.5 - 1)
+            print (zs.shape, '+++++')
             ws = G.mapping(zs, None)
 
         ws = ws.clone()
