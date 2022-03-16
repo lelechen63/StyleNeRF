@@ -120,7 +120,7 @@ def main(
         else:
             # from fairseq import pdb;pdb.set_trace()
             zs, cm = E(target_image[None,:].to(torch.float32) / 127.5 - 1)
-            print "buggie!!, zs's shape is [1,17,512], but mapping requires shape of [1,512]"
+            print ("buggie!!, zs's shape is [1,17,512], but mapping requires shape of [1,512]")
             ws = G.mapping(zs[:,0,:], None)
             # ws = G.mapping(zs, None)
         ws = ws.clone()
