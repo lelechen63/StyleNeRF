@@ -1433,6 +1433,7 @@ class ResNetEncoder(torch.nn.Module):
         self.size = size
         self.n_latents = n_latents
         self.w_dim = w_dim
+        self.add_dim = add_dim
         self.projector = FullyConnectedLayer(512, self.n_latents*self.w_dim + add_dim, bias=False)
 
     def preprocess_tensor(self, x):
