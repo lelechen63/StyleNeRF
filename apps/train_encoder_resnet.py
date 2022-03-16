@@ -173,9 +173,13 @@ def main(data, outdir, g_ckpt, e_ckpt,
             w_samples = ws_avg + (w_samples - ws_avg) * truncation
         camera_matrices = G.synthesis.get_camera(batch, device, mode=c_samples)
         gen_img = G.get_final_output(styles=w_samples, camera_matrices=camera_matrices)
-        rec_zs, rec_cm = E(gen_img)
-        print (rec_zs.shape,'===')
-        rec_ws = G.mapping(rec_zs, None)
+        rec_ws, rec_cm = E(gen_img)
+        # print (rec_zs.shape,'===')
+        # rec_ws = G.mapping(rec_zs, None)
+
+        # rec_ws, rec_cm  = E(gen_img)
+        # loss_dict['loss_ws'] = F.smooth_l1_loss(rec_ws, w_samples).mean() * 10.0
+        # loss_dict['loss_cm'] = F.smooth_l1_loss(rec_cm, c_samples).mean()
 
         loss_dict['loss_ws'] = F.smooth_l1_loss(rec_ws, w_samples).mean()
         loss_dict['loss_cm'] = F.smooth_l1_loss(rec_cm, c_samples).mean()
