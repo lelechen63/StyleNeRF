@@ -174,12 +174,7 @@ def main(data, outdir, g_ckpt, e_ckpt,
         camera_matrices = G.synthesis.get_camera(batch, device, mode=c_samples)
         gen_img = G.get_final_output(styles=w_samples, camera_matrices=camera_matrices)
         rec_ws, rec_cm = E(gen_img)
-        # print (rec_zs.shape,'===')
         # rec_ws = G.mapping(rec_zs, None)
-
-        # rec_ws, rec_cm  = E(gen_img)
-        # loss_dict['loss_ws'] = F.smooth_l1_loss(rec_ws, w_samples).mean() * 10.0
-        # loss_dict['loss_cm'] = F.smooth_l1_loss(rec_cm, c_samples).mean()
 
         loss_dict['loss_ws'] = F.smooth_l1_loss(rec_ws, w_samples).mean()
         loss_dict['loss_cm'] = F.smooth_l1_loss(rec_cm, c_samples).mean()
@@ -245,7 +240,7 @@ def main(data, outdir, g_ckpt, e_ckpt,
                     range=(-1, 1),
                 )
 
-        if i % 10000 == 0:
+        if i % 1000 == 0:
             os.makedirs(f'{outdir}/checkpoints', exist_ok=True)
             snapshot_pkl = os.path.join(f'{outdir}/checkpoints/', f'network-snapshot-{i // 1000:06d}.pkl')
             # snapshot_data = dict(training_set_kwargs=dict(training_set_kwargs))
