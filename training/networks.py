@@ -1442,6 +1442,7 @@ class ResNetEncoder(torch.nn.Module):
 
     def forward(self, input):
         out = self.convs(self.preprocess_tensor(input))
+        print (out.shape, '=====')
         # return out[:, :, 0, 0]
         out = self.projector(out)
         pws, pcm = out[:, :-2], out[:, -2:]
