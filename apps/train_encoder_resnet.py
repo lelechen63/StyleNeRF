@@ -139,10 +139,10 @@ def main(data, outdir, g_ckpt, e_ckpt,
         D = network['D'].requires_grad_(False).to(device)
     G = copy.deepcopy(G).eval().requires_grad_(False).to(device)
     D = copy.deepcopy(D).eval().requires_grad_(False).to(device)
-    E = ResNetEncoder().to(device)
+    # E = ResNetEncoder().to(device)
 
     E = ResNetEncoder(G.img_resolution, G.mapping.num_ws, G.mapping.w_dim, add_dim=2).to(device)
-    # E_optim = optim.Adam(E.parameters(), lr=lr, betas=(0.9, 0.99))
+    E_optim = optim.Adam(E.parameters(), lr=lr, betas=(0.9, 0.99))
     requires_grad(E, True)
 
     start_iter = 0
