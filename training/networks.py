@@ -1426,18 +1426,17 @@ class ResNetEncoder(torch.nn.Module):
 
         import torchvision
         resnet_net = torchvision.models.resnet18(pretrained=True)
-        modules = list(resnet_net.children())[:-1]
+        modules = list(resnet_net.children())[:-2]
         self.convs = torch.nn.Sequential(*modules)
         self.requires_grad_(True)
         self.train()
         self.size = size
         self.n_latents = n_latents
         self.w_dim = w_dim
-        print (self.convs)
         self.projector = EqualConv2d(512, self.n_latents*self.w_dim + add_dim, 4, padding=0, bias=False)
 
     def preprocess_tensor(self, x):
-        x = F.interpolate(x, size=(self.size * 2, self.size * 2), mode='bicubic', align_corners=False)
+        x = F.interpolate(x, size=(self.size  , self.size ), mode='bicubic', align_corners=False)
         return x
 
     def forward(self, input):
