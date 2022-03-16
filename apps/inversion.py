@@ -132,9 +132,9 @@ def main(
     target_image_p  = F.interpolate(target_image, size=(256, 256), mode='area')
     target_features = perceptual_net(target_image_p)
 
-    print (ws.shape, '======')
     opt_weights = [{'params': ws}]
     kwargs = G2.get_additional_params(ws)
+
     if cm is not None:
         kwargs['camera_matrices'] = G.synthesis.get_camera(1, device, mode=cm)
 
@@ -147,6 +147,8 @@ def main(
             kwargs['latent_codes'][3].requires_grad = True
             opt_weights += [{'params': kwargs['latent_codes'][3]}]
 
+    print (kwargs.keys(), '++++++')
+    
     optimizer = optim.Adam(opt_weights, lr=0.01, betas=(0.9,0.999), eps=1e-8)
     
     print("Start...")
