@@ -1091,7 +1091,9 @@ class Generator(torch.nn.Module):
     def get_final_output_withws(self, *args, **kwargs):
         img = self.forward(*args, **kwargs)
         print (img.keys())
-        print(img['latent_codes'].shape)
+        for k in img['latent_codes']:
+            print(k.shape)
+        # print(img['latent_codes'].shape)
         print (type(img), '=+++++++')
         if isinstance(img, list):
             return img[-1]
