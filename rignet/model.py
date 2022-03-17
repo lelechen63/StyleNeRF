@@ -288,7 +288,7 @@ class Latent2Code2(nn.Module):
 
             ## render
             albedos = self.flametex(albedocode, self.image_size) / 255.
-            ops = self.render(vertices, trans_vertices, albedos, litcode.view(shape_latent.shape[0], 9,3))
+            ops = self.render(vertices, trans_vertices, albedos, litcode.view(latent.shape[0], 9,3))
             predicted_images = ops['images']
 
             return_list['landmarks3d'] = landmarks3d
