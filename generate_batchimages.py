@@ -56,7 +56,7 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 def generate_images(
     ctx: click.Context,
     network_pkl: str,
-    seeds: Optional[List[int]],
+    seeds: int,
     truncation_psi: float,
     noise_mode: str,
     outdir: str,
