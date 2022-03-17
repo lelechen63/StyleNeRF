@@ -119,7 +119,7 @@ def generate_images(
             return_cameras=True)
         
         img = proc_img(img)[0]
-        np.save(  f'{outdir}/stylecode/w/{seed:0>6d}.npy' ,  ws[0].numpy() )
+        np.save(  f'{outdir}/stylecode/w/{seed:0>6d}.npy' ,  ws[0].detach().cpu().numpy() )
         PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{name}/{seed:0>6d}.png')
 
 
