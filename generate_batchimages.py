@@ -104,7 +104,7 @@ def generate_images(
     for seed_idx, seed in enumerate(range(seeds)):
         print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx, seeds))
         G2.set_random_seed(seed)
-        z = torch.from_numpy(np.random.RandomState(seed).randn(2, G.z_dim)).to(device)
+        z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
         print (z.shape)
         relative_range_u = [0.5]
         img, ws = G2(
@@ -116,10 +116,7 @@ def generate_images(
             n_steps=1,
             relative_range_u=relative_range_u,
             return_cameras=True)
-        # if isinstance(outputs, tuple):
-        #     img, cameras = outputs
-        # else:
-        #     img = outputs
+        
         print (img.shape, '-----')
         img = proc_img(img)[0]
         print (img.shape,'=====')
