@@ -211,8 +211,6 @@ def main(
             img = all_images[..., i]
             PIL.Image.fromarray(img, 'RGB').save(f'{outdir}/{step:04d}.png')
 
-
-
     if save_video:
         video.close()
     
