@@ -77,7 +77,7 @@ def generate_images(
         G = network['G_ema'].to(device) # type: ignore
         D = network['D'].to(device)
     # from fairseq import pdb;pdb.set_trace()
-    os.makedirs(outdir +'/{name}', exist_ok=True)
+    os.makedirs(outdir +f'/{name}', exist_ok=True)
 
     # Labels.
     label = torch.zeros([1, G.c_dim], device=device)
