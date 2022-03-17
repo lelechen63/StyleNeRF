@@ -47,7 +47,7 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
 # @click.option('--projected-w', help='Projection result file', type=str, metavar='FILE')
-@click.option('--outdir', help='Where to save the output images', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/images')
+@click.option('--outdir', help='Where to save the output images', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/images2')
 @click.option('--render-program', default=None, show_default=True)
 @click.option('--render-option', default=None, type=str, help="e.g. up_256, camera, depth")
 # @click.option('--n_steps', default=8, type=int, help="number of steps for each seed")
@@ -105,6 +105,7 @@ def generate_images(
         print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx, seeds))
         G2.set_random_seed(seed)
         z = torch.from_numpy(np.random.RandomState(seed).randn(2, G.z_dim)).to(device)
+        print (z.shape)
         relative_range_u = [0.5]
         outputs = G2(
             z=z,
