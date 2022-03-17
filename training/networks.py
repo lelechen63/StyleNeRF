@@ -1090,6 +1090,7 @@ class Generator(torch.nn.Module):
 
     def get_final_output_withws(self, *args, **kwargs):
         img = self.forward(*args, **kwargs)
+        print (img.keys())
         print (type(img), '=+++++++')
         if isinstance(img, list):
             return img[-1]
