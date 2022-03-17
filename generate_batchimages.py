@@ -47,7 +47,9 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
 # @click.option('--projected-w', help='Projection result file', type=str, metavar='FILE')
-@click.option('--outdir', help='Where to save the output images', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/images2')
+@click.option('--outdir', help='Where to save the output images', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf')
+@click.option('--name', help='exepriment name Where to save the output images', type=str, default='images')
+
 @click.option('--render-program', default=None, show_default=True)
 @click.option('--render-option', default=None, type=str, help="e.g. up_256, camera, depth")
 # @click.option('--n_steps', default=8, type=int, help="number of steps for each seed")
@@ -60,11 +62,11 @@ def generate_images(
     truncation_psi: float,
     noise_mode: str,
     outdir: str,
+    name: str,
     render_program=None,
     render_option=None,
 ):
 
-    
     device = torch.device('cuda')
     if os.path.isdir(network_pkl):
         network_pkl = sorted(glob.glob(network_pkl + '/*.pkl'))[-1]
@@ -75,7 +77,7 @@ def generate_images(
         G = network['G_ema'].to(device) # type: ignore
         D = network['D'].to(device)
     # from fairseq import pdb;pdb.set_trace()
-    os.makedirs(outdir, exist_ok=True)
+    os.makedirs(outdir +'/{name}', exist_ok=True)
 
     # Labels.
     label = torch.zeros([1, G.c_dim], device=device)
@@ -105,7 +107,6 @@ def generate_images(
         print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx, seeds))
         G2.set_random_seed(seed)
         z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
-        print (z.shape)
         relative_range_u = [0.5]
         img, ws = G2(
             z=z,
@@ -117,11 +118,9 @@ def generate_images(
             relative_range_u=relative_range_u,
             return_cameras=True)
         
-        print (img.shape, '-----')
         img = proc_img(img)[0]
-        print (img.shape,'=====')
-        print (ws.shape,'+++++++++++++++++++')
-        PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{seed:0>6d}.png')
+        np.save(  f'{outdir}/stylecode/w/{seed:0>6d}.npy' ,  ws[0].numpy() )
+        PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{name}/{seed:0>6d}.png')
 
 
 #----------------------------------------------------------------------------

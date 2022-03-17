@@ -1075,7 +1075,6 @@ class Generator(torch.nn.Module):
         else:
             ws = styles
         self.ws = ws 
-        print (self.ws.shape,'======')
         img = self.synthesis(ws, **synthesis_kwargs)
         return img
 
