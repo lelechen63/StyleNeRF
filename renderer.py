@@ -33,6 +33,7 @@ class Renderer(object):
         np.random.seed(seed)
 
     def __call__(self, *args, **kwargs):
+        print ('111111')
         self.generator.eval()  # eval mode...
 
         if self.program is None:
@@ -58,6 +59,8 @@ class Renderer(object):
         return outputs
 
     def get_additional_params(self, ws, t=0):
+        print ('11111222221')
+
         gen = self.generator.synthesis
         batch_size = ws.size(0)
 
@@ -74,6 +77,8 @@ class Renderer(object):
         return kwargs
 
     def get_camera_traj(self, t, batch_size=1, traj_type='pigan', device='cpu'):
+        print ('111133333311')
+
         gen = self.generator.synthesis
         if traj_type == 'pigan':
             range_u, range_v = gen.C.range_u, gen.C.range_v
@@ -87,6 +92,8 @@ class Renderer(object):
         return cam
    
     def render_rotation_camera(self, *args, **kwargs):
+        print ('1111144441')
+
         batch_size, n_steps = 2, kwargs["n_steps"]
         gen = self.generator.synthesis
 
@@ -122,6 +129,8 @@ class Renderer(object):
             return out
 
     def render_rotation_camera3(self, styles=None, *args, **kwargs): 
+        print ('11115555511')
+
         gen = self.generator.synthesis
         n_steps = 36  # 120
 
@@ -182,6 +191,8 @@ class Renderer(object):
         return out
 
     def render_rotation_both(self, *args, **kwargs): 
+        print ('1116666666111')
+
         gen = self.generator.synthesis
         batch_size, n_steps = 1, 36 
         if 'img' not in kwargs:
@@ -225,6 +236,8 @@ class Renderer(object):
         return out
 
     def render_rotation_grid(self, styles=None, return_cameras=False, *args, **kwargs):
+        print ('11117777777711')
+
         gen = self.generator.synthesis
         if styles is None:
             batch_size = 1
@@ -287,6 +300,8 @@ class Renderer(object):
             return out
 
     def render_rotation_camera_grid(self, *args, **kwargs): 
+        print ('111188888888811')
+
         batch_size, n_steps = 1, 60
         gen = self.generator.synthesis
         bbox_generator = self.generator.synthesis.boundingbox_generator
