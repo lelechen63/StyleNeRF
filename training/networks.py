@@ -1003,7 +1003,7 @@ class SynthesisNetwork(torch.nn.Module):
 
     def forward(self, ws, **block_kwargs):
         block_ws = []
-
+        print (ws.shape, '------------')
         # this part is to slice the style matrices (W) to each layer (conv/RGB)
         with torch.autograd.profiler.record_function('split_ws'):
             misc.assert_shape(ws, [None, self.num_ws, self.w_dim])
