@@ -1096,12 +1096,14 @@ class Generator(torch.nn.Module):
         print (type(img), '=+++++++')
         print (self.ws.shape, img['img'].shape, '======')
         if isinstance(img, list):
+            print ('1111111111111111')
             return img[-1]
         elif isinstance(img, dict):
+            print ('222222222222222222')
             return img['img']
         
 
-        return img, self.ws
+        return img
 #----------------------------------------------------------------------------
 
 @persistence.persistent_class
