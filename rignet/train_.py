@@ -10,9 +10,24 @@ from options.train_options import TrainOptions
 from pytorch_lightning.callbacks import ModelCheckpoint
 import numpy as np
 import sys
-sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/photometric_optimization')
-import util
 # define flame config
+
+def dict2obj(d):
+    if isinstance(d, list):
+        d = [dict2obj(x) for x in d]
+    if not isinstance(d, dict):
+        return d
+
+    class C(object):
+        pass
+
+    o = C()
+    for k in d:
+        o.__dict__[k] = dict2obj(d[k])
+    return o
+
+
+
 flame_config = {
         # FLAME
         'flame_model_path': '/home/uss00022/lelechen/basic/flame_data/data/generic_model.pkl',  # acquire it from FLAME project page
@@ -38,7 +53,7 @@ flame_config = {
         'w_pose_reg': 0,
     }
 
-flame_config = util.dict2obj(flame_config)
+flame_config = dict2obj(flame_config)
 
 opt = TrainOptions().parse()
 
