@@ -1093,9 +1093,8 @@ class Generator(torch.nn.Module):
         print (img.keys())
         # for k in img['styles']:
         #     print(k.shape)
-        print(img['styles'].shape)
         print (type(img), '=+++++++')
-        print (self.ws.shape,'======')
+        print (self.ws.shape, img['img'].shape, '======')
         if isinstance(img, list):
             return img[-1]
         elif isinstance(img, dict):

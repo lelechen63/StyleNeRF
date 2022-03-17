@@ -120,7 +120,6 @@ def generate_images(
             img, cameras = outputs
         else:
             img = outputs
-        print (img.shape, zs.shape)
         img = proc_img(img)[0]
         PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{seed:0>6d}.png')
 
