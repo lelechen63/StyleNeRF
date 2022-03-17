@@ -273,7 +273,7 @@ class Latent2Code2(nn.Module):
     
     def forward(self, latent, cam, pose, flameshape = None, flameexp= None, flametex= None, flamelit= None ):
         
-        fea = self.Latent2fea(latent, axis = 1))
+        fea = self.Latent2fea(latent)
         shapecode = self.latent2shape(fea)
         expcode = self.latent2exp(fea)
         
