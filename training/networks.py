@@ -1075,6 +1075,7 @@ class Generator(torch.nn.Module):
         else:
             ws = styles
         self.ws = ws 
+        print (self.ws.shape,'======')
         img = self.synthesis(ws, **synthesis_kwargs)
         return img
 
@@ -1089,10 +1090,13 @@ class Generator(torch.nn.Module):
 
     def get_final_output_withws(self, *args, **kwargs):
         img = self.forward(*args, **kwargs)
+        print (type(img))
         if isinstance(img, list):
             return img[-1]
         elif isinstance(img, dict):
             return img['img']
+        print (self.ws.shape,'======')
+
         return img, self.ws
 #----------------------------------------------------------------------------
 
