@@ -33,14 +33,12 @@ class Renderer(object):
         np.random.seed(seed)
 
     def __call__(self, *args, **kwargs):
-        print ('111111')
         self.generator.eval()  # eval mode...
 
         if self.program is None:
             if hasattr(self.generator, 'get_final_output'):
                 return self.generator.get_final_output(*args, **kwargs)
             return self.generator(*args, **kwargs)
-        print ('!!!!!!!!!')
         if self.image_data is not None:
             batch_size = 1
             indices = (np.random.rand(batch_size) * len(self.image_data)).tolist()
