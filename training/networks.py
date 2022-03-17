@@ -1074,25 +1074,10 @@ class Generator(torch.nn.Module):
                 ws = self.mapping(z, c, truncation_psi=truncation_psi, truncation_cutoff=truncation_cutoff, **synthesis_kwargs)
         else:
             ws = styles
-
+        self.ws = ws 
         img = self.synthesis(ws, **synthesis_kwargs)
         return img
 
-    def forward_ws(self, z=None, c=None, styles=None, truncation_psi=1, truncation_cutoff=None, img=None, **synthesis_kwargs):
-        if styles is None:
-            assert z is not None
-            if (self.encoder is not None) and (img is not None):  #TODO: debug
-                outputs = self.encoder(img)
-                ws = outputs['ws']
-                if ('camera' in outputs) and ('camera_mode' not in synthesis_kwargs):
-                    synthesis_kwargs['camera_RT'] = outputs['camera']
-            else:
-                ws = self.mapping(z, c, truncation_psi=truncation_psi, truncation_cutoff=truncation_cutoff, **synthesis_kwargs)
-        else:
-            ws = styles
-
-        img = self.synthesis(ws, **synthesis_kwargs)
-        return img, ws
 
     def get_final_output(self, *args, **kwargs):
         img = self.forward(*args, **kwargs)
@@ -1102,6 +1087,13 @@ class Generator(torch.nn.Module):
             return img['img']
         return img
 
+    def get_final_output_withws(self, *args, **kwargs):
+        img = self.forward(*args, **kwargs)
+        if isinstance(img, list):
+            return img[-1]
+        elif isinstance(img, dict):
+            return img['img']
+        return img, self.ws
 #----------------------------------------------------------------------------
 
 @persistence.persistent_class

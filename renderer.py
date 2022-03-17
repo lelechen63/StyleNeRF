@@ -40,7 +40,7 @@ class Renderer(object):
             if hasattr(self.generator, 'get_final_output'):
                 return self.generator.get_final_output(*args, **kwargs)
             return self.generator(*args, **kwargs)
-        
+        print ('!!!!!!!!!')
         if self.image_data is not None:
             batch_size = 1
             indices = (np.random.rand(batch_size) * len(self.image_data)).tolist()
@@ -56,6 +56,7 @@ class Renderer(object):
             rimg = F.interpolate(rimages, (size, size), mode='bicubic', align_corners=False)
             imgs = [torch.cat([img, rimg], 0) for img in imgs]
             outputs = imgs if not isinstance(outputs, tuple) else (imgs, outputs[1])
+        
         return outputs
 
     def get_additional_params(self, ws, t=0):
