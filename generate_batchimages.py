@@ -47,7 +47,7 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
 # @click.option('--projected-w', help='Projection result file', type=str, metavar='FILE')
-@click.option('--outdir', help='Where to save the output images', type=str, required=True, metavar='DIR')
+@click.option('--outdir', help='Where to save the output images', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/images')
 @click.option('--render-program', default=None, show_default=True)
 @click.option('--render-option', default=None, type=str, help="e.g. up_256, camera, depth")
 # @click.option('--n_steps', default=8, type=int, help="number of steps for each seed")
@@ -119,36 +119,9 @@ def generate_images(
             img, cameras = outputs
         else:
             img = outputs
-        print (img.shape,'++++++')
-        if isinstance(img, List):
-            imgs = [proc_img(i) for i in img]
-            if not no_video:
-                all_imgs += [imgs]
-        
-            curr_out_dir = os.path.join(outdir, 'seed_{:0>6d}'.format(seed))
-            os.makedirs(curr_out_dir, exist_ok=True)
-
-
-            img_dir = os.path.join(curr_out_dir, 'images_raw')
-            os.makedirs(img_dir, exist_ok=True)
-            for step, img in enumerate(imgs):
-                PIL.Image.fromarray(img[0].detach().cpu().numpy(), 'RGB').save(f'{img_dir}/{step:03d}.png')
-
-        else:
-            img = proc_img(img)[0]
-            PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/seed_{seed:0>6d}.png')
-
-    if len(all_imgs) > 0 and (not no_video):
-         # write to video
-        timestamp = time.strftime('%Y%m%d.%H%M%S',time.localtime(time.time()))
-        seeds = ','.join([str(s) for s in seeds]) if seeds is not None else 'projected'
-        network_pkl = network_pkl.split('/')[-1].split('.')[0]
-        all_imgs = [stack_imgs([a[k] for a in all_imgs]).numpy() for k in range(len(all_imgs[0]))]
-        imageio.mimwrite(f'{outdir}/{network_pkl}_{timestamp}_{seeds}.mp4', all_imgs, fps=30, quality=8)
-        outdir = f'{outdir}/{network_pkl}_{timestamp}_{seeds}'
-        os.makedirs(outdir, exist_ok=True)
-        for step, img in enumerate(all_imgs):
-            PIL.Image.fromarray(img, 'RGB').save(f'{outdir}/{step:04d}.png')
+    
+        img = proc_img(img)[0]
+        PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{seed:0>6d}.png')
 
 
 #----------------------------------------------------------------------------
