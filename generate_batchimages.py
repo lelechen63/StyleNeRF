@@ -107,7 +107,7 @@ def generate_images(
         z = torch.from_numpy(np.random.RandomState(seed).randn(2, G.z_dim)).to(device)
         print (z.shape)
         relative_range_u = [0.5]
-        outputs = G2(
+        img, ws = G2(
             z=z,
             c=label,
             truncation_psi=truncation_psi,
@@ -116,13 +116,14 @@ def generate_images(
             n_steps=1,
             relative_range_u=relative_range_u,
             return_cameras=True)
-        if isinstance(outputs, tuple):
-            img, cameras = outputs
-        else:
-            img = outputs
+        # if isinstance(outputs, tuple):
+        #     img, cameras = outputs
+        # else:
+        #     img = outputs
         print (img.shape, '-----')
-        img = proc_img(img)[1]
+        img = proc_img(img)[0]
         print (img.shape,'=====')
+        print (ws.shape,'+++++++++++++++++++')
         PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{seed:0>6d}.png')
 
 

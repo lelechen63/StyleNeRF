@@ -1090,19 +1090,12 @@ class Generator(torch.nn.Module):
 
     def get_final_output_withws(self, *args, **kwargs):
         img = self.forward(*args, **kwargs)
-        print (img.keys())
-        # for k in img['styles']:
-        #     print(k.shape)
-        print (type(img), '=+++++++')
-        print (self.ws.shape, img['img'].shape, '======')
+       
         if isinstance(img, list):
-            print ('1111111111111111')
             return img[-1]
         elif isinstance(img, dict):
-            print ('222222222222222222')
-            return img['img']
+            return img['img'], self.ws
         
-
         return img
 #----------------------------------------------------------------------------
 
