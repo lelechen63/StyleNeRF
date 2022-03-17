@@ -10,7 +10,7 @@ from options.train_options import TrainOptions
 from pytorch_lightning.callbacks import ModelCheckpoint
 import numpy as np
 import sys
-sys.path.append('./photometric_optimization')
+sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/photometric_optimization')
 import util
 # define flame config
 flame_config = {
