@@ -37,7 +37,7 @@ class Renderer(object):
 
         if self.program is None:
             if hasattr(self.generator, 'get_final_output'):
-                return self.generator.get_final_output(*args, **kwargs)
+                return self.generator.get_final_output_withws(*args, **kwargs)
             return self.generator(*args, **kwargs)
         if self.image_data is not None:
             batch_size = 1
