@@ -121,7 +121,7 @@ def generate_images(
         else:
             img = outputs
         print (img.shape, '-----')
-        img = proc_img(img)[0]
+        img = proc_img(img)[1]
         print (img.shape,'=====')
         PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{seed:0>6d}.png')
 
