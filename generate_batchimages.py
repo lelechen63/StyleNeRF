@@ -112,7 +112,7 @@ def generate_images(
             truncation_psi=truncation_psi,
             noise_mode=noise_mode,
             render_option=render_option,
-            n_steps=n_steps,
+            n_steps=1,
             relative_range_u=relative_range_u,
             return_cameras=True)
         if isinstance(outputs, tuple):
