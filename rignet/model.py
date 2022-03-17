@@ -13,7 +13,7 @@ import pickle
 from PIL import Image
 import cv2
 import sys
-sys.path.append('./photometric_optimization/')
+sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/')
 from renderer import Renderer
 import util
 from models.FLAME import FLAME, FLAMETex
