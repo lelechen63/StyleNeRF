@@ -121,15 +121,15 @@ class FFHQDataset(torch.utils.data.Dataset):
         name = self.data_list[index]
         data = self.total_data[name]
         # data = copy.copy(self.total_data[name])
-        if not self.opt.debug:
-            # img_path = os.path.join(self.opt.dataroot, 'images',name)
-            # img = cv2.imread(img_path)
-            # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        if not self.opt.debug or self.opt.supervision=='render':
+            img_path = os.path.join(self.opt.dataroot, 'images',name)
+            img = cv2.imread(img_path)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-            # maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
-            # data['img_mask'] = np.load(maskimg_path)
+            maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
+            data['img_mask'] = np.load(maskimg_path)
 
-            # data['gt_image'] = self.transform(img)
+            data['gt_image'] = self.transform(img)
             data['image_path'] = name
         return data
 
