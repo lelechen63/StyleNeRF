@@ -183,7 +183,7 @@ class RigNerft(nn.Module):
         # funtion F networks
         latent2code = Latent2Code2(flame_config, opt)
 
-        self.Latent2ShapeExpCode, self.latent2shape, \
+        self.Latent2fea, self.latent2shape, \
         self.latent2exp, self.latent2albedo, self.latent2lit = self.get_f(latent2code)
         
         # rigNet
