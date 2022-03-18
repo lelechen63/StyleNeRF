@@ -67,7 +67,7 @@ class RigModule():
                 landmark_same, render_img_same, \
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w \
+                recons_images_v, recons_images_w, choice \
                 = self.rig.forward(
                             batch[0]['latent'].to(self.device),
                             batch[1]['latent'].to(self.device),
@@ -225,8 +225,8 @@ class RigModule():
                 landmark_same, render_img_same, \
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w \
-                = self.rig.forward(
+                recons_images_v, recons_images_w, choice \
+                = self.rig.test(
                             batch[0]['latent'].to(self.device),
                             batch[1]['latent'].to(self.device),
                             

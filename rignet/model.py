@@ -14,7 +14,7 @@ from PIL import Image
 import cv2
 import sys
 sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/')
-from renderer import Renderer
+from flamerenderer import FlameRenderer
 import util
 from models.FLAME import FLAME, FLAMETex
 sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/utils')
@@ -344,8 +344,67 @@ class RigNerft(nn.Module):
         return landmark_same, render_img_same, \
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w 
+                recons_images_v, recons_images_w, choice
     
+    def test(self, latent_v, latent_w, \
+                    cam_v=None, pose_v=None, flameshape_v = None, flameexp_v = None, flametex_v = None,\
+                    flamelit_v = None, cam_w=None, pose_w=None, flameshape_w = None, flameexp_w = None, flametex_w = None, flamelit_w = None):
+        
+        p_v = self.latent2params(latent_v)
+        p_w = self.latent2params(latent_w)
+
+        # if we input paired W with P, output same W
+        latent_w_same = self.rig(latent_w,  p_w)
+        print (latent_w_same.shape, ===== )
+
+        p_w_same = self.latent2params(latent_w_same)
+
+        # randomly choose one params to be edited
+        choice = torch.randint(0, 4 ,(1,)).item()
+        
+        # if we input W, and P_v, output hat_W
+        p_w_replaced = []
+        for i in range(4):
+            if i != choice:
+                p_w_replaced.append(p_w[i])
+            else:
+                p_w_replaced.append(p_v[i])
+
+        latent_w_hat = self.rig(latent_w, p_w_replaced)
+
+        print (latent_w_hat.shape, ===== )
+        # map chagned w back to P
+        p_w_mapped = self.latent2params(latent_w_hat)
+
+        p_v_ = []
+        p_w_ = []
+        for j in range(4):
+            if j != choice:
+                p_w_.append(p_w_mapped[j])
+                p_v_.append(p_v[j])
+            else:
+                p_w_.append(p_w[j])
+                p_v_.append(p_w_mapped[j])
+        
+        landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
+        landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
+        landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
+
+        if flameshape_v != None:
+            p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
+            p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
+            _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
+            _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
+
+        else:
+            recons_images_v = render_img_w_
+            recons_images_w = render_img_w_
+
+        return landmark_same, render_img_same, \
+                landmark_w_, render_img_w_ , \
+                landmark_v_, render_img_v_ , \
+                recons_images_v, recons_images_w, choice
+
 
     def _initialize_weights(self):
         for m in self.modules():
