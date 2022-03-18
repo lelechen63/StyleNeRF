@@ -27,7 +27,7 @@ sys.path.append('/home/uss00022/lelechen/github/StyleNeRF')
 import dnnlib
 import training
 import torch_utils
-
+import legacy
 
 class Latent2Code2(nn.Module):
     def __init__(self, flame_config, opt ):
