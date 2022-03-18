@@ -177,6 +177,9 @@ class RigNerft(nn.Module):
         self.albedo_dim = 50
         self.lit_dim = 27
 
+        self.latent_fea_dim = 256
+        self.param_fea_dim = 256
+
         self.flame_config = flame_config
         self.image_size = self.flame_config.image_size
         
@@ -229,7 +232,7 @@ class RigNerft(nn.Module):
         WEncoder = th.nn.Sequential(
             LinearWN( self.latent_dim , 256 ),
             th.nn.LeakyReLU( 0.2, inplace = True ),
-            LinearWN( 256, 256 ),
+            LinearWN( 256, self.latent_fea_dim ),
             th.nn.LeakyReLU( 0.2, inplace = True )
         )
         if len(weight) > 0:
@@ -241,27 +244,17 @@ class RigNerft(nn.Module):
         ParamEncoder = th.nn.Sequential(
             LinearWN( self.shape_dim + self.exp_dim + self.lit_dim + self.albedo_dim, 128 ),
             th.nn.LeakyReLU( 0.2, inplace = True ),
-            LinearWN( 128, 128 ),
+            LinearWN( 128, self.param_fea_dim ),
             th.nn.LeakyReLU( 0.2, inplace = True )
         )
         if len(weight) > 0:
             print ('loading weights for ParamEncoder  network')
             ParamEncoder.load_state_dict(torch.load(weight))
         return ParamEncoder
-    def build_ExpEncoder(self, weight = ''):
-        ExpEncoder = th.nn.Sequential(
-            LinearWN( self.exp_dim , 128 ),
-            th.nn.LeakyReLU( 0.2, inplace = True ),
-            LinearWN( 128, 128 ),
-            th.nn.LeakyReLU( 0.2, inplace = True )
-        )
-        if len(weight) > 0:
-            print ('loading weights for ExpEncoder  network')
-            ExpEncoder.load_state_dict(torch.load(weight))
-        return ExpEncoder
+
     def build_WDecoder(self, weight = ''):
         WDecoder = th.nn.Sequential(
-            LinearWN( 512 , 256 ),
+            LinearWN( self.latent_fea_dim + self.param_fea_dim , 256 ),
             th.nn.LeakyReLU( 0.2, inplace = True ),
             LinearWN( 256, self.latent_dim ),
         )
