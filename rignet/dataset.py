@@ -207,8 +207,8 @@ class FFHQRigDataset(torch.utils.data.Dataset):
         data2 = copy.copy(self.total_data[self.data_list[another_inx]])
 
         if not self.opt.debug or self.opt.supervision=='render' or not self.isTrain :
-            
-            data['gt_image'] = self.transform(cv2.cvtColor(cv2.imread(mg_path = os.path.join(self.opt.dataroot, 'images',name)), cv2.COLOR_BGR2RGB))
+
+            data['gt_image'] = self.transform(cv2.cvtColor(cv2.imread( os.path.join(self.opt.dataroot, 'images',name2)), cv2.COLOR_BGR2RGB))
             data['img_mask'] = np.load(os.path.join(self.opt.dataroot, 'imagemasks',name2[:-3] +'npy'))
             data['image_path'] = name2
 
