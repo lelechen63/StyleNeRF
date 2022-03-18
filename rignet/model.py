@@ -14,7 +14,7 @@ from PIL import Image
 import cv2
 import sys
 sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/')
-from flamerenderer import FlameRenderer
+from Flamerenderer import FlameRenderer
 import util
 from models.FLAME import FLAME, FLAMETex
 sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/utils')
