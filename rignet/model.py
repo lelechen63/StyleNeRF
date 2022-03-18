@@ -277,11 +277,11 @@ class RigNerft(nn.Module):
     
     def rig(self,w, p):
         shapecode, expcode, albedocode, litcode = p[0], p[1],p[2], p[3]
-        l_w = self.WEncoder(w)
+        l_w = self.LatentEncoder(w)
        
         l_p = self.ParamEncoder(torch.cat([shapecode, expcode, albedocode, litcode], axis = 1))
        
-        delta_w = self.WDecoder(torch.cat([l_p, l_w], axis = 1))
+        delta_w = self.LatentDecoder(torch.cat([l_p, l_w], axis = 1))
 
         return  deltaw + w
     
