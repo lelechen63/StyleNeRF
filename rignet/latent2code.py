@@ -140,11 +140,10 @@ class Latent2CodeModule():
                 ('reconsimage', reconsimage),
                 ('genlmark', genlmark )
                 ])
-        
+                if self.opt.supervision == 'render':
+                    
                 self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
                 torch.save(self.latent2code.module.Latent2fea.state_dict(), self.opt.Latent2ShapeExpCode_weight)
-                # torch.save(self.latent2code.module.Latent2ShapeExpCode.state_dict(), self.opt.Latent2ShapeExpCode_weight)
-                # torch.save(self.latent2code.module.Latent2AlbedoLitCode.state_dict(),self.opt.Latent2AlbedoLitCode_weight)
                 torch.save(self.latent2code.module.latent2shape.state_dict(), self.opt.latent2shape_weight)
                 torch.save(self.latent2code.module.latent2exp.state_dict(), self.opt.latent2exp_weight)
                 torch.save(self.latent2code.module.latent2albedo.state_dict(), self.opt.latent2albedo_weight)
