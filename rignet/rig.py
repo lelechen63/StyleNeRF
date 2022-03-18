@@ -21,8 +21,9 @@ class RigModule():
             self.device = torch.device("cuda")
         self.rig = RigNerft( flame_config, opt)
         print (self.rig)
-        self.optimizer = optim.Adam( list(self.rig.WEncoder.parameters()) + \
-                                  list(self.rig.ParamEncoder.parameters()) + list(self.rig.WDecoder.parameters())\
+        self.optimizer = optim.Adam( list(self.rig.LatentEncoder.parameters()) + \
+                                  list(self.rig.ParamEncoder.parameters()) + \
+                                   list(self.rig.WDecoder.parameters())\
                                   , lr= self.opt.lr , betas=(self.opt.beta1, 0.999))
         for p in self.rig.Latent2fea.parameters():
             p.requires_grad = False 
