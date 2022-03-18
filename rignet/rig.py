@@ -24,7 +24,7 @@ class RigModule():
         self.optimizer = optim.Adam( list(self.rig.WEncoder.parameters()) + \
                                   list(self.rig.ParamEncoder.parameters()) + list(self.rig.WDecoder.parameters())\
                                   , lr= self.opt.lr , betas=(self.opt.beta1, 0.999))
-        for p in self.rig.Latent2ShapeExpCode.parameters():
+        for p in self.rig.Latent2fea.parameters():
             p.requires_grad = False 
         for p in self.rig.latent2shape.parameters():
             p.requires_grad = False 
