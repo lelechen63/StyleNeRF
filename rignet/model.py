@@ -222,8 +222,6 @@ class RigNerft(nn.Module):
             with torch.no_grad():
                 self.G2 = Generator(*G.init_args, **G.init_kwargs).to('cuda')
                 misc.copy_params_and_buffers(G, self.G2, require_all=False)
-    
-
 
 
     def get_f(self,network):
@@ -380,10 +378,10 @@ class RigNerft(nn.Module):
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
         print (latent_w_same.shape, "=====" )
-        tmp = self.G2.forward(latent_w_same.view(-1, 17,512))
+        tmp = self.G2.forward(styles = latent_w_same.view(-1, 17,512))
         print (tmp.shape)
 
-        p_w_same = self.latent2params(latent_w_same)
+        p_w_same = self.latent2params(latent_w_same) 
 
         # randomly choose one params to be edited
         choice = torch.randint(0, 4 ,(1,)).item()
@@ -399,7 +397,7 @@ class RigNerft(nn.Module):
         latent_w_hat = self.rig(latent_w, p_w_replaced)
 
         print (latent_w_hat.shape, "===== ")
-        tmp = self.G2.forward(latent_w_hat.view(-1, 17,512))
+        tmp = self.G2.forward(styles = latent_w_hat.view(-1, 17,512))
         print (tmp.shape)
         # map chagned w back to P
         p_w_mapped = self.latent2params(latent_w_hat)

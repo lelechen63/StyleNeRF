@@ -85,7 +85,6 @@ def generate_images(
     # Labels.
     label = torch.zeros([1, G.c_dim], device=device)
     
-
     # avoid persistent classes... 
     from training.networks import Generator
     # from training.stylenerf import Discriminator
