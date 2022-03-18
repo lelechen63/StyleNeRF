@@ -340,22 +340,22 @@ class RigModule():
                                         image_path = batch[0]['image_path'][0]+'---close-V-renderimg', 
                                         device = self.device)
 
-                synsimg_v = vis_tensor(image_tensor= syns_v, 
+                synsimg_v = vis_ganimg(image_tensor= syns_v, 
                                         image_path = batch[0]['image_path'][0] +'---V-syns',
                                         device = self.device
                                          )
 
-                synsimg_w = vis_tensor(syns_w, 
+                synsimg_w = vis_ganimg(syns_w, 
                                         image_path = batch[0]['image_path'][0] +'---W-syns',
                                         device = self.device
                                          )
 
-                synsimg_w_same = vis_tensor(image_tensor= syns_w_same, 
+                synsimg_w_same = vis_ganimg(image_tensor= syns_w_same, 
                                         image_path = batch[0]['image_path'][0] +'---w-syns-same',
                                         device = self.device
                                          )
 
-                synsimg_w_hat = vis_tensor(image_tensor= syns_w_hat, 
+                synsimg_w_hat = vis_ganimg(image_tensor= syns_w_hat, 
                                         image_path = batch[0]['image_path'][0] +'---W-hat-' + choice_dic[choice],
                                         device = self.device
                                          )
@@ -383,109 +383,19 @@ class RigModule():
                 ])
         
                 self.visualizer.display_current_results(visuals, step, self.opt.save_step) 
-    def debug(self):
-        for p in self.latent2code.parameters():
-            p.requires_grad = False 
-        for step, batch in enumerate(tqdm(self.data_loader)):
-            with torch.no_grad():    
-                shape_latent = batch['shape_latent'].to(self.device)
-                appearance_latent = batch['appearance_latent'].to(self.device)
-                cam, pose = batch['cam'].to(self.device), batch['pose'].to(self.device)
+  
 
-                shape_fea = self.latent2code.Latent2ShapeExpCode(shape_latent)
-                shapecode = self.latent2code.latent2shape(shape_fea)
-                expcode = self.latent2code.latent2exp(shape_fea)
+def vis_ganimg(img):
+   
+    output = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8).cpu()[0]
+    output = np.ascontiguousarray(output, dtype=np.uint8)
+    output = util.writeText(output, image_path)
+    output = np.ascontiguousarray(output, dtype=np.uint8)
+    output = np.clip(output, 0, 255)
 
-                app_fea = self.latent2code.Latent2AlbedoLitCode(appearance_latent)
-                albedocode = self.latent2code.latent2albedo(app_fea)
-                litcode = self.latent2code.latent2lit(app_fea).view(shape_latent.shape[0], 9,3)
+    return output
 
-                # flame from synthesized shape, exp, lit, albedo
-                vertices, landmarks2d, landmarks3d = self.latent2code.flame(shape_params=shapecode, expression_params=expcode, pose_params=pose)
-                trans_vertices = util.batch_orth_proj(vertices, cam)
-                trans_vertices[..., 1:] = - trans_vertices[..., 1:]
 
-                ## render
-                albedos = self.latent2code.flametex(albedocode, self.latent2code.image_size) / 255.
-                ops = self.latent2code.render(vertices, trans_vertices, albedos, litcode)
-                predicted_images = ops['images']
-                
-                # flame from sudo ground truth shape, exp, lit, albedo
-                recons_vertices, recons_landmarks2d, recons_landmarks3d = self.latent2code.flame(
-                                                shape_params = batch['shape'].to(self.device), 
-                                                expression_params = batch['exp'].to(self.device),
-                                                pose_params=batch['pose'].to(self.device))
-                recons_trans_vertices = util.batch_orth_proj(recons_vertices, batch['cam'].to(self.device))
-                recons_trans_vertices[..., 1:] = -recons_trans_vertices[..., 1:]
-
-                ## render
-                recons_albedos = self.latent2code.flametex(batch['tex'].to(self.device), self.latent2code.image_size) / 255.
-                recons_ops = self.latent2code.render(recons_vertices, recons_trans_vertices, recons_albedos, batch['lit'].view(-1,9,3).to(self.device))
-                recons_images = recons_ops['images']
-
-            losses = {}
-            losses['landmark'] = util.l2_distance(landmarks3d[:, 17:, :2], batch['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-            losses['photometric_texture'] = (batch['img_mask'].to(self.device) * (predicted_images - batch['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
-            loss = losses['landmark'] + losses['photometric_texture']
-            
-            tqdm_dict = {'loss_landmark': losses['landmark'].data, 'loss_tex': losses['photometric_texture'].data  }
-            errors = {k: v.data.item() if not isinstance(v, int) else v for k, v in tqdm_dict.items()} 
-            self.visualizer.print_current_errors(0, step, errors, 0)
-
-            visind = 0
-            gtimage = batch['gt_image'].data[visind].cpu()
-            gtimage = tensor_util.tensor2im(gtimage  , normalize = False)
-            gtimage = np.ascontiguousarray(gtimage, dtype=np.uint8)
-            gtimage = tensor_util.writeText(gtimage, batch['image_path'][visind])
-            gtimage = np.ascontiguousarray(gtimage, dtype=np.uint8)
-            gtimage = np.clip(gtimage, 0, 255)
-
-            gtlmark = util.batch_orth_proj(batch['gt_landmark'], batch['cam'])
-            gtlmark[..., 1:] = - gtlmark[..., 1:]
-
-            gtlmark = util.tensor_vis_landmarks(batch['gt_image'][visind].unsqueeze(0), gtlmark[visind].unsqueeze(0))
-            gtlmark = gtlmark.squeeze(0)
-            gtlmark = tensor_util.tensor2im(gtlmark  , normalize = False)
-            gtlmark = np.ascontiguousarray(gtlmark, dtype=np.uint8)
-            gtlmark = util.writeText(gtlmark, batch['image_path'][visind])
-            gtlmark = np.ascontiguousarray(gtlmark, dtype=np.uint8)
-            gtlmark = np.clip(gtlmark, 0, 255)
-
-            genimage = predicted_images.data[visind].cpu() #  * self.stdtex + self.meantex 
-            genimage = tensor_util.tensor2im(genimage  , normalize = False)
-            genimage = np.ascontiguousarray(genimage, dtype=np.uint8)
-            genimage = tensor_util.writeText(genimage, batch['image_path'][visind])
-            genimage = np.ascontiguousarray(genimage, dtype=np.uint8)
-            genimage = np.clip(genimage, 0, 255)
-
-            reconsimage = recons_images.data[visind].cpu() #  * self.stdtex + self.meantex 
-            reconsimage = tensor_util.tensor2im(reconsimage  , normalize = False)
-            reconsimage = np.ascontiguousarray(reconsimage, dtype=np.uint8)
-            reconsimage = tensor_util.writeText(reconsimage, batch['image_path'][visind])
-            reconsimage = np.ascontiguousarray(reconsimage, dtype=np.uint8)
-            reconsimage = np.clip(reconsimage, 0, 255)
-
-            
-            genlmark = util.batch_orth_proj(landmarks3d, batch['cam'].to(self.device))
-            genlmark[..., 1:] = - genlmark[..., 1:]
-
-            genlmark = util.tensor_vis_landmarks(batch['gt_image'].to(self.device)[visind].unsqueeze(0),genlmark[visind].unsqueeze(0))
-            genlmark = genlmark.squeeze(0)
-            genlmark = tensor_util.tensor2im(genlmark  , normalize = False)
-            genlmark = np.ascontiguousarray(genlmark, dtype=np.uint8)
-            genlmark = util.writeText(genlmark, batch['image_path'][visind])
-            genlmark = np.ascontiguousarray(genlmark, dtype=np.uint8)
-            genlmark = np.clip(genlmark, 0, 255)
-
-            visuals = OrderedDict([
-            ('gtimage', gtimage),
-            ('gtlmark', gtlmark ),
-            ('genimage', genimage),
-            ('reconsimage', reconsimage),
-            ('genlmark', genlmark )
-            ])
-            self.visualizer.display_current_results(visuals, step, 1) 
-           
 def vis_tensor(image_tensor = None, image_path = None, land_tensor = None, cam = None,  visind =0, device = torch.device("cuda")):
     if land_tensor is not None:
         lmark = util.batch_orth_proj(land_tensor.to(device), cam.to(device))
