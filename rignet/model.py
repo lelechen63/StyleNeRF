@@ -355,7 +355,7 @@ class RigNerft(nn.Module):
 
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
-        print (latent_w_same.shape, ===== )
+        print (latent_w_same.shape, "=====" )
 
         p_w_same = self.latent2params(latent_w_same)
 
@@ -372,7 +372,7 @@ class RigNerft(nn.Module):
 
         latent_w_hat = self.rig(latent_w, p_w_replaced)
 
-        print (latent_w_hat.shape, ===== )
+        print (latent_w_hat.shape, "===== ")
         # map chagned w back to P
         p_w_mapped = self.latent2params(latent_w_hat)
 
