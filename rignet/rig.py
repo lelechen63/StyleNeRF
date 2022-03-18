@@ -213,9 +213,9 @@ class RigModule():
         
                 self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
 
-                torch.save(self.rig.module.WEncoder.state_dict(), self.opt.WGanEncoder_weight)
+                torch.save(self.rig.module.LatentEncoder.state_dict(), self.opt.WEncoder_weight)
                 torch.save(self.rig.module.ParamEncoder.state_dict(),self.opt.ShapeEncoder_weight)
-                torch.save(self.rig.module.WDecoder.state_dict(), self.opt.WGanDecoder_weight)
+                torch.save(self.rig.module.LatentDecoder.state_dict(), self.opt.WDecoder_weight)
                
     def test(self):
         for p in self.latent2code.parameters():
