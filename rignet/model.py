@@ -277,7 +277,7 @@ class RigNerft(nn.Module):
        
         delta_w = self.LatentDecoder(torch.cat([l_p, l_w], axis = 1))
 
-        return  deltaw + w
+        return  delta_w + w
     
     def flame_render(self,p, pose, cam):
         shapecode,expcode,albedocode, litcode = p[0],p[1],p[2],p[3]
