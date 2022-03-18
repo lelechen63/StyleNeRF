@@ -276,8 +276,8 @@ class RigNerft(nn.Module):
         self.render = Renderer(self.image_size, obj_filename=mesh_file).to('cuda')
     
     def rig(self,w, p):
-        shapecode, expcode, albedocode, litcode = p[0], p[1],p[2], p[3]
-        litcode = litcode.view(-1, 27)
+        shapecode, expcode, albedocode, litcode = p[0], p[1],p[2], p[3].view(-1, 27)
+
         l_w = self.LatentEncoder(w)
        
         l_p = self.ParamEncoder(torch.cat([shapecode, expcode, albedocode, litcode], axis = 1))
