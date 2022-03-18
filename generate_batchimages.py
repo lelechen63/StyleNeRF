@@ -43,7 +43,9 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 @click.command()
 @click.pass_context
 @click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
-@click.option('--seeds', type=int, help='List of random seeds', default =1)
+@click.option('--startseeds', type=int, help='start of random seeds', default =10000)
+@click.option('--endseeds', type=int, help='end of random seeds', default =100000)
+
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
 # @click.option('--projected-w', help='Projection result file', type=str, metavar='FILE')
@@ -58,7 +60,8 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 def generate_images(
     ctx: click.Context,
     network_pkl: str,
-    seeds: int,
+    startseeds: int,
+    endseeds: int,
     truncation_psi: float,
     noise_mode: str,
     outdir: str,
@@ -103,8 +106,8 @@ def generate_images(
         return (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8).cpu()
 
    
-    for seed_idx, seed in enumerate(range(seeds)):
-        print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx, seeds))
+    for seed_idx, seed in enumerate(range(startseeds, endseeds)):
+        print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx, endseeds))
         G2.set_random_seed(seed)
         z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
         relative_range_u = [0.5]
