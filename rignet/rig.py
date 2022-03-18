@@ -221,8 +221,6 @@ class RigModule():
         for p in self.rig.parameters():
             p.requires_grad = False 
     
-    def proc_img(self, img): 
-        return (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8).cpu()        
         choice_dic =["shape", "exp", "albedo", "lit"]
         for step, batch in enumerate(tqdm(self.data_loader)):
             with torch.no_grad():    
