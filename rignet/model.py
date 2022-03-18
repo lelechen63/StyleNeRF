@@ -171,8 +171,7 @@ class RigNerft(nn.Module):
         super().__init__()
         self.opt = opt
         
-        self.nerf_latent_dim = 256
-        self.gan_latent_dim = 512
+        self.latent_dim = 512 * 17
         self.shape_dim = 100
         self.exp_dim = 50
         self.albedo_dim = 50
