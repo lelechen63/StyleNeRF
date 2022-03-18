@@ -213,14 +213,14 @@ class RigNerft(nn.Module):
             nerf_pkl = '/home/uss00022/lelechen/github/StyleNeRF/outputs/2022-03-11/13-58-47/out/00000-images256x256_full-paper256-stylenerf_ffhq-noaug/network-snapshot-017792.pkl'
             with dnnlib.util.open_url(nerf_pkl) as f:
                 network = legacy.load_network_pkl(f)
-                G = network['G_ema'].to(device) # type: ignore
+                G = network['G_ema'].to('cuda') # type: ignore
             
             # avoid persistent classes... 
             from training.networks import Generator
             # from training.stylenerf import Discriminator
             from torch_utils import misc
             with torch.no_grad():
-                self.G2 = Generator(*G.init_args, **G.init_kwargs).to(device)
+                self.G2 = Generator(*G.init_args, **G.init_kwargs).to('cuda')
                 misc.copy_params_and_buffers(G, self.G2, require_all=False)
     
 
