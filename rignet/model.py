@@ -366,21 +366,24 @@ class RigNerft(nn.Module):
         return landmark_same, render_img_same, \
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w, choice
+                recons_images_v, recons_images_w
     
     def test(self, latent_v, latent_w, \
                     cam_v=None, pose_v=None, flameshape_v = None, flameexp_v = None, flametex_v = None,\
                     flamelit_v = None, cam_w=None, pose_w=None, flameshape_w = None, flameexp_w = None, flametex_w = None, flamelit_w = None):
         
+        syns_v = self.G2.forward(styles = latent_v.view(-1, 17,512))['img']
+
+        syns_w = self.G2.forward(styles = latent_w.view(-1, 17,512))['img']
+
         p_v = self.latent2params(latent_v)
+    
         p_w = self.latent2params(latent_w)
 
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
-        print (latent_w_same.shape, "=====" )
-        tmp = self.G2.forward(styles = latent_w_same.view(-1, 17,512))
-        print (tmp.keys())
-        print (tmp['img'].shape)
+        
+        syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 17,512))['img']
 
         p_w_same = self.latent2params(latent_w_same) 
 
@@ -397,9 +400,8 @@ class RigNerft(nn.Module):
 
         latent_w_hat = self.rig(latent_w, p_w_replaced)
 
-        print (latent_w_hat.shape, "===== ")
-        tmp = self.G2.forward(styles = latent_w_hat.view(-1, 17,512))
-        print (tmp.shape)
+        syns_w_hat = self.G2.forward(styles = latent_w_hat.view(-1, 17,512))['img']
+
         # map chagned w back to P
         p_w_mapped = self.latent2params(latent_w_hat)
 
@@ -430,7 +432,8 @@ class RigNerft(nn.Module):
         return landmark_same, render_img_same, \
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w, choice
+                recons_images_v, recons_images_w,\
+                choice, syns_v, syns_w, syns_w_same, syns_w_hat
 
 
     def _initialize_weights(self):

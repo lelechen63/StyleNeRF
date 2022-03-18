@@ -67,7 +67,7 @@ class RigModule():
                 landmark_same, render_img_same, \
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w, choice \
+                recons_images_v, recons_images_w \
                 = self.rig.forward(
                             batch[0]['latent'].to(self.device),
                             batch[1]['latent'].to(self.device),
@@ -220,13 +220,17 @@ class RigModule():
     def test(self):
         for p in self.rig.parameters():
             p.requires_grad = False 
-
+    
+    def proc_img(self, img): 
+        return (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8).cpu()        
+        choice_dic =["shape", "exp", "albedo", "lit"]
         for step, batch in enumerate(tqdm(self.data_loader)):
             with torch.no_grad():    
                 landmark_same, render_img_same, \
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w, choice \
+                recons_images_v, recons_images_w, \
+                choice, syns_v, syns_w, syns_w_same, syns_w_hat \
                 = self.rig.test(
                             batch[0]['latent'].to(self.device),
                             batch[1]['latent'].to(self.device),
@@ -338,7 +342,26 @@ class RigModule():
                                         image_path = batch[0]['image_path'][0]+'---close-V-renderimg', 
                                         device = self.device)
 
-                
+                synsimg_v = vis_tensor(image_tensor= syns_v, 
+                                        image_path = batch[0]['image_path'][0] +'---V-syns',
+                                        device = self.device
+                                         )
+
+                synsimg_w = vis_tensor(syns_w, 
+                                        image_path = batch[0]['image_path'][0] +'---W-syns',
+                                        device = self.device
+                                         )
+
+                synsimg_w_same = vis_tensor(image_tensor= syns_w_same, 
+                                        image_path = batch[0]['image_path'][0] +'---w-syns-same',
+                                        device = self.device
+                                         )
+
+                synsimg_w_hat = vis_tensor(image_tensor= syns_w_hat, 
+                                        image_path = batch[0]['image_path'][0] +'---W-hat-' + choice_dic[choice],
+                                        device = self.device
+                                         )
+
                 visuals = OrderedDict([
                 ('image_v', image_v),
                 ('lmark_v', lmark_v),
