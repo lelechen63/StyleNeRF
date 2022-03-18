@@ -167,7 +167,7 @@ class Latent2CodeModule():
                             batch['exp'].to(self.device),
                             batch['tex'].to(self.device),
                             batch['lit'].to(self.device))
-
+                losses = {}
                 if self.opt.supervision =='render':
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
                     
@@ -192,8 +192,8 @@ class Latent2CodeModule():
                 
                 errors = {k: v.data.item() if not isinstance(v, int) else v for k, v in tqdm_dict.items()} 
                 self.visualizer.print_current_errors(epoch, step, errors, 0, 0, 0 )          
-                
-                      
+
+
                 genimage = vis_tensor(image_tensor= return_list['predicted_images'], 
                                         image_path = batch['image_path'][0] ,
                                         device = self.device
