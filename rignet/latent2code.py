@@ -198,6 +198,10 @@ class Latent2CodeModule():
                                         image_path = batch['image_path'][0] ,
                                         device = self.device
                                          )
+                gtimage = vis_tensor(image_tensor= batch['gt_image'], 
+                                        image_path = batch['image_path'][0] ,
+                                        device = self.device
+                                         )
 
                 reconsimage = vis_tensor(image_tensor= return_list['recons_images'], 
                                         image_path = batch['image_path'][0],
@@ -220,6 +224,7 @@ class Latent2CodeModule():
             ('gtimage', gtimage),
             ('gtlmark', gtlmark ),
             ('genimage', genimage),
+            ('reconsimage', reconsimage),
             ('genlmark', genlmark )
             ])
             self.visualizer.display_current_results(visuals, step, 1) 
