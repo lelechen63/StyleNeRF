@@ -355,7 +355,7 @@ class RigModule():
                 ('genimage_w', genimage_w ),
                 ])
         
-                self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
+                self.visualizer.display_current_results(visuals, 0, self.opt.save_step) 
     def debug(self):
         for p in self.latent2code.parameters():
             p.requires_grad = False 
