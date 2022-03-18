@@ -377,6 +377,11 @@ class RigModule():
                 ('genimage_same_W', genimage_same),
                 ('genlmark_w', genlmark_w),
                 ('genimage_w', genimage_w ),
+
+                ('synsimg_v', synsimg_v ),
+                ('synsimg_w', synsimg_w ),
+                ('synsimg_w_same', synsimg_w_same ),
+                ('synsimg_w_hat', synsimg_w_hat ),
                 ])
         
                 self.visualizer.display_current_results(visuals, step, self.opt.save_step) 
