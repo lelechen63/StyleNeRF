@@ -126,7 +126,7 @@ class Latent2Code2(nn.Module):
 
             ## render
             albedos = self.flametex(albedocode, self.image_size) / 255.
-            ops = self.render(vertices, trans_vertices, albedos, litcode.view(latent.shape[0], 9,3))
+            ops = self.render(vertices, trans_vertices, albedos, litcode.view(-1, 9,3))
             predicted_images = ops['images']
 
             return_list['landmarks3d'] = landmarks3d
@@ -220,7 +220,7 @@ class RigNerft(nn.Module):
         shapecode = self.latent2shape(fea)
         expcode = self.latent2exp(fea)
         albedocode = self.latent2albedo(fea)
-        litcode = self.latent2lit(fea).view(shape_latent.shape[0], 9,3)
+        litcode = self.latent2lit(fea).view(-1, 9,3)
         
         paramset = [shapecode, expcode, albedocode, litcode]
         return paramset
