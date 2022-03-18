@@ -107,7 +107,7 @@ class Latent2Code2(nn.Module):
 
     def _setup_renderer(self):
         mesh_file = '/home/uss00022/lelechen/basic/flame_data/data/head_template_mesh.obj'
-        self.render = Renderer(self.image_size, obj_filename=mesh_file).to('cuda')
+        self.render = FlameRenderer(self.image_size, obj_filename=mesh_file).to('cuda')
     
     def forward(self, latent, cam, pose, flameshape = None, flameexp= None, flametex= None, flamelit= None ):
         
@@ -266,7 +266,7 @@ class RigNerft(nn.Module):
   
     def _setup_renderer(self):
         mesh_file = '/home/uss00022/lelechen/basic/flame_data/data/head_template_mesh.obj'
-        self.render = Renderer(self.image_size, obj_filename=mesh_file).to('cuda')
+        self.render = FlameRenderer(self.image_size, obj_filename=mesh_file).to('cuda')
     
     def rig(self,w, p):
         shapecode, expcode, albedocode, litcode = p[0], p[1],p[2], p[3].view(-1, 27)
