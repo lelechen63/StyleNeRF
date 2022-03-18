@@ -218,7 +218,7 @@ class RigModule():
                 torch.save(self.rig.module.LatentDecoder.state_dict(), self.opt.WDecoder_weight)
                
     def test(self):
-        for p in self.latent2code.parameters():
+        for p in self.rig.parameters():
             p.requires_grad = False 
         for step, batch in enumerate(tqdm(self.data_loader)):
             with torch.no_grad():    
