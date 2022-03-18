@@ -220,6 +220,7 @@ class RigModule():
     def test(self):
         for p in self.rig.parameters():
             p.requires_grad = False 
+
         for step, batch in enumerate(tqdm(self.data_loader)):
             with torch.no_grad():    
                 landmark_same, render_img_same, \

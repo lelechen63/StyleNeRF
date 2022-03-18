@@ -379,7 +379,8 @@ class RigNerft(nn.Module):
         latent_w_same = self.rig(latent_w,  p_w)
         print (latent_w_same.shape, "=====" )
         tmp = self.G2.forward(styles = latent_w_same.view(-1, 17,512))
-        print (tmp.shape)
+        print (tmp.keys())
+        print (tmp['img'].shape)
 
         p_w_same = self.latent2params(latent_w_same) 
 
