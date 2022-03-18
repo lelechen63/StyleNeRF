@@ -383,7 +383,7 @@ class RigModule():
 
 def vis_ganimg(image_tensor = None, image_path = None):
    
-    output = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8).cpu()[0]
+    output = (image_tensor.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8).cpu()[0]
     output = np.ascontiguousarray(output, dtype=np.uint8)
     output = util.writeText(output, image_path)
     output = np.ascontiguousarray(output, dtype=np.uint8)
