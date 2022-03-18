@@ -1074,7 +1074,10 @@ class Generator(torch.nn.Module):
                 ws = self.mapping(z, c, truncation_psi=truncation_psi, truncation_cutoff=truncation_cutoff, **synthesis_kwargs)
         else:
             ws = styles
-        self.ws = ws 
+        self.ws = ws
+        print (synthesis_kwargs.keys(),'========')
+        for k in synthesis_kwargs.keys():
+            print (k, synthesis_kwargs[k])
         img = self.synthesis(ws, **synthesis_kwargs)
         return img
 
