@@ -21,18 +21,11 @@ class RigModule():
             self.device = torch.device("cuda")
         self.rig = RigNerft( flame_config, opt)
         print (self.rig)
-        self.optimizer = optim.Adam( list(self.rig.WGanEncoder.parameters()) + \
-                                  list(self.rig.ShapeEncoder.parameters()) + \
-                                  list(self.rig.ExpEncoder.parameters()) + \
-                                  list(self.rig.WGanDecoder.parameters()) + \
-                                  list(self.rig.WNerfEncoder.parameters()) + \
-                                  list(self.rig.AlbedoEncoder.parameters()) + \
-                                  list(self.rig.LitEncoder.parameters()) + \
-                                  list(self.rig.WNerfDecoder.parameters()) \
+        self.optimizer = optim.Adam( list(self.rig.WEncoder.parameters()) + \
+                                  list(self.rig.ParamEncoder.parameters()) + \
+                                  list(self.rig.WDecoder.parameters()) + \                                
                                   , lr= self.opt.lr , betas=(self.opt.beta1, 0.999))
         for p in self.rig.Latent2ShapeExpCode.parameters():
-            p.requires_grad = False 
-        for p in self.rig.Latent2AlbedoLitCode.parameters():
             p.requires_grad = False 
         for p in self.rig.latent2shape.parameters():
             p.requires_grad = False 
@@ -76,10 +69,8 @@ class RigModule():
                 landmark_v_, render_img_v_ , \
                 recons_images_v, recons_images_w \
                 = self.rig.forward(
-                            batch[0]['shape_latent'].to(self.device),
-                            batch[0]['appearance_latent'].to(self.device),
-                            batch[1]['shape_latent'].to(self.device),
-                            batch[1]['appearance_latent'].to(self.device),
+                            batch[0]['latent'].to(self.device),
+                            batch[1]['latent'].to(self.device),
                             
                             batch[0]['cam'].to(self.device), 
                             batch[0]['pose'].to(self.device),
@@ -222,15 +213,10 @@ class RigModule():
         
                 self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
 
-                torch.save(self.rig.module.WGanEncoder.state_dict(), self.opt.WGanEncoder_weight)
-                torch.save(self.rig.module.ShapeEncoder.state_dict(),self.opt.ShapeEncoder_weight)
-                torch.save(self.rig.module.ExpEncoder.state_dict(), self.opt.ExpEncoder_weight)
-                torch.save(self.rig.module.WGanDecoder.state_dict(), self.opt.WGanDecoder_weight)
-                
-                torch.save(self.rig.module.WNerfEncoder.state_dict(), self.opt.WNerfEncoder_weight)
-                torch.save(self.rig.module.AlbedoEncoder.state_dict(),self.opt.AlbedoEncoder_weight)
-                torch.save(self.rig.module.LitEncoder.state_dict(),self.opt.LitEncoder_weight)
-                torch.save(self.rig.module.WNerfDecoder.state_dict(),self.opt.WNerfDecoder_weight)
+                torch.save(self.rig.module.WEncoder.state_dict(), self.opt.WGanEncoder_weight)
+                torch.save(self.rig.module.ParamEncoder.state_dict(),self.opt.ShapeEncoder_weight)
+                torch.save(self.rig.module.WDecoder.state_dict(), self.opt.WGanDecoder_weight)
+               
     def test(self):
         for p in self.latent2code.parameters():
             p.requires_grad = False 

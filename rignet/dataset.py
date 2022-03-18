@@ -168,51 +168,49 @@ class FFHQRigDataset(torch.utils.data.Dataset):
 
         transform_list = [transforms.ToTensor()]
         self.transform = transforms.Compose(transform_list)
+        if opt.debug:
+            self.data_list = self.data_list[:opt.datanum]
+            for i in range(opt.datanum):
+                name = self.data_list[i]
+                img_path = os.path.join(self.opt.dataroot, 'images',name)
+                img = cv2.imread(img_path)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+                maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
+                self.total_data[name]['img_mask'] = np.load(maskimg_path)
+
+                self.total_data[name]['gt_image'] = self.transform(img)
+                self.total_data[name]['image_path'] = name
+
 
         print ('******************', len(self.data_list), len(self.total_data))
         self.total_t = []
     def __getitem__(self, index):
 
         name = self.data_list[index]
-        data = copy.copy(self.total_data[self.data_list[index]])
-        """
-            data[name] ={'shape': shape, 
-                 'exp': exp,
-                 'pose': pose,
-                 'cam': cam,
-                 'tex': tex,
-                 'lit': lit,
-                 'cam_pose': camera_pose,
-                 'z_nerf': z_nerf,
-                 'z_gan': z_gan,
-                 'gt_img': img,
-                 'gt_landmark': landmark
-                 #'img_mask':image_masks
-                }
-        """
-        img_path = os.path.join(self.opt.dataroot, 'images',name)
-        img = cv2.imread(img_path)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        data = copy.copy(self.total_data[name])
 
-        maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
-        data['img_mask'] = np.load(maskimg_path)
+        if not self.opt.debug or self.opt.supervision=='render' or not self.isTrain :
+            img_path = os.path.join(self.opt.dataroot, 'images',name)
+            img = cv2.imread(img_path)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-        data['gt_image'] = self.transform(img)
-        data['image_path'] = name
+            maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
+            data['img_mask'] = np.load(maskimg_path)
+
+            data['gt_image'] = self.transform(img)
+            data['image_path'] = name
+
 
         another_inx = torch.randint(0, self.__len__() ,(1,)).item()
         name2 = self.data_list[another_inx]
         data2 = copy.copy(self.total_data[self.data_list[another_inx]])
 
-        img_path2 = os.path.join(self.opt.dataroot, 'images',name2)
-        img2 = cv2.imread(img_path2)
-        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
-
-        maskimg_path2 = os.path.join(self.opt.dataroot, 'imagemasks',name2[:-3] +'npy')
-        data2['img_mask'] = np.load(maskimg_path2)
-
-        data2['gt_image'] = self.transform(img2)
-        data2['image_path'] = name2
+        if not self.opt.debug or self.opt.supervision=='render' or not self.isTrain :
+            
+            data['gt_image'] = self.transform(cv2.cvtColor(cv2.imread(mg_path = os.path.join(self.opt.dataroot, 'images',name)), cv2.COLOR_BGR2RGB))
+            data['img_mask'] = np.load(os.path.join(self.opt.dataroot, 'imagemasks',name2[:-3] +'npy'))
+            data['image_path'] = name2
 
         return [data, data2]
 
