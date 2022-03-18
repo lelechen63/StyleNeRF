@@ -191,7 +191,7 @@ class Latent2CodeModule():
                     tqdm_dict[key] = losses[key].data
                 
                 errors = {k: v.data.item() if not isinstance(v, int) else v for k, v in tqdm_dict.items()} 
-                self.visualizer.print_current_errors(epoch, step, errors, 0, 0, 0 )          
+                self.visualizer.print_current_errors(0, step, errors, 0, 0, 0 )          
 
 
                 genimage = vis_tensor(image_tensor= return_list['predicted_images'], 
