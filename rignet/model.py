@@ -22,6 +22,13 @@ from visualizer import Visualizer
 import tensor_util
 from blocks import *
 import face_alignment
+
+sys.path.append('/home/uss00022/lelechen/github/StyleNeRF')
+import dnnlib
+import training
+import torch_utils
+
+
 class Latent2Code2(nn.Module):
     def __init__(self, flame_config, opt ):
         super().__init__()
@@ -202,6 +209,23 @@ class RigNerft(nn.Module):
         self.ckpt_path = os.path.join(opt.checkpoints_dir, opt.name)
         os.makedirs(self.ckpt_path, exist_ok = True)
 
+        if not self.opt.isTrain:
+            nerf_pkl = '/home/uss00022/lelechen/github/StyleNeRF/outputs/2022-03-11/13-58-47/out/00000-images256x256_full-paper256-stylenerf_ffhq-noaug/network-snapshot-017792.pkl'
+            with dnnlib.util.open_url(nerf_pkl) as f:
+                network = legacy.load_network_pkl(f)
+                G = network['G_ema'].to(device) # type: ignore
+            
+            # avoid persistent classes... 
+            from training.networks import Generator
+            # from training.stylenerf import Discriminator
+            from torch_utils import misc
+            with torch.no_grad():
+                self.G2 = Generator(*G.init_args, **G.init_kwargs).to(device)
+                misc.copy_params_and_buffers(G, self.G2, require_all=False)
+    
+
+
+
     def get_f(self,network):
         print (network)
         print ('loading weights for Latent2fea feature extraction network')
@@ -356,6 +380,8 @@ class RigNerft(nn.Module):
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
         print (latent_w_same.shape, "=====" )
+        tmp = self.G2.forward(latent_w_same.view(-1, 17,512))
+        print (tmp.shape)
 
         p_w_same = self.latent2params(latent_w_same)
 
@@ -373,6 +399,8 @@ class RigNerft(nn.Module):
         latent_w_hat = self.rig(latent_w, p_w_replaced)
 
         print (latent_w_hat.shape, "===== ")
+        tmp = self.G2.forward(latent_w_hat.view(-1, 17,512))
+        print (tmp.shape)
         # map chagned w back to P
         p_w_mapped = self.latent2params(latent_w_hat)
 
