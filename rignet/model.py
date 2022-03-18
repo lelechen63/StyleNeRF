@@ -188,7 +188,7 @@ class RigNerft(nn.Module):
         
         # rigNet
         self.LatentEncoder = self.build_WEncoder(weight = '' if opt.isTrain else opt.WEncoder_weight )
-        self.ParamsEncoder = self.build_ParamEncoder(weight = '' if opt.isTrain else opt.ParamEncoder_weight )
+        self.ParamEncoder = self.build_ParamEncoder(weight = '' if opt.isTrain else opt.ParamEncoder_weight )
         self.LatentDecoder = self.build_WDecoder(weight = '' if opt.isTrain else opt.WDecoder_weight )
        
         # Flame
