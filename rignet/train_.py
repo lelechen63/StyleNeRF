@@ -80,5 +80,5 @@ if opt.isTrain:
 else:
     print ('!!!!!!' + opt.name + '!!!!!!!!')
     if opt.name == 'Latent2Code':
-        model.debug()
+        model.test()
         

@@ -221,7 +221,7 @@ class Latent2CodeModule():
             p.requires_grad = False 
         for step, batch in enumerate(tqdm(self.data_loader)):
             with torch.no_grad():    
-                appearance_latent = batch['appearance_latent'].to(self.device)
+                appearance_latent = batch['latent'].to(self.device)
                 cam, pose = batch['cam'].to(self.device), batch['pose'].to(self.device)
 
                 shape_fea = self.latent2code.Latent2ShapeExpCode(shape_latent)
