@@ -342,22 +342,18 @@ class RigModule():
 
                 synsimg_v = vis_ganimg(image_tensor= syns_v, 
                                         image_path = batch[0]['image_path'][0] +'---V-syns',
-                                        device = self.device
                                          )
 
                 synsimg_w = vis_ganimg(syns_w, 
                                         image_path = batch[0]['image_path'][0] +'---W-syns',
-                                        device = self.device
                                          )
 
                 synsimg_w_same = vis_ganimg(image_tensor= syns_w_same, 
                                         image_path = batch[0]['image_path'][0] +'---w-syns-same',
-                                        device = self.device
                                          )
 
                 synsimg_w_hat = vis_ganimg(image_tensor= syns_w_hat, 
                                         image_path = batch[0]['image_path'][0] +'---W-hat-' + choice_dic[choice],
-                                        device = self.device
                                          )
 
                 visuals = OrderedDict([
@@ -385,7 +381,7 @@ class RigModule():
                 self.visualizer.display_current_results(visuals, step, self.opt.save_step) 
   
 
-def vis_ganimg(img):
+def vis_ganimg(image_tensor = None, image_path = None):
    
     output = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8).cpu()[0]
     output = np.ascontiguousarray(output, dtype=np.uint8)
