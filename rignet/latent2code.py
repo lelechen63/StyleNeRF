@@ -158,10 +158,12 @@ class Latent2CodeModule():
         for p in self.latent2code.parameters():
             p.requires_grad = False 
         for step, batch in enumerate(tqdm(self.data_loader)):
-            with torch.no_grad():    
-                landmarks3d, predicted_images = self.latent2code.forward(
+            with torch.no_grad():   
+                #landmarks3d, predicted_images, recons_images 
+                return_list  = self.latent2code.forward(
                         batch['latent'].to(self.device), \
                         batch['cam'].to(self.device), batch['pose'].to(self.device))
+            landmarks3d, predicted_images, recons_images  = return_list[0],return_list[1],return_list[2]
             losses = {}
             losses['landmark'] = util.l2_distance(landmarks3d[:, 17:, :2], batch['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
             losses['photometric_texture'] = (batch['img_mask'].to(self.device) * (predicted_images - batch['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
