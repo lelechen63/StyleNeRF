@@ -24,7 +24,7 @@ import torch
 import imageio
 import legacy
 from renderer import Renderer
-
+import cv2
 #----------------------------------------------------------------------------
 
 def num_range(s: str) -> List[int]:
