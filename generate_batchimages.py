@@ -46,7 +46,7 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 @click.option('--startseeds', type=int, help='start of random seeds', default =10000)
 @click.option('--endseeds', type=int, help='end of random seeds', default =100000)
 
-@click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
+@click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=0.5, show_default=True)
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
 # @click.option('--projected-w', help='Projection result file', type=str, metavar='FILE')
 @click.option('--outdir', help='Where to save the output images', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf')
@@ -121,6 +121,7 @@ def generate_images(
             return_cameras=True)
         
         img = proc_img(img)[0]
+        print (ws[0].detach().cpu().numpy() == np.load(f'{outdir}/stylecode/w/{seed:0>6d}.npy'),'++++++++++' )
         np.save(  f'{outdir}/stylecode/w/{seed:0>6d}.npy' ,  ws[0].detach().cpu().numpy() )
         PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{name}/{seed:0>6d}.png')
 
