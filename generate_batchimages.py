@@ -125,7 +125,7 @@ def generate_images(
         np.save(  f'{outdir}/stylecode/w/{seed:0>6d}.npy' ,  ws[0].detach().cpu().numpy() )
         print (img.numpy().shape)
         print (img.max(),img.min())
-        print (img.numpy() == cv2.imread(f'{outdir}/{name}/{seed:0>6d}.png'), '++++++++++++++++')
+        print (img.numpy()[:,:,::-1] == cv2.imread(f'{outdir}/{name}/{seed:0>6d}.png'), '++++++++++++++++')
         PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{name}/{seed:0>6d}.png')
 
 
