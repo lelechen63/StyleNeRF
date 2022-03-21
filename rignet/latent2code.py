@@ -77,12 +77,13 @@ class Latent2CodeModule():
                     loss = losses['landmark'] + losses['photometric_texture']
                 else:
                 
-                    expcode, shapecode, litcode, albedocode  = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode']
+                    expcode, shapecode, litcode, albedocode, posecode  = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode'], return_list['pose']
                     losses['expcode'] = self.l2_loss(expcode, batch['exp'].to(self.device))
                     losses['shapecode'] = self.l2_loss(shapecode, batch['shape'].to(self.device))
                     losses['litcode'] = self.l2_loss(litcode, batch['lit'].to(self.device))
                     losses['albedocode'] = self.l2_loss(albedocode, batch['tex'].to(self.device))
-                
+                    losses['pose'] = self.l2_loss(posecode, batch['pose'].to(self.device))
+
                 loss = 0
                 for key in losses.keys():
                     loss += losses[key]

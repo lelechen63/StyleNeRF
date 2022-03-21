@@ -43,6 +43,7 @@ class Latent2Code(nn.Module):
         self.exp_dim = 50
         self.albedo_dim = 50
         self.lit_dim = 27
+        self.pose_dim = 6
         self.Latent2fea = self.build_Latent2CodeFea( weight = '' if opt.isTrain else opt.Latent2ShapeExpCode_weight)
         self.latent2shape = self.build_latent2shape( weight = '' if opt.isTrain else opt.latent2shape_weight)
         self.latent2exp = self.build_latent2exp(weight = '' if opt.isTrain else opt.latent2exp_weight)
