@@ -121,8 +121,13 @@ class FFHQDataset(torch.utils.data.Dataset):
         name = self.data_list[index]
         # data = self.total_data[name]
         data = copy.copy(self.total_data[name])
+        print ('=========')
         print (self.opt.debug)
+        print ('======111===')
+
         print(self.opt.supervision =='render')
+        print ('======2222==')
+
         print (self.isTrain==False)
         print ('=======')
         if (not self.opt.debug) or (self.opt.supervision =='render') or (self.isTrain==False) :
