@@ -72,13 +72,10 @@ elif opt.name =='rig':
     from rig import RigModule as module
     model = module(flame_config, opt)
 
-print (opt.isTrain,'!!!!!')
 if opt.isTrain:
     print ( opt.name)
     model.train()
-    print ('+++++++++')
 else:
-    print ('!!!!!!' + opt.name + '!!!!!!!!')
     if opt.name == 'Latent2Code':
         model.test()
     elif  opt.name == 'rig':

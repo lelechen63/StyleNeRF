@@ -121,16 +121,8 @@ class FFHQDataset(torch.utils.data.Dataset):
         name = self.data_list[index]
         # data = self.total_data[name]
         data = copy.copy(self.total_data[name])
-        print ('=========')
-        print (self.opt.debug)
-        print ('======111===')
-
-        print(self.opt.supervision =='render')
-        print ('======2222==')
-
-        print (self.isTrain==False)
-        print ('=======')
-        if (not self.opt.debug) or (self.opt.supervision =='render') or (self.isTrain==False) :
+        
+        if (not self.opt.debug) or (self.opt.supervision =='render') or (self.opt.isTrain==False) :
             img_path = os.path.join(self.opt.dataroot, 'images',name)
             img = cv2.imread(img_path)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
