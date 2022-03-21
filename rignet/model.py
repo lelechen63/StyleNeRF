@@ -141,10 +141,9 @@ class Latent2Code(nn.Module):
         albedocode = self.latent2albedo(fea)
         litcode = self.latent2lit(fea)
         posecode = self.latent2pose(fea)
-        print (pose.shape, posecode.shape,'=+++++')
         return_list = {}
         if self.opt.supervision =='render' or flameshape != None:
-            vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode, expression_params=expcode, pose_params=pose)
+            vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode, expression_params=expcode, pose_params=posecode)
             trans_vertices = util.batch_orth_proj(vertices, cam)
             trans_vertices[..., 1:] = - trans_vertices[..., 1:]
 
