@@ -13,6 +13,9 @@ def get_train( debug = False):
         img_lists = img_lists[:200]
     traindata = {}
     testdata = {}
+    trainlist = []
+    testlist  =[]
+
     traintest_threashhold = int(0.8*len(img_lists))
     for it, name in enumerate(tqdm(img_lists)):
         k = name[:-4]
@@ -44,6 +47,7 @@ def get_train( debug = False):
                         'latent': z,
                         'gt_landmark': landmark
                         }
+                trainlist.append(name)
             else:
                 testdata[name] ={'shape': shape, 
                         'exp': exp,
@@ -54,6 +58,7 @@ def get_train( debug = False):
                         'latent': z,
                         'gt_landmark': landmark
                         }
+                testlist.append(name)
         else:
             print (flame_path, 'Does not exist!!!')
     print (len(traindata), len(testdata))
