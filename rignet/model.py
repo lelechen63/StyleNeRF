@@ -29,7 +29,7 @@ import training
 import torch_utils
 import legacy
 
-class Latent2Code2(nn.Module):
+class Latent2Code(nn.Module):
     def __init__(self, flame_config, opt ):
         super().__init__()
         self.opt = opt
@@ -70,6 +70,7 @@ class Latent2Code2(nn.Module):
             print ('loading weights for latent2ShapeExpCode feature extraction network')
             Latent2ShapeExpCode.load_state_dict(torch.load(weight))
         return Latent2ShapeExpCode
+    
     def build_latent2shape(self,  weight = ''):
         latent2shape= th.nn.Sequential(
             LinearWN( 256 , 256 ),
@@ -80,6 +81,7 @@ class Latent2Code2(nn.Module):
             print ('loading weights for latent2Shape network')
             latent2shape.load_state_dict(torch.load(weight))
         return latent2shape
+    
     def build_latent2exp(self, weight = ''):
         latent2exp= th.nn.Sequential(
             LinearWN( 256 , 256 ),

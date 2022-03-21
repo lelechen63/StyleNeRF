@@ -21,7 +21,7 @@ class Latent2CodeModule():
 
         if opt.cuda:
             self.device = torch.device("cuda")
-        self.latent2code = Latent2Code2( flame_config, opt)
+        self.latent2code = Latent2Code( flame_config, opt)
         
         
         self.optimizer = optim.Adam( list(self.latent2code.Latent2fea.parameters()) + \
