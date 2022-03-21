@@ -133,21 +133,26 @@ class Latent2CodeModule():
                                         cam = batch['cam'], 
                                         device = self.device
                                          )
-                visuals = OrderedDict([
-                # ('gtimage', gtimage),
-                ('gtlmark', gtlmark ),
-                ('genimage', genimage),
-                ('reconsimage', reconsimage),
-                ('genlmark', genlmark )
-                ])
-                if self.opt.supervision == 'render':
+                if self.opt.supervision =='render':
                     gtimage = vis_tensor(image_tensor= batch['gt_image'], 
                                         image_path = batch['image_path'][0] ,
                                         device = self.device
                                          )
+                    visuals = OrderedDict([
+                    ('gtimage', gtimage),
+                    ('gtlmark', gtlmark ),
+                    ('genimage', genimage),
+                    ('reconsimage', reconsimage),
+                    ('genlmark', genlmark )
+                    ])
+                else:                   
+                    visuals = OrderedDict([
+                    ('gtlmark', gtlmark ),
+                    ('genimage', genimage),
+                    ('reconsimage', reconsimage),
+                    ('genlmark', genlmark )
+                    ])
 
-                    visuals.append(('gtimage', gtimage))
-                    
                 self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
                 torch.save(self.latent2code.module.Latent2fea.state_dict(), self.opt.Latent2ShapeExpCode_weight)
                 torch.save(self.latent2code.module.latent2shape.state_dict(), self.opt.latent2shape_weight)
