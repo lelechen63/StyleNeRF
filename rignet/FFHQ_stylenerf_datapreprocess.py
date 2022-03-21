@@ -65,7 +65,7 @@ def get_train( debug = False):
         
         with open( os.path.join(root_p, "ffhq_test_debug.pkl" ), 'wb') as handle:
             pickle.dump(testdata, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        with open( os.path.join(root_p, "ffhq_trainlist_debug.pkl" ), 'wb') as handle:
+        with open( os.path.join(root_p, "ffhq_testlist_debug.pkl" ), 'wb') as handle:
             pickle.dump(img_lists[traintest_threashhold:], handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     else:
