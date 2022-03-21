@@ -29,6 +29,8 @@ class Latent2CodeModule():
                                   list(self.latent2code.latent2exp.parameters()) + \
                                   list(self.latent2code.latent2albedo.parameters()) + \
                                   list(self.latent2code.latent2lit.parameters()) \
+                                  list(self.latent2code.latent2pose.parameters()) \
+
                                   , lr= self.opt.lr , betas=(self.opt.beta1, 0.999))
         for p in self.latent2code.flame.parameters():
             p.requires_grad = False 
@@ -159,6 +161,8 @@ class Latent2CodeModule():
                 torch.save(self.latent2code.module.latent2exp.state_dict(), self.opt.latent2exp_weight)
                 torch.save(self.latent2code.module.latent2albedo.state_dict(), self.opt.latent2albedo_weight)
                 torch.save(self.latent2code.module.latent2lit.state_dict(),self.opt.latent2lit_weight)
+                torch.save(self.latent2code.module.latent2pose.state_dict(),self.opt.latent2lit_weight)
+
     def test(self):
         for p in self.latent2code.parameters():
             p.requires_grad = False 
