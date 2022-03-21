@@ -66,22 +66,22 @@ def get_train( debug = False):
         with open( os.path.join(root_p, "ffhq_train_debug.pkl" ), 'wb') as handle:
             pickle.dump(traindata, handle, protocol=pickle.HIGHEST_PROTOCOL)
         with open( os.path.join(root_p, "ffhq_trainlist_debug.pkl" ), 'wb') as handle:
-            pickle.dump(img_lists[:traintest_threashhold], handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(trainlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
         
         with open( os.path.join(root_p, "ffhq_test_debug.pkl" ), 'wb') as handle:
             pickle.dump(testdata, handle, protocol=pickle.HIGHEST_PROTOCOL)
         with open( os.path.join(root_p, "ffhq_testlist_debug.pkl" ), 'wb') as handle:
-            pickle.dump(img_lists[traintest_threashhold:], handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(testlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     else:
         with open( os.path.join(root_p, "ffhq_train.pkl" ), 'wb') as handle:
             pickle.dump(traindata, handle, protocol=pickle.HIGHEST_PROTOCOL)
         with open( os.path.join(root_p, "ffhq_trainlist.pkl" ), 'wb') as handle:
-            pickle.dump(img_lists[:traintest_threashhold], handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(trainlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
         
         with open( os.path.join(root_p, "ffhq_test.pkl" ), 'wb') as handle:
             pickle.dump(testdata, handle, protocol=pickle.HIGHEST_PROTOCOL)
         with open( os.path.join(root_p, "ffhq_trainlist.pkl" ), 'wb') as handle:
-            pickle.dump(img_lists[traintest_threashhold:], handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(testlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 get_train(debug = True)
