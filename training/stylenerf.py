@@ -1008,9 +1008,7 @@ class VolumeRenderer(object):
                 output = self.forward_rendering(
                     H, output, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles)
                 print (output.keys(),'--------')
-                for k in output.keys():
-                    print (k,'=======')
-                    print (output.k)
+                print(output.items())
             # background rendering (NeRF++)
             if (not not_render_background) and (not self.no_background):
                 print ('==========333333333333333')
