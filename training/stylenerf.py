@@ -1008,6 +1008,24 @@ class VolumeRenderer(object):
                 output = self.forward_rendering(
                     H, output, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles)
                 print (output.keys(),'--------')
+                print ('====reg_loss===========')
+                print(output.reg_loss)
+
+                print ('=======feat============')
+                print (len(output.feat), output.feat[0].shape)
+
+                print('======full_out')
+                print (len(output.full_out), output.full_out[0].shape)
+
+                print('======fg_weights')
+                print (len(output.fg_weights), output.fg_weights[0].shape)
+
+                print('======bg_lambda')
+                print (len(output.bg_lambda), output.bg_lambda[0].shape)
+                
+                print('======fg_depths')
+                print (len(output.bg_lambda), output.fg_depths[0].shape)
+
                 print(output.items())
             # background rendering (NeRF++)
             if (not not_render_background) and (not self.no_background):
