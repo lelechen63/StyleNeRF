@@ -164,11 +164,13 @@ def generate_images(
 
                     intrinsics = np.stack(intrinsics, axis=0)
                     poses = np.stack(poses, axis=0)
-
+                    print (intrinsics)
+                    print (poses)
+                    print ('===============')
                     np.savez(os.path.join(curr_out_dir, 'cameras.npz'), intrinsics=intrinsics, poses=poses)
-                    with open(os.path.join(curr_out_dir, 'meta.conf'), 'w') as f:
-                        f.write('depth_range = {}\ntest_hold_out = {}\nheight = {}\nwidth = {}'.
-                                format(G2.generator.synthesis.depth_range, 2, H, W))
+                    # with open(os.path.join(curr_out_dir, 'meta.conf'), 'w') as f:
+                    #     f.write('depth_range = {}\ntest_hold_out = {}\nheight = {}\nwidth = {}'.
+                    #             format(G2.generator.synthesis.depth_range, 2, H, W))
 
                 img_dir = os.path.join(curr_out_dir, 'images_raw')
                 os.makedirs(img_dir, exist_ok=True)
