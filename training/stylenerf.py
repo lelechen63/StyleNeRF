@@ -967,8 +967,9 @@ class VolumeRenderer(object):
         nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
         
         for kk in nerf_input_cams:
+            print ( kk, '++++')
             print (kk.shape)
-        print ( '++++')
+        
 
         # set up an frozen camera for background if necessary
         if ('freeze_bg' in H.render_option) and (bg_nerf is not None):

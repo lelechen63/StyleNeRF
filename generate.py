@@ -124,7 +124,7 @@ def generate_images(
         for seed_idx, seed in enumerate(seeds):
             print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx, len(seeds)))
             G2.set_random_seed(seed)
-            z = torch.from_numpy(np.random.RandomState(seed).randn(2, G.z_dim)).to(device)
+            z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
             relative_range_u = [0.5 - 0.5 * relative_range_u_scale, 0.5 + 0.5 * relative_range_u_scale]
             outputs = G2(
                 z=z,
