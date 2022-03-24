@@ -966,6 +966,7 @@ class VolumeRenderer(object):
         H.tgt_res, H.n_points = int(math.sqrt(vol_pixels.size(1))), pixels.size(1)
         nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
         
+        print ('--------------', nerf_input_cams)
         for kk in nerf_input_cams:
             print ( kk, '++++')
             print (kk.shape)
