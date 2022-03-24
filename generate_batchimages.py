@@ -92,7 +92,7 @@ def generate_images(
     with torch.no_grad():
         G2 = Generator(*G.init_args, **G.init_kwargs).to(device)
         misc.copy_params_and_buffers(G, G2, require_all=False)
-    G2 = Renderer(G2, D, program=render_program)
+    G2 = Renderer(G2, D, program=render_program, withws = True)
     
     # Generate images.
     all_imgs = []

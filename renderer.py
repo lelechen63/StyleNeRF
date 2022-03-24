@@ -13,13 +13,13 @@ import trimesh
 
 class Renderer(object):
 
-    def __init__(self, generator, discriminator=None, program=None):
+    def __init__(self, generator, discriminator=None, program=None,withws = False):
         self.generator = generator
         self.discriminator = discriminator
         self.sample_tmp = 0.65
         self.program = program
         self.seed = 0
-
+        self.withws = withws
         if (program is not None) and (len(program.split(':')) == 2):
             from training.dataset import ImageFolderDataset
             self.image_data = ImageFolderDataset(program.split(':')[1])
@@ -37,7 +37,10 @@ class Renderer(object):
 
         if self.program is None:
             if hasattr(self.generator, 'get_final_output'):
-                return self.generator.get_final_output_withws(*args, **kwargs)
+                if self.withws:
+                    return self.generator.get_final_output_withws(*args, **kwargs)
+                else:
+                    return self.generator.get_final_output(*args, **kwargs)
             return self.generator(*args, **kwargs)
         if self.image_data is not None:
             batch_size = 1
@@ -58,7 +61,6 @@ class Renderer(object):
         return outputs
 
     def get_additional_params(self, ws, t=0):
-        print ('11111222221')
 
         gen = self.generator.synthesis
         batch_size = ws.size(0)
@@ -76,7 +78,6 @@ class Renderer(object):
         return kwargs
 
     def get_camera_traj(self, t, batch_size=1, traj_type='pigan', device='cpu'):
-        print ('111133333311')
 
         gen = self.generator.synthesis
         if traj_type == 'pigan':
@@ -91,7 +92,6 @@ class Renderer(object):
         return cam
    
     def render_rotation_camera(self, *args, **kwargs):
-        print ('1111144441')
 
         batch_size, n_steps = 2, kwargs["n_steps"]
         gen = self.generator.synthesis
@@ -128,7 +128,6 @@ class Renderer(object):
             return out
 
     def render_rotation_camera3(self, styles=None, *args, **kwargs): 
-        print ('11115555511')
 
         gen = self.generator.synthesis
         n_steps = 36  # 120
@@ -190,7 +189,6 @@ class Renderer(object):
         return out
 
     def render_rotation_both(self, *args, **kwargs): 
-        print ('1116666666111')
 
         gen = self.generator.synthesis
         batch_size, n_steps = 1, 36 
@@ -235,7 +233,6 @@ class Renderer(object):
         return out
 
     def render_rotation_grid(self, styles=None, return_cameras=False, *args, **kwargs):
-        print ('11117777777711')
 
         gen = self.generator.synthesis
         if styles is None:
@@ -299,7 +296,6 @@ class Renderer(object):
             return out
 
     def render_rotation_camera_grid(self, *args, **kwargs): 
-        print ('111188888888811')
 
         batch_size, n_steps = 1, 60
         gen = self.generator.synthesis
