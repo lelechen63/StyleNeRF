@@ -165,6 +165,12 @@ def generate_images(
                     intrinsics = np.stack(intrinsics, axis=0)
                     poses = np.stack(poses, axis=0)
                     print (intrinsics.shape)
+                    for i in range(7):
+                        print (intrinsics[i]==intrinsics[i+1])
+                        print (poses[i][0])
+
+                        print (poses[i][1])
+                        print('=====')
                     print (poses.shape)
                     print ('===============')
                     np.savez(os.path.join(curr_out_dir, 'cameras.npz'), intrinsics=intrinsics, poses=poses)
