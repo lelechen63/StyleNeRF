@@ -1022,11 +1022,10 @@ class VolumeRenderer(object):
 
                 print('======bg_lambda')
                 print (len(output.bg_lambda), output.bg_lambda[0].shape)
-                
+
                 print('======fg_depths')
                 print (len(output.bg_lambda), output.fg_depths[0].shape)
 
-                print(output.items())
             # background rendering (NeRF++)
             if (not not_render_background) and (not self.no_background):
                 print ('==========333333333333333')
