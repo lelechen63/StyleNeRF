@@ -966,11 +966,6 @@ class VolumeRenderer(object):
         H.tgt_res, H.n_points = int(math.sqrt(vol_pixels.size(1))), pixels.size(1)
         nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
         
-        print ('--------------', len(nerf_input_cams))
-        for kk in nerf_input_cams:
-            print ( kk, '++++')
-            print (kk.shape)
-        
 
         # set up an frozen camera for background if necessary
         if ('freeze_bg' in H.render_option) and (bg_nerf is not None):
@@ -1031,7 +1026,23 @@ class VolumeRenderer(object):
                 print ('==========333333333333333')
                 output = self.forward_rendering_background(
                     H, output, bg_nerf, nerf_input_cams, latent_codes, styles_bg)
-                         
+                print (output.keys(),'-----===---')
+                print ('=======feat============')
+                print (len(output.feat), output.feat[0].shape)
+
+                print('======full_out')
+                print (len(output.full_out), output.full_out[0].shape)
+
+                print('======fg_weights')
+                print (len(output.fg_weights), output.fg_weights[0].shape)
+
+                print('======bg_lambda')
+                print (len(output.bg_lambda), output.bg_lambda[0].shape)
+
+                print('======fg_depths')
+                print (len(output.bg_lambda), output.fg_depths[0].shape)
+
+ 
         if ('early' in render_option) and ('value' not in render_option):
             print ('==========44444444444')
             return self.gen_optional_output(
