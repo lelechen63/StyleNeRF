@@ -44,7 +44,7 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 @click.pass_context
 @click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
 @click.option('--seeds', type=num_range, help='List of random seeds')
-@click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
+@click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=0.5, show_default=True)
 @click.option('--class', 'class_idx', type=int, help='Class label (unconditional if not specified)')
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
 @click.option('--projected-w', help='Projection result file', type=str, metavar='FILE')
@@ -68,9 +68,7 @@ def generate_images(
     n_steps=8,
     no_video=False,
     relative_range_u_scale=1.0
-):
-
-    
+):  
     device = torch.device('cuda')
     if os.path.isdir(network_pkl):
         network_pkl = sorted(glob.glob(network_pkl + '/*.pkl'))[-1]
@@ -198,5 +196,5 @@ def generate_images(
 
 if __name__ == "__main__":
     generate_images() # pylint: disable=no-value-for-parameter
-
+    print ('---------done----------------')
 #----------------------------------------------------------------------------
