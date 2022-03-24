@@ -1015,8 +1015,7 @@ class VolumeRenderer(object):
                     H, output, bg_nerf, nerf_input_cams, latent_codes, styles_bg)
                          
         if ('early' in render_option) and ('value' not in render_option):
-                print ('==========44444444444')
-
+            print ('==========44444444444')
             return self.gen_optional_output(
                 H, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles, output)
 
