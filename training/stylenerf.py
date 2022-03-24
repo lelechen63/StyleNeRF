@@ -950,6 +950,9 @@ class VolumeRenderer(object):
         H.img_channels = fg_nerf.img_channels
         H.n_steps      = self.n_ray_samples
         H.n_bg_steps   = self.n_bg_samples
+
+        print (render_option,'+++++++++++')
+
         if alpha == -1:
             H.n_steps  = 20  # just for memory safe.
         if "steps" in render_option:
