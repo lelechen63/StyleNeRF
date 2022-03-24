@@ -39,10 +39,8 @@ class Renderer(object):
             print ('!!!!!!!here!!!!!!')
             if hasattr(self.generator, 'get_final_output'):
                 if self.withws:
-                    print ('1====')
                     return self.generator.get_final_output_withws(*args, **kwargs)
                 else:
-                    print ('2+++++++++')
                     return self.generator.get_final_output(*args, **kwargs)
             
             return self.generator(*args, **kwargs)

@@ -951,9 +951,6 @@ class VolumeRenderer(object):
         H.n_steps      = self.n_ray_samples
         H.n_bg_steps   = self.n_bg_samples
 
-
-        print ('++++++', render_option,'+++++++++++')
-
         if alpha == -1:
             H.n_steps  = 20  # just for memory safe.
         if "steps" in render_option:
@@ -968,6 +965,8 @@ class VolumeRenderer(object):
             pixels, rand_pixels, H.rnd_res = vol_pixels, None, None
         H.tgt_res, H.n_points = int(math.sqrt(vol_pixels.size(1))), pixels.size(1)
         nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
+        
+        print (nerf_input_cams, '++++')
 
         # set up an frozen camera for background if necessary
         if ('freeze_bg' in H.render_option) and (bg_nerf is not None):
@@ -1034,7 +1033,6 @@ class VolumeRenderer(object):
                 rand_x = rearrange(feat_map[:, vol_len:], 'b (h w) d -> b d h w', h=H.rnd_res)
                 output.rand_out = self.split_feat(rand_x, H.img_channels, split_rgb=split_rgb)
         output.full_out = full_out            
-        print ('!!!!!!!!!!!!!!!!!!')
         return output
 
     def post_process_outputs(self, outputs, freeze_nerf=False):
