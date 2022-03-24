@@ -167,7 +167,7 @@ def generate_images(
                     print (intrinsics.shape)
                     for i in range(7):
                         print (intrinsics[i]==intrinsics[i+1])
-                        print (poses[i][0])
+                        print (poses[i][0] ==poses[i][1])
 
                         print (poses[i][1])
                         print('=====')
