@@ -815,6 +815,10 @@ class VolumeRenderer(object):
 
     def forward_rendering(self, H, output, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles):
         pixels_world, camera_world, ray_vector = nerf_input_cams
+        print ('==========')
+        print (pixels_world.shape, camera_world.shape, ray_vector.shape)
+        print ('==========')
+
         z_shape_obj, z_app_obj = latent_codes[:2]
         print(type(latent_codes))
         print (latent_codes[0].shape)
