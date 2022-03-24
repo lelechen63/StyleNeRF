@@ -1010,6 +1010,7 @@ class VolumeRenderer(object):
                 print (output.keys(),'--------')
                 for k in output.keys():
                     print (k,'=======')
+                    print (output.k)
             # background rendering (NeRF++)
             if (not not_render_background) and (not self.no_background):
                 print ('==========333333333333333')
