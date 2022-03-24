@@ -819,8 +819,9 @@ class VolumeRenderer(object):
         print(type(latent_codes))
         print (latent_codes[0].shape)
         print (len(latent_codes))
+        print (latent_codes)
         print('======')
-        
+
         height, width = dividable(H.n_points)
         fg_shape = [H.batch_size, height, width, H.n_steps]
         bound = self.get_bound()
