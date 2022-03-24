@@ -190,7 +190,6 @@ def generate_images(
         os.makedirs(outdir, exist_ok=True)
         for step, img in enumerate(all_imgs):
             PIL.Image.fromarray(img, 'RGB').save(f'{outdir}/{step:04d}.png')
-    print ('??????????')
 
 #----------------------------------------------------------------------------
 

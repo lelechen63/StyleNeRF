@@ -1075,9 +1075,6 @@ class Generator(torch.nn.Module):
         else:
             ws = styles
         self.ws = ws
-        print (synthesis_kwargs.keys(),'========')
-        for k in synthesis_kwargs.keys():
-            print (k, synthesis_kwargs[k])
         img = self.synthesis(ws, **synthesis_kwargs)
         return img
 

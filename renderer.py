@@ -41,6 +41,7 @@ class Renderer(object):
                     return self.generator.get_final_output_withws(*args, **kwargs)
                 else:
                     return self.generator.get_final_output(*args, **kwargs)
+            print ('!!!!!!!here!!!!!!')
             return self.generator(*args, **kwargs)
         if self.image_data is not None:
             batch_size = 1
