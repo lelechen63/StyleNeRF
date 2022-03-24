@@ -1917,6 +1917,8 @@ class NeRFSynthesisNetwork(torch.nn.Module):
             img = img.masked_fill(mask > 0, -1)
 
         block_kwargs['img'] = img
+        print ('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+        print (block_kwargs.keys())
         return block_kwargs
 
     def get_current_resolution(self):
