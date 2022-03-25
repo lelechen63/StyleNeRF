@@ -815,17 +815,10 @@ class VolumeRenderer(object):
 
     def forward_rendering(self, H, output, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles):
         pixels_world, camera_world, ray_vector = nerf_input_cams
-        print ('==========')
-        print (pixels_world.shape, camera_world.shape, ray_vector.shape)
-        print ('==========')
+
 
         z_shape_obj, z_app_obj = latent_codes[:2]
-        print(type(latent_codes))
-        print (latent_codes[0].shape)
-        print (len(latent_codes))
-        print (latent_codes)
-        print('======')
-        print (z_shape_obj, z_app_obj)
+   
 
         height, width = dividable(H.n_points)
         fg_shape = [H.batch_size, height, width, H.n_steps]
@@ -990,11 +983,12 @@ class VolumeRenderer(object):
         else:
             H.fixed_input_cams = None
         
-        print ('++++++++++')
-        print (nerf_input_cams)
-        print(nerf_input_cams.shape)
+        print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        print (len(nerf_input_cams))
+        for i in range(3):
+            print (i, nerf_input_cams[i].shape)
         print(H.fixed_input_cams)
-        print ('++++++++++')
+        print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
 
         H.fg_inf_depth = (self.no_background or not_render_background) and (not self.white_background)
         assert(not (not_render_background and only_render_background))
