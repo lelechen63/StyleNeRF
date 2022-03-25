@@ -51,7 +51,7 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 @click.option('--outdir', help='Where to save the output images', type=str, required=True, metavar='DIR')
 @click.option('--render-program', default=None, show_default=True)
 @click.option('--render-option', default=None, type=str, help="e.g. up_256, camera, depth")
-@click.option('--n_steps', default=8, type=int, help="number of steps for each seed")
+@click.option('--n_steps', default=9, type=int, help="number of steps for each seed")
 @click.option('--no-video', default=False)
 @click.option('--relative_range_u_scale', default=1.0, type=float, help="relative scale on top of the original range u")
 def generate_images(
