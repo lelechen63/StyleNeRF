@@ -42,7 +42,7 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 
 @click.command()
 @click.pass_context
-@click.option('--network', 'network_pkl', help='Network pickle filename', default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/checkpoint/ffhq_1024.pkl')
+@click.option('--network', 'network_pkl', help='Network pickle filename', default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/checkpoints/ffhq_1024.pkl')
 @click.option('--startseeds', type=int, help='start of random seeds', default =10000)
 @click.option('--endseeds', type=int, help='end of random seeds', default =100000)
 
