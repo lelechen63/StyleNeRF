@@ -985,9 +985,15 @@ class VolumeRenderer(object):
         
         print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         print (len(nerf_input_cams))
+        gg = []
         for i in range(3):
             print (i, nerf_input_cams[i].shape)
-        print(H.fixed_input_cams)
+            tmp = nerf_input_cams[i].cpu().numpy()
+            gg.append(tmp)
+
+        with open(os.path.join('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams.pkl'), 'wb') as handle:
+            pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
         print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
 
         H.fg_inf_depth = (self.no_background or not_render_background) and (not self.white_background)
