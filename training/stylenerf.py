@@ -984,16 +984,7 @@ class VolumeRenderer(object):
         else:
             H.fixed_input_cams = None
         
-        print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        # print (len(nerf_input_cams))
-        # gg = []
-        # for i in range(3):
-        #     print (i, nerf_input_cams[i].shape)
-        #     tmp = nerf_input_cams[i].cpu().numpy()
-        #     gg.append(tmp)
-        # with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
-        #     pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
+        #print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_4.pkl', "rb")
         tmp = pickle.load(_file)
         gg =[]
@@ -1001,7 +992,7 @@ class VolumeRenderer(object):
             gg.append(torch.Tensor(tmp[i]).to(H.device))
         nerf_input_cams = gg
 
-        print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        #print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
 
         H.fg_inf_depth = (self.no_background or not_render_background) and (not self.white_background)
         assert(not (not_render_background and only_render_background))
