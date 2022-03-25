@@ -991,7 +991,7 @@ class VolumeRenderer(object):
         #     gg.append(tmp)
         # with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
         #     pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
+        print (nerf_input_cams[0].shape, '+++')
         _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_4.pkl', "rb")
         tmp = pickle.load(_file)
         gg =[]
