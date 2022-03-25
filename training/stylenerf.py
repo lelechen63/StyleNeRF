@@ -984,11 +984,9 @@ class VolumeRenderer(object):
         else:
             H.fixed_input_cams = None
         
-        print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        print (len(nerf_input_cams))
+        # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         gg = []
         for i in range(3):
-            print (i, nerf_input_cams[i].shape)
             tmp = nerf_input_cams[i].cpu().numpy()
             gg.append(tmp)
         with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:

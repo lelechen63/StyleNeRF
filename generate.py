@@ -42,7 +42,7 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 
 @click.command()
 @click.pass_context
-@click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
+@click.option('--network', 'network_pkl', help='Network pickle filename', default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/checkpoints/ffhq_1024.pkl')
 @click.option('--seeds', type=num_range, help='List of random seeds')
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=0.5, show_default=True)
 @click.option('--class', 'class_idx', type=int, help='Class label (unconditional if not specified)')
