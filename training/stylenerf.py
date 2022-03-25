@@ -1000,8 +1000,7 @@ class VolumeRenderer(object):
             # print(gg[i].shape)
         nerf_input_cams = gg
 
-        print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-
+        # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         H.fg_inf_depth = (self.no_background or not_render_background) and (not self.white_background)
         assert(not (not_render_background and only_render_background))
         
