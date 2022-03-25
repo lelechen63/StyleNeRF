@@ -996,6 +996,7 @@ class VolumeRenderer(object):
         tmp = pickle.load(_file)
         gg =[]
         for i in range(3):
+            print(tmp[i].shape)
             gg.append(torch.Tensor(tmp[i]).to(H.device))
         nerf_input_cams = gg
 
