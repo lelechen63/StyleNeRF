@@ -994,7 +994,7 @@ class VolumeRenderer(object):
         # with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
         #     pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_0.pkl', "rb")
+        _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_1.pkl', "rb")
         tmp = pickle.load(_file)
         gg =[]
         for i in range(3):
@@ -1022,45 +1022,14 @@ class VolumeRenderer(object):
                 print ('==========2222222222222')
                 output = self.forward_rendering(
                     H, output, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles)
-                print (output.keys(),'--------')
-                print ('====reg_loss===========')
-                print(output.reg_loss)
-
-                print ('=======feat============')
-                print (len(output.feat), output.feat[0].shape)
-
-                print('======full_out')
-                print (len(output.full_out), output.full_out[0].shape)
-
-                print('======fg_weights')
-                print (len(output.fg_weights), output.fg_weights[0].shape)
-
-                print('======bg_lambda')
-                print (len(output.bg_lambda), output.bg_lambda[0].shape)
-
-                print('======fg_depths')
-                print (len(output.bg_lambda), output.fg_depths[0].shape)
+              
 
             # background rendering (NeRF++)
             if (not not_render_background) and (not self.no_background):
                 print ('==========333333333333333')
                 output = self.forward_rendering_background(
                     H, output, bg_nerf, nerf_input_cams, latent_codes, styles_bg)
-                print (output.keys(),'-----===---')
-                print ('=======feat============')
-                print (len(output.feat), output.feat[0].shape)
-
-                print('======full_out')
-                print (len(output.full_out), output.full_out[0].shape)
-
-                print('======fg_weights')
-                print (len(output.fg_weights), output.fg_weights[0].shape)
-
-                print('======bg_lambda')
-                print (len(output.bg_lambda), output.bg_lambda[0].shape)
-
-                print('======fg_depths')
-                print (len(output.bg_lambda), output.fg_depths[0].shape)
+               
 
  
         if ('early' in render_option) and ('value' not in render_option):
@@ -1825,7 +1794,6 @@ class NeRFSynthesisNetwork(torch.nn.Module):
                 ws = ws[:, self.bg_nerf.num_ws:]
         
         # volume rendering
-        print ('!!!!!!!!!!!!!!!', block_kwargs.keys())
         
         with torch.autograd.profiler.record_function('nerf'):
             if (rand_pixels is not None) and self.training:
@@ -1928,8 +1896,7 @@ class NeRFSynthesisNetwork(torch.nn.Module):
             img = img.masked_fill(mask > 0, -1)
 
         block_kwargs['img'] = img
-        print ('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
-        print (block_kwargs.keys())
+       
         return block_kwargs
 
     def get_current_resolution(self):
