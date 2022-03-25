@@ -997,7 +997,7 @@ class VolumeRenderer(object):
         gg =[]
         for i in range(3):
             print(tmp[i].shape)
-            gg.append(torch.Tensor(tmp[i]).to(H.device))
+            gg.append(torch.Tensor(tmp[i][:nerf_input_cams[0].shape[0]]).to(H.device))
         nerf_input_cams = gg
 
         print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
