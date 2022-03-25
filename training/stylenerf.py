@@ -1003,28 +1003,28 @@ class VolumeRenderer(object):
             nerf_input_feats[2] == 'volume' and \
             H.fg_inf_depth:   
             # volume rendering with voxel-based density
-            print ('==========111111111111')
+            # print ('==========111111111111')
             output = self.forward_rendering_with_grid(
                 H, output, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles)
 
         else: 
             # standard volume rendering 
             if not only_render_background:
-                print ('==========2222222222222')
+                # print ('==========2222222222222')
                 output = self.forward_rendering(
                     H, output, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles)
               
 
             # background rendering (NeRF++)
             if (not not_render_background) and (not self.no_background):
-                print ('==========333333333333333')
+                # print ('==========333333333333333')
                 output = self.forward_rendering_background(
                     H, output, bg_nerf, nerf_input_cams, latent_codes, styles_bg)
                
 
  
         if ('early' in render_option) and ('value' not in render_option):
-            print ('==========44444444444')
+            # print ('==========44444444444')
             return self.gen_optional_output(
                 H, fg_nerf, nerf_input_cams, nerf_input_feats, latent_codes, styles, output)
 

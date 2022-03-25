@@ -42,21 +42,18 @@ os.environ['PYOPENGL_PLATFORM'] = 'egl'
 
 @click.command()
 @click.pass_context
-@click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
+@click.option('--network', 'network_pkl', help='Network pickle filename', default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/checkpoint/ffhq_1024.pkl')
 @click.option('--startseeds', type=int, help='start of random seeds', default =10000)
 @click.option('--endseeds', type=int, help='end of random seeds', default =100000)
 
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=0.5, show_default=True)
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
-# @click.option('--projected-w', help='Projection result file', type=str, metavar='FILE')
 @click.option('--outdir', help='Where to save the output images', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf')
 @click.option('--name', help='exepriment name Where to save the output images', type=str, default='images')
 
 @click.option('--render-program', default=None, show_default=True)
 @click.option('--render-option', default=None, type=str, help="e.g. up_256, camera, depth")
-# @click.option('--n_steps', default=8, type=int, help="number of steps for each seed")
-# @click.option('--no-video', default=False)
-# @click.option('--relative_range_u_scale', default=1.0, type=float, help="relative scale on top of the original range u")
+
 def generate_images(
     ctx: click.Context,
     network_pkl: str,
