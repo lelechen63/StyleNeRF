@@ -969,7 +969,7 @@ class VolumeRenderer(object):
         else:
             pixels, rand_pixels, H.rnd_res = vol_pixels, None, None
         H.tgt_res, H.n_points = int(math.sqrt(vol_pixels.size(1))), pixels.size(1)
-        nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
+        
         
 
         # set up an frozen camera for background if necessary
@@ -983,7 +983,7 @@ class VolumeRenderer(object):
             H.fixed_input_cams = self.C.get_origin_direction(pixels, fixed_camera)
         else:
             H.fixed_input_cams = None
-        
+        # nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
         # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         # gg = []
         # for i in range(3):
@@ -991,14 +991,13 @@ class VolumeRenderer(object):
         #     gg.append(tmp)
         # with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
         #     pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        print (nerf_input_cams[0].shape, '+++')
+        # print (nerf_input_cams[0].shape, '+++')
         _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_4.pkl', "rb")
         tmp = pickle.load(_file)
         gg =[]
         for i in range(3):
-            
-            gg.append(torch.Tensor(tmp[i][:nerf_input_cams[0].shape[0]]).to(H.device))
-            print(gg[i].shape)
+            gg.append(torch.Tensor(tmp[i][:1]).to(H.device))
+            # print(gg[i].shape)
         nerf_input_cams = gg
 
         print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
