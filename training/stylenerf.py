@@ -986,20 +986,20 @@ class VolumeRenderer(object):
         
         print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         # print (len(nerf_input_cams))
-        gg = []
-        for i in range(3):
-            print (i, nerf_input_cams[i].shape)
-            tmp = nerf_input_cams[i].cpu().numpy()
-            gg.append(tmp)
-        with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
-            pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-        # _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams.pkl', "rb")
-        # tmp = pickle.load(_file)
-        # gg =[]
+        # gg = []
         # for i in range(3):
-        #     gg.append(torch.Tensor(tmp[i]).to(H.device))
-        # nerf_input_cams = gg
+        #     print (i, nerf_input_cams[i].shape)
+        #     tmp = nerf_input_cams[i].cpu().numpy()
+        #     gg.append(tmp)
+        # with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
+        #     pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+        _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_0.pkl', "rb")
+        tmp = pickle.load(_file)
+        gg =[]
+        for i in range(3):
+            gg.append(torch.Tensor(tmp[i]).to(H.device))
+        nerf_input_cams = gg
 
         print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
 
