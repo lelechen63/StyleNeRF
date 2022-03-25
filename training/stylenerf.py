@@ -1816,6 +1816,7 @@ class NeRFSynthesisNetwork(torch.nn.Module):
                 ws = ws[:, self.bg_nerf.num_ws:]
         
         # volume rendering
+        print ('!!!!!!!!!!!!!!!', block_kwargs.keys())
         with torch.autograd.profiler.record_function('nerf'):
             if (rand_pixels is not None) and self.training:
                 vol_pixels = (vol_pixels, rand_pixels)
