@@ -23,7 +23,7 @@ from torch_utils.ops.hash_sample import hash_sample
 from torch_utils.ops.grid_sample_gradfix import grid_sample
 from torch_utils.ops.nerf_utils import topp_masking
 from einops import repeat, rearrange
-
+import pickle
 
 # --------------------------------- basic modules ------------------------------------------- #
 @persistence.persistent_class
@@ -991,7 +991,7 @@ class VolumeRenderer(object):
             tmp = nerf_input_cams[i].cpu().numpy()
             gg.append(tmp)
 
-        with open(os.path.join('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams.pkl'), 'wb') as handle:
+        with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams.pkl', 'wb') as handle:
             pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
