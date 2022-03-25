@@ -992,6 +992,7 @@ class VolumeRenderer(object):
         
         print ('++++++++++')
         print (nerf_input_cams)
+        print(nerf_input_cams.shape)
         print(H.fixed_input_cams)
         print ('++++++++++')
 
