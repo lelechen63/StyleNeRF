@@ -991,6 +991,7 @@ class VolumeRenderer(object):
             H.fixed_input_cams = None
         
         print ('++++++++++')
+        print (nerf_input_cams)
         print(H.fixed_input_cams)
         print ('++++++++++')
 
@@ -1817,6 +1818,7 @@ class NeRFSynthesisNetwork(torch.nn.Module):
         
         # volume rendering
         print ('!!!!!!!!!!!!!!!', block_kwargs.keys())
+        
         with torch.autograd.profiler.record_function('nerf'):
             if (rand_pixels is not None) and self.training:
                 vol_pixels = (vol_pixels, rand_pixels)
