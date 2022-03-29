@@ -1475,7 +1475,6 @@ class CLIPEncoder(torch.nn.Module):
         self.encoder = clip_net.visual
         for p in self.encoder.parameters():
             p.requires_grad_(True)
-!
     def preprocess_tensor(self, x):
         import PIL.Image
         import torchvision.transforms.functional as TF
