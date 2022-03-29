@@ -37,7 +37,7 @@ class Latent2Code(nn.Module):
     
         self.image_size = self.flame_config.image_size
         # networks
-        self.latent_dim = 512 * 17
+        self.latent_dim = 512 * 21
         self.shape_dim = 100
         self.exp_dim = 50
         self.albedo_dim = 50
@@ -386,9 +386,9 @@ class RigNerft(nn.Module):
                     cam_v=None, pose_v=None, flameshape_v = None, flameexp_v = None, flametex_v = None,\
                     flamelit_v = None, cam_w=None, pose_w=None, flameshape_w = None, flameexp_w = None, flametex_w = None, flamelit_w = None):
         
-        syns_v = self.G2.forward(styles = latent_v.view(-1, 17,512))['img']
+        syns_v = self.G2.forward(styles = latent_v.view(-1, 21,512))['img']
 
-        syns_w = self.G2.forward(styles = latent_w.view(-1, 17,512))['img']
+        syns_w = self.G2.forward(styles = latent_w.view(-1, 21,512))['img']
 
         p_v = self.latent2params(latent_v)
     
@@ -397,7 +397,7 @@ class RigNerft(nn.Module):
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
         
-        syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 17,512))['img']
+        syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 21,512))['img']
 
         p_w_same = self.latent2params(latent_w_same) 
 
@@ -414,7 +414,7 @@ class RigNerft(nn.Module):
 
         latent_w_hat = self.rig(latent_w, p_w_replaced)
 
-        syns_w_hat = self.G2.forward(styles = latent_w_hat.view(-1, 17,512))['img']
+        syns_w_hat = self.G2.forward(styles = latent_w_hat.view(-1, 21,512))['img']
 
         # map chagned w back to P
         p_w_mapped = self.latent2params(latent_w_hat)

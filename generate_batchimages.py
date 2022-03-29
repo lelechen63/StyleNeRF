@@ -117,10 +117,9 @@ def generate_images(
             relative_range_u=relative_range_u,
             return_cameras=True)
         
-        # img = proc_img(img)[0]
-        # np.save(  f'{outdir}/stylecode/w/{seed:0>6d}.npy' ,  ws[0].detach().cpu().numpy() )
-        # PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{name}/{seed:0>6d}.png')
-        print(ggggg)
+        img = proc_img(img)[0]
+        np.save(  f'{outdir}/stylecode/w/{seed:0>6d}.npy' ,  ws[0].detach().cpu().numpy() )
+        PIL.Image.fromarray(img.numpy(), 'RGB').save(f'{outdir}/{name}/{seed:0>6d}.png')
 
 #----------------------------------------------------------------------------
 
