@@ -39,7 +39,7 @@ flame_config = {
         'use_face_contour': True,
 
         'batch_size': 1,
-        'image_size': 256,
+        'image_size': 1024,
         'e_lr': 0.005,
         'e_wd': 0.0001,
         'savefolder': '/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg',
