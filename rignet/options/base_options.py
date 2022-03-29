@@ -65,7 +65,7 @@ class BaseOptions():
         self.opt.latent2exp_weight = os.path.join(latent2code_dir,'latent2exp.pth' )
         self.opt.latent2albedo_weight = os.path.join(latent2code_dir,'latent2albedo.pth' )
         self.opt.latent2lit_weight = os.path.join(latent2code_dir,'latent2lit.pth' )
-        self.opt.latent2pose_weight = os.path.join(latent2code_dir,'latent2pose.pth' )
+        # self.opt.latent2pose_weight = os.path.join(latent2code_dir,'latent2pose.pth' )
 
         self.opt.WEncoder_weight = os.path.join(expr_dir,'WEncoder_weight.pth' )
         self.opt.ParamEncoder_weight = os.path.join(expr_dir,'ParamEncoder_weight.pth' )

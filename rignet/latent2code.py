@@ -29,8 +29,7 @@ class Latent2CodeModule():
                                   list(self.latent2code.latent2exp.parameters()) + \
                                   list(self.latent2code.latent2albedo.parameters()) + \
                                   list(self.latent2code.latent2lit.parameters()) + \
-                                  list(self.latent2code.latent2pose.parameters()) \
-
+                                #   list(self.latent2code.latent2pose.parameters()) \
                                   , lr= self.opt.lr , betas=(self.opt.beta1, 0.999))
         for p in self.latent2code.flame.parameters():
             p.requires_grad = False 
@@ -76,13 +75,13 @@ class Latent2CodeModule():
                     losses['photometric_texture'] = (batch['img_mask'].to(self.device) * (predicted_images - batch['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
                     loss = losses['landmark'] + losses['photometric_texture']
                 else:
-                
-                    expcode, shapecode, litcode, albedocode, posecode  = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode'], return_list['pose']
+                    expcode, shapecode, litcode, albedocode  = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode']
+                    # expcode, shapecode, litcode, albedocode, posecode  = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode'], return_list['pose']
                     losses['expcode'] = self.l2_loss(expcode, batch['exp'].to(self.device))
                     losses['shapecode'] = self.l2_loss(shapecode, batch['shape'].to(self.device))
                     losses['litcode'] = self.l2_loss(litcode, batch['lit'].to(self.device))
                     losses['albedocode'] = self.l2_loss(albedocode, batch['tex'].to(self.device))
-                    losses['pose'] = self.l2_loss(posecode, batch['pose'].to(self.device))
+                    # losses['pose'] = self.l2_loss(posecode, batch['pose'].to(self.device))
 
                 loss = 0
                 for key in losses.keys():
@@ -118,7 +117,6 @@ class Latent2CodeModule():
                                         image_path = batch['image_path'][0] ,
                                         device = self.device
                                          )
-
                 
                 reconsimage = vis_tensor(image_tensor= return_list['recons_images'], 
                                         image_path = batch['image_path'][0],
@@ -162,7 +160,7 @@ class Latent2CodeModule():
                 torch.save(self.latent2code.module.latent2exp.state_dict(), self.opt.latent2exp_weight)
                 torch.save(self.latent2code.module.latent2albedo.state_dict(), self.opt.latent2albedo_weight)
                 torch.save(self.latent2code.module.latent2lit.state_dict(),self.opt.latent2lit_weight)
-                torch.save(self.latent2code.module.latent2pose.state_dict(),self.opt.latent2lit_weight)
+                # torch.save(self.latent2code.module.latent2pose.state_dict(),self.opt.latent2lit_weight)
 
     def test(self):
         for p in self.latent2code.parameters():

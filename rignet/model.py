@@ -49,7 +49,7 @@ class Latent2Code(nn.Module):
         self.latent2exp = self.build_latent2exp(weight = '' if opt.isTrain else opt.latent2exp_weight)
         self.latent2albedo = self.build_latent2albedo(weight = '' if opt.isTrain else opt.latent2albedo_weight)
         self.latent2lit = self.build_latent2lit(weight = '' if opt.isTrain else opt.latent2lit_weight)
-        self.latent2pose = self.build_latent2pose(weight = '' if opt.isTrain else opt.latent2poses_weight)
+        # self.latent2pose = self.build_latent2pose(weight = '' if opt.isTrain else opt.latent2poses_weight)
 
         if opt.isTrain:
             self._initialize_weights()
@@ -107,16 +107,16 @@ class Latent2Code(nn.Module):
             latent2albedo.load_state_dict(torch.load(weight))
         return latent2albedo
 
-    def build_latent2pose(self, weight = ''):
-        latent2pose= th.nn.Sequential(
-            LinearWN( 256 , 256 ),
-            th.nn.LeakyReLU( 0.2, inplace = True ),
-            LinearWN( 256, self.pose_dim )
-        )
-        if len(weight) > 0:
-            print ('loading weights for latent2pose feature extraction network')
-            latent2pose.load_state_dict(torch.load(weight))
-        return latent2pose
+    # def build_latent2pose(self, weight = ''):
+    #     latent2pose= th.nn.Sequential(
+    #         LinearWN( 256 , 256 ),
+    #         th.nn.LeakyReLU( 0.2, inplace = True ),
+    #         LinearWN( 256, self.pose_dim )
+    #     )
+    #     if len(weight) > 0:
+    #         print ('loading weights for latent2pose feature extraction network')
+    #         latent2pose.load_state_dict(torch.load(weight))
+    #     return latent2pose
     def build_latent2lit(self, weight = ''):
         latent2lit= th.nn.Sequential(
             LinearWN( 256 , 256 ),
@@ -140,10 +140,10 @@ class Latent2Code(nn.Module):
         
         albedocode = self.latent2albedo(fea)
         litcode = self.latent2lit(fea)
-        posecode = self.latent2pose(fea)
+        # posecode = self.latent2pose(fea)
         return_list = {}
         if self.opt.supervision =='render' or flameshape != None:
-            vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode, expression_params=expcode, pose_params=posecode)
+            vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode, expression_params=expcode, pose_params=pose)
             trans_vertices = util.batch_orth_proj(vertices, cam)
             trans_vertices[..., 1:] = - trans_vertices[..., 1:]
 
@@ -159,7 +159,7 @@ class Latent2Code(nn.Module):
             return_list['shapecode'] = shapecode
             return_list['litcode'] = litcode
             return_list['albedocode'] = albedocode
-            return_list['pose'] = posecode
+            # return_list['pose'] = posecode
             
         if flameshape != None:
             flamelit = flamelit.view(-1, 9,3)        
