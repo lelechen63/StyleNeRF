@@ -19,7 +19,7 @@ class BaseOptions():
         self.parser.add_argument('--verbose', action='store_true', default=False, help='toggles verbose')
         self.parser.add_argument('--fp16', action='store_true', default=False, help='train with AMP')
         self.parser.add_argument('--local_rank', type=int, default=0, help='local rank for distributed training')
-        self.parser.add_argument('--datanum', type=int, default=32, help='number of samples for training')
+        self.parser.add_argument('--datanum', type=int, default=200, help='number of samples for training')
 
         self.parser.add_argument('--datasetname', type=str, default='ffhq')
 
