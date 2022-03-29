@@ -132,7 +132,7 @@ class Latent2Code(nn.Module):
         self.render = FlameRenderer(self.image_size, obj_filename=mesh_file).to('cuda')
     
     def forward(self, latent, cam, pose, flameshape = None, flameexp= None, flametex= None, flamelit= None ):
-        
+        print (latent.shape,'++++++++++')
         fea = self.Latent2fea(latent)
         shapecode = self.latent2shape(fea)
         expcode = self.latent2exp(fea)
