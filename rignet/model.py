@@ -1,6 +1,5 @@
 import numpy as np
 import torch.nn.functional as F
-import pytorch_lightning as pl
 import torch as th
 import torch.nn as nn
 import functools

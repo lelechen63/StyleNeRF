@@ -5,9 +5,7 @@ import torch
 import torch.nn as nn
 import random
 import pickle
-import pytorch_lightning as pl
 from options.train_options import TrainOptions
-from pytorch_lightning.callbacks import ModelCheckpoint
 import numpy as np
 import sys
 # define flame config
