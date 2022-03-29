@@ -1074,9 +1074,12 @@ class Generator(torch.nn.Module):
                 ws = self.mapping(z, c, truncation_psi=truncation_psi, truncation_cutoff=truncation_cutoff, **synthesis_kwargs)
         else:
             ws = styles
+        print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        print(type(ws))
+        print (ws.shape)
         self.ws = ws
         img = self.synthesis(ws, **synthesis_kwargs)
-        
+
         return img
 
 
@@ -1472,7 +1475,7 @@ class CLIPEncoder(torch.nn.Module):
         self.encoder = clip_net.visual
         for p in self.encoder.parameters():
             p.requires_grad_(True)
-
+!
     def preprocess_tensor(self, x):
         import PIL.Image
         import torchvision.transforms.functional as TF
