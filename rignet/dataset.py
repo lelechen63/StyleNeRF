@@ -82,8 +82,13 @@ class FFHQDataset(torch.utils.data.Dataset):
         self.total_data = pickle.load(_file)
         _file.close()
 
+
+        print ('length of list:', len(self.data_list))
+        print ('length of total_data:', len(self.total_data))
+
         transform_list = [transforms.ToTensor()]
         self.transform = transforms.Compose(transform_list)
+        
         if opt.debug:
             self.data_list = self.data_list[:opt.datanum]
             for i in range(opt.datanum):
