@@ -132,7 +132,6 @@ class Latent2Code(nn.Module):
         self.render = FlameRenderer(self.image_size, obj_filename=mesh_file).to('cuda')
     
     def forward(self, latent, cam, pose, flameshape = None, flameexp= None, flametex= None, flamelit= None ):
-        print (latent.shape,'++++++++++')
         fea = self.Latent2fea(latent)
         shapecode = self.latent2shape(fea)
         expcode = self.latent2exp(fea)
@@ -194,7 +193,7 @@ class RigNerft(nn.Module):
         super().__init__()
         self.opt = opt
         
-        self.latent_dim = 512 * 17
+        self.latent_dim = 512 * 21
         self.shape_dim = 100
         self.exp_dim = 50
         self.albedo_dim = 50
@@ -226,8 +225,7 @@ class RigNerft(nn.Module):
         os.makedirs(self.ckpt_path, exist_ok = True)
 
         if not self.opt.isTrain:
-            nerf_pkl = '/home/uss00022/lelechen/github/StyleNeRF/outputs/2022-03-11/13-58-47/out/00000-images256x256_full-paper256-stylenerf_ffhq-noaug/network-snapshot-017792.pkl'
-            with dnnlib.util.open_url(nerf_pkl) as f:
+            with dnnlib.util.open_url( self.opt.nerfpkl) as f:
                 network = legacy.load_network_pkl(f)
                 G = network['G_ema'].to('cuda') # type: ignore
             

@@ -28,7 +28,7 @@ class Latent2CodeModule():
                                   list(self.latent2code.latent2shape.parameters()) + \
                                   list(self.latent2code.latent2exp.parameters()) + \
                                   list(self.latent2code.latent2albedo.parameters()) + \
-                                  list(self.latent2code.latent2lit.parameters())  \
+                                  list(self.latent2code.latent2lit.parameters()) pl \
                                   , lr= self.opt.lr , betas=(self.opt.beta1, 0.999))
         for p in self.latent2code.flame.parameters():
             p.requires_grad = False 
