@@ -29,6 +29,7 @@ class BaseOptions():
 
         # input/output sizes       
         self.parser.add_argument('--batchSize', type=int, default=8 , help='input batch size')
+        self.parser.add_argument('--imgsize', type=int, default=256 , help='the input and ouput size')
 
         # for setting inputs
         self.parser.add_argument('--dataroot', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/') 

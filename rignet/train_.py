@@ -24,6 +24,7 @@ def dict2obj(d):
         o.__dict__[k] = dict2obj(d[k])
     return o
 
+opt = TrainOptions().parse()
 
 
 flame_config = {
@@ -39,7 +40,7 @@ flame_config = {
         'use_face_contour': True,
 
         'batch_size': 1,
-        'image_size': 1024,
+        'image_size': opt.imgsize,
         'e_lr': 0.005,
         'e_wd': 0.0001,
         'savefolder': '/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg',
@@ -52,11 +53,6 @@ flame_config = {
     }
 
 flame_config = dict2obj(flame_config)
-
-opt = TrainOptions().parse()
-
-# if opt.debug:
-#     opt.nThreads = 1
 
 opt.manualSeed = random.randint(1, 10000)
 print("Random Seed: ", opt.manualSeed)
