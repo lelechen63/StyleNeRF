@@ -100,7 +100,7 @@ class FFHQDataset(torch.utils.data.Dataset):
                 img = cv2.resize(img, (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA)
 
                 maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
-                self.total_data[name]['img_mask'] =  cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA)
+                self.total_data[name]['img_mask'] =  cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA).transpose(2,0,1)
                 self.total_data[name]['gt_image'] = self.transform(img)
                 self.total_data[name]['image_path'] = name
 
@@ -135,7 +135,7 @@ class FFHQDataset(torch.utils.data.Dataset):
             img = cv2.resize(img, (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA)
 
             maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
-            data['img_mask'] = cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA)
+            data['img_mask'] = cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA).transpose(2,0,1)
 
             data['gt_image'] = self.transform(img)
             data['image_path'] = name
