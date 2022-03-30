@@ -12,12 +12,12 @@ loss_land = []
 loss_tex = []
 axis =[]
 while l:
-    print (l)
     tmp = l[:-1].split(' ')
-    print (tmp)
-    l_land = tmp[7]
-    l_tex =tmp[9]
     try:
+        print (l)
+        print (tmp)
+        l_land = tmp[-4]
+        l_tex =tmp[-2]
         loss_land.append(float(l_land))
         loss_tex.append(float(l_tex))
     except:
