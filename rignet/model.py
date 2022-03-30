@@ -140,6 +140,11 @@ class Latent2Code(nn.Module):
         litcode = self.latent2lit(fea)
         # posecode = self.latent2pose(fea)
         return_list = {}
+        return_list['expcode'] = expcode
+        return_list['shapecode'] = shapecode
+        return_list['litcode'] = litcode
+        return_list['albedocode'] = albedocode
+
         if self.opt.supervision =='render' or flameshape != None:
             vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode, expression_params=expcode, pose_params=pose)
             trans_vertices = util.batch_orth_proj(vertices, cam)
@@ -152,11 +157,7 @@ class Latent2Code(nn.Module):
 
             return_list['landmarks3d'] = landmarks3d
             return_list['predicted_images'] = predicted_images
-        else:
-            return_list['expcode'] = expcode
-            return_list['shapecode'] = shapecode
-            return_list['litcode'] = litcode
-            return_list['albedocode'] = albedocode
+            
             # return_list['pose'] = posecode
             
         if flameshape != None:

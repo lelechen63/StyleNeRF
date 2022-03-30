@@ -49,6 +49,8 @@ flame_config = {
         'w_lmks': 100,
         'w_shape_reg': 1e-4,
         'w_expr_reg': 1e-4,
+        'w_albedo_reg':1e-4
+        'w_lit_reg':1e-4
         'w_pose_reg': 0,
     }
 
