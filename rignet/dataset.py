@@ -129,6 +129,7 @@ class FFHQDataset(torch.utils.data.Dataset):
         data = copy.copy(self.total_data[name])
         
         if (not self.opt.debug) or (self.opt.supervision =='render') or (self.opt.isTrain==False) :
+            print ('!!!!!!!')
             img_path = os.path.join(self.opt.dataroot, 'images',name)
             img = cv2.imread(img_path)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
