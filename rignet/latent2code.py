@@ -106,7 +106,7 @@ class Latent2CodeModule():
             
             if epoch % self.opt.save_step == 0:
                 self.latent2code.eval()
-                with torch.no_grad:
+                with torch.no_grad():
                     return_list = self.latent2code.forward(
                             batch['latent'].to(self.device),
                             batch['cam'].to(self.device), 
