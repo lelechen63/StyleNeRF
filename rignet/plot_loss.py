@@ -12,7 +12,9 @@ loss_land = []
 loss_tex = []
 axis =[]
 while l:
+    print (l)
     tmp = l[:-1].split(' ')
+    print (tmp)
     l_land = tmp[7]
     l_tex =tmp[9]
     try:
