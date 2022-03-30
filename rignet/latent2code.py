@@ -74,13 +74,16 @@ class Latent2CodeModule():
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
                     
                     losses['landmark'] = util.l2_distance(landmarks3d[:, 17:, :2], batch['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
+                    
                     losses['photometric_texture'] = (batch['img_mask'].to(self.device) * (predicted_images - batch['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
                     
                     losses['shape_reg'] = (torch.sum(shapecode ** 2) / 2) * self.flame_config.w_shape_reg  # *1e-4
                     losses['expression_reg'] = (torch.sum(expcode ** 2) / 2) * self.flame_config.w_expr_reg  # *1e-4
                     losses['albedo_reg'] = (torch.sum(albedocode ** 2) / 2) * self.flame_config.w_albedo_reg
                     losses['lit_reg'] = (torch.sum(litcode ** 2) / 2) * self.flame_config.w_lit_reg
-                    loss = losses['landmark'] + losses['photometric_texture'] + losses['lit_reg'] + losses['albedo_reg'] + losses['expression_reg'] + losses['shape_reg']
+                    loss = losses['landmark'] 
+                    if eporch > 100:
+                        loss += losses['photometric_texture'] + losses['lit_reg'] + losses['albedo_reg'] + losses['expression_reg'] + losses['shape_reg']
                 else:
                     losses['expcode'] = self.l2_loss(expcode, batch['exp'].to(self.device))
                     losses['shapecode'] = self.l2_loss(shapecode, batch['shape'].to(self.device))
