@@ -82,7 +82,7 @@ class Latent2CodeModule():
                     losses['albedo_reg'] = (torch.sum(albedocode ** 2) / 2) * self.flame_config.w_albedo_reg
                     losses['lit_reg'] = (torch.sum(litcode ** 2) / 2) * self.flame_config.w_lit_reg
                     loss = losses['landmark'] 
-                    if eporch > 100:
+                    if epoch > 100:
                         loss += losses['photometric_texture'] + losses['lit_reg'] + losses['albedo_reg'] + losses['expression_reg'] + losses['shape_reg']
                 else:
                     losses['expcode'] = self.l2_loss(expcode, batch['exp'].to(self.device))
