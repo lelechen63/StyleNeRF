@@ -123,13 +123,10 @@ class FFHQDataset(torch.utils.data.Dataset):
                 }
         """
     def __getitem__(self, index):
-        
         name = self.data_list[index]
-        # data = self.total_data[name]
-        data = copy.copy(self.total_data[name])
         if not self.opt.debug:
-            print ('ggg')
             if self.opt.supervision =='render' or self.opt.isTrain == False:
+                data = copy.copy(self.total_data[name])
                 img_path = os.path.join(self.opt.dataroot, 'images',name)
                 img = cv2.imread(img_path)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -139,6 +136,10 @@ class FFHQDataset(torch.utils.data.Dataset):
                 data['img_mask'] = np.expand_dims(cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA), axis = 0)
                 data['gt_image'] = self.transform(img)
                 data['image_path'] = name
+            else:
+                data = self.total_data[name]
+        else:
+            data = self.total_data[name]
         return data
 
     def __len__(self):
