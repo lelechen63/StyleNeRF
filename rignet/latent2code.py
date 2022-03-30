@@ -56,6 +56,7 @@ class Latent2CodeModule():
     def train(self):
         t0 = time.time()
         for epoch in range( 100000):
+            self.latent2code.train()
             for step, batch in enumerate(tqdm(self.data_loader)):
                 t1 = time.time()
 
@@ -104,6 +105,7 @@ class Latent2CodeModule():
                 t0 = time.time()
             
             if epoch % self.opt.save_step == 0:
+                self.latent2code.eval()
                 with torch.no_grad:
                     return_list = self.latent2code.forward(
                             batch['latent'].to(self.device),
