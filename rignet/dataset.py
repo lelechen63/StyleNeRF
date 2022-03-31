@@ -184,10 +184,10 @@ class FFHQRigDataset(torch.utils.data.Dataset):
                 img_path = os.path.join(self.opt.dataroot, 'images',name)
                 img = cv2.imread(img_path)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img = cv2.resize(img, (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA)
 
                 maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
-                self.total_data[name]['img_mask'] = np.load(maskimg_path)
-
+                self.total_data[name]['img_mask'] = np.expand_dims(cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA), axis = 0)
                 self.total_data[name]['gt_image'] = self.transform(img)
                 self.total_data[name]['image_path'] = name
 
@@ -197,28 +197,44 @@ class FFHQRigDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
 
         name = self.data_list[index]
-        data = copy.copy(self.total_data[name])
+        
+        if not self.opt.debug:
+            if self.opt.supervision =='render' or self.opt.isTrain == False:
+                data = copy.copy(self.total_data[name])
+                img_path = os.path.join(self.opt.dataroot, 'images',name)
+                img = cv2.imread(img_path)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img = cv2.resize(img, (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA)
 
-        if not self.opt.debug or self.opt.supervision=='render' or not self.isTrain :
-            img_path = os.path.join(self.opt.dataroot, 'images',name)
-            img = cv2.imread(img_path)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-            maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
-            data['img_mask'] = np.load(maskimg_path)
-
-            data['gt_image'] = self.transform(img)
-            data['image_path'] = name
-
+                maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name[:-3] +'npy')
+                data['img_mask'] = np.expand_dims(cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA), axis = 0)
+                data['gt_image'] = self.transform(img)
+                data['image_path'] = name
+            else:
+                data = self.total_data[name]
+        else:
+            data = self.total_data[name]
 
         another_inx = torch.randint(0, self.__len__() ,(1,)).item()
         name2 = self.data_list[another_inx]
-        data2 = copy.copy(self.total_data[self.data_list[another_inx]])
 
-        if not self.opt.debug or self.opt.supervision=='render' or not self.isTrain :
-            data2['gt_image'] = self.transform(cv2.cvtColor(cv2.imread( os.path.join(self.opt.dataroot, 'images',name2)), cv2.COLOR_BGR2RGB))
-            data2['img_mask'] = np.load(os.path.join(self.opt.dataroot, 'imagemasks', name2[:-3] +'npy'))
-            data2['image_path'] = name2
+        if not self.opt.debug:
+            if self.opt.supervision =='render' or self.opt.isTrain == False:
+                data2 = copy.copy(self.total_data[name2])
+                img_path = os.path.join(self.opt.dataroot, 'images',name2)
+                img = cv2.imread(img_path)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img = cv2.resize(img, (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA)
+
+                maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name2[:-3] +'npy')
+                data2['img_mask'] = np.expand_dims(cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA), axis = 0)
+                data2['gt_image'] = self.transform(img)
+                data2['image_path'] = name
+            else:
+                data2 = self.total_data[name]
+        else:
+            data2 = self.total_data[name]
+
 
         return [data, data2]
 

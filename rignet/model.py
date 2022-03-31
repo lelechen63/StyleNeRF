@@ -207,7 +207,7 @@ class RigNerft(nn.Module):
         self.image_size = self.flame_config.image_size
         
         # funtion F networks
-        latent2code = Latent2Code2(flame_config, opt)
+        latent2code = Latent2Code(flame_config, opt)
 
         self.Latent2fea, self.latent2shape, \
         self.latent2exp, self.latent2albedo, self.latent2lit = self.get_f(latent2code)
