@@ -241,15 +241,15 @@ class RigNerft(nn.Module):
 
     def get_f(self,network):
         print (network)
-        print ('loading weights for Latent2fea feature extraction network')
+        print ('loading weights for Latent2fea feature extraction network, ' + self.opt.Latent2ShapeExpCode_weight)
         network.Latent2fea.load_state_dict(torch.load(self.opt.Latent2ShapeExpCode_weight))
-        print ('loading weights for latent2shape feature extraction network')
+        print ('loading weights for latent2shape feature extraction network, ' + self.opt.latent2shape_weight)
         network.latent2shape.load_state_dict(torch.load(self.opt.latent2shape_weight))
-        print ('loading weights for latent2exp feature extraction network')
+        print ('loading weights for latent2exp feature extraction network, ' + self.opt.latent2exp_weight)
         network.latent2exp.load_state_dict(torch.load(self.opt.latent2exp_weight))
-        print ('loading weights for latent2albedo feature extraction network')
+        print ('loading weights for latent2albedo feature extraction network, ' + self.opt.latent2albedo_weight)
         network.latent2albedo.load_state_dict(torch.load(self.opt.latent2albedo_weight))
-        print ('loading weights for latent2albedo feature extraction network')
+        print ('loading weights for latent2albedo feature extraction network, ' + self.opt.latent2lit_weight)
         network.latent2lit.load_state_dict(torch.load(self.opt.latent2lit_weight))
         
         return network.Latent2fea, network.latent2shape, network.latent2exp, network.latent2albedo, network.latent2lit

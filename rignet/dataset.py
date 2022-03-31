@@ -229,11 +229,11 @@ class FFHQRigDataset(torch.utils.data.Dataset):
                 maskimg_path = os.path.join(self.opt.dataroot, 'imagemasks',name2[:-3] +'npy')
                 data2['img_mask'] = np.expand_dims(cv2.resize(np.load(maskimg_path).transpose(1,2,0), (self.opt.imgsize,self.opt.imgsize), interpolation = cv2.INTER_AREA), axis = 0)
                 data2['gt_image'] = self.transform(img)
-                data2['image_path'] = name
+                data2['image_path'] = name2
             else:
-                data2 = self.total_data[name]
+                data2 = self.total_data[name2]
         else:
-            data2 = self.total_data[name]
+            data2 = self.total_data[name2]
 
 
         return [data, data2]
