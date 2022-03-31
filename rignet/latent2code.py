@@ -56,7 +56,6 @@ class Latent2CodeModule():
     def train(self):
         t0 = time.time()
         for epoch in range( 100000):
-            # self.latent2code.train()
             for step, batch in enumerate(tqdm(self.data_loader)):
                 t1 = time.time()
 
@@ -69,7 +68,7 @@ class Latent2CodeModule():
                 losses = {}
                 t2 = time.time()
                 expcode, shapecode, litcode, albedocode = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode']
-
+                loss = 0
                 if self.opt.supervision =='render':
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
                     
@@ -77,11 +76,11 @@ class Latent2CodeModule():
                     
                     losses['photometric_texture'] = (batch['img_mask'].to(self.device) * (predicted_images - batch['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
                     
-                    losses['shape_reg'] = (torch.sum(shapecode ** 2) / 2) * self.flame_config.w_shape_reg  # *1e-4
-                    losses['expression_reg'] = (torch.sum(expcode ** 2) / 2) * self.flame_config.w_expr_reg  # *1e-4
-                    losses['albedo_reg'] = (torch.sum(albedocode ** 2) / 2) * self.flame_config.w_albedo_reg
-                    losses['lit_reg'] = (torch.sum(litcode ** 2) / 2) * self.flame_config.w_lit_reg
-                    loss = losses['landmark'] 
+                    # losses['shape_reg'] = (torch.sum(shapecode ** 2) / 2) * self.flame_config.w_shape_reg  # *1e-4
+                    # losses['expression_reg'] = (torch.sum(expcode ** 2) / 2) * self.flame_config.w_expr_reg  # *1e-4
+                    # losses['albedo_reg'] = (torch.sum(albedocode ** 2) / 2) * self.flame_config.w_albedo_reg
+                    # losses['lit_reg'] = (torch.sum(litcode ** 2) / 2) * self.flame_config.w_lit_reg
+                    loss = losses['landmark'] # + losses['photometric_texture']
                     if epoch > 100:
                         loss += losses['photometric_texture'] #+ losses['lit_reg'] + losses['albedo_reg'] + losses['expression_reg'] + losses['shape_reg']
                 else:
@@ -90,10 +89,9 @@ class Latent2CodeModule():
                     losses['litcode'] = self.l2_loss(litcode, batch['lit'].to(self.device))
                     losses['albedocode'] = self.l2_loss(albedocode, batch['tex'].to(self.device))
                     # losses['pose'] = self.l2_loss(posecode, batch['pose'].to(self.device))
-
-                loss = 0
-                for key in losses.keys():
-                    loss += losses[key]
+                    for key in losses.keys():
+                        loss += losses[key]
+                
 
                 self.optimizer.zero_grad()
                 loss.backward()
@@ -108,8 +106,6 @@ class Latent2CodeModule():
                 t0 = time.time()
             
             if epoch % self.opt.save_step == 0:
-                # self.latent2code.eval()
-                # with torch.no_grad():
                     return_list = self.latent2code.forward(
                             batch['latent'].to(self.device),
                             batch['cam'].to(self.device), 
