@@ -94,6 +94,7 @@ class Latent2CodeModule():
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
+
                 t3 = time.time()
                 tqdm_dict ={}
                 for key in losses.keys():
@@ -104,64 +105,64 @@ class Latent2CodeModule():
                 t0 = time.time()
             
             if epoch % self.opt.save_step == 0:
-                    return_list = self.latent2code.forward(
-                            batch['latent'].to(self.device),
-                            batch['cam'].to(self.device), 
-                            batch['pose'].to(self.device),
-                            batch['shape'].to(self.device),
-                            batch['exp'].to(self.device),
-                            batch['tex'].to(self.device),
-                            batch['lit'].to(self.device))
+                return_list = self.latent2code.forward(
+                        batch['latent'].to(self.device),
+                        batch['cam'].to(self.device), 
+                        batch['pose'].to(self.device),
+                        batch['shape'].to(self.device),
+                        batch['exp'].to(self.device),
+                        batch['tex'].to(self.device),
+                        batch['lit'].to(self.device))
 
-                    visind = 0
+                visind = 0
+            
+                genimage = vis_tensor(image_tensor= return_list['predicted_images'], 
+                                        image_path = batch['image_path'][0] ,
+                                        device = self.device
+                                        )
                 
-                    genimage = vis_tensor(image_tensor= return_list['predicted_images'], 
-                                            image_path = batch['image_path'][0] ,
-                                            device = self.device
-                                            )
-                    
-                    reconsimage = vis_tensor(image_tensor= return_list['recons_images'], 
-                                            image_path = batch['image_path'][0],
-                                            device = self.device
-                                            )
-                    gtlmark = vis_tensor(image_tensor= return_list['recons_images'], 
-                                            image_path = batch['image_path'][0],
-                                            land_tensor = batch['gt_landmark'],
-                                            cam = batch['cam'], 
-                                            device = self.device
-                                            )
-                    genlmark = vis_tensor(image_tensor= return_list['predicted_images'], 
-                                            image_path = batch['image_path'][0],
-                                            land_tensor = return_list['landmarks3d'],
-                                            cam = batch['cam'], 
-                                            device = self.device
-                                            )
-                    if self.opt.supervision =='render':
-                        gtimage = vis_tensor(image_tensor= batch['gt_image'], 
-                                            image_path = batch['image_path'][0] ,
-                                            device = self.device
-                                            )
-                        visuals = OrderedDict([
-                        ('gtimage', gtimage),
-                        ('gtlmark', gtlmark ),
-                        ('genimage', genimage),
-                        ('reconsimage', reconsimage),
-                        ('genlmark', genlmark )
-                        ])
-                    else:                   
-                        visuals = OrderedDict([
-                        ('gtlmark', gtlmark ),
-                        ('genimage', genimage),
-                        ('reconsimage', reconsimage),
-                        ('genlmark', genlmark )
-                        ])
+                reconsimage = vis_tensor(image_tensor= return_list['recons_images'], 
+                                        image_path = batch['image_path'][0],
+                                        device = self.device
+                                        )
+                gtlmark = vis_tensor(image_tensor= return_list['recons_images'], 
+                                        image_path = batch['image_path'][0],
+                                        land_tensor = batch['gt_landmark'],
+                                        cam = batch['cam'], 
+                                        device = self.device
+                                        )
+                genlmark = vis_tensor(image_tensor= return_list['predicted_images'], 
+                                        image_path = batch['image_path'][0],
+                                        land_tensor = return_list['landmarks3d'],
+                                        cam = batch['cam'], 
+                                        device = self.device
+                                        )
+                if self.opt.supervision =='render':
+                    gtimage = vis_tensor(image_tensor= batch['gt_image'], 
+                                        image_path = batch['image_path'][0] ,
+                                        device = self.device
+                                        )
+                    visuals = OrderedDict([
+                    ('gtimage', gtimage),
+                    ('gtlmark', gtlmark ),
+                    ('genimage', genimage),
+                    ('reconsimage', reconsimage),
+                    ('genlmark', genlmark )
+                    ])
+                else:                   
+                    visuals = OrderedDict([
+                    ('gtlmark', gtlmark ),
+                    ('genimage', genimage),
+                    ('reconsimage', reconsimage),
+                    ('genlmark', genlmark )
+                    ])
 
-                    self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
-                    torch.save(self.latent2code.module.Latent2fea.state_dict(), self.opt.Latent2ShapeExpCode_weight)
-                    torch.save(self.latent2code.module.latent2shape.state_dict(), self.opt.latent2shape_weight)
-                    torch.save(self.latent2code.module.latent2exp.state_dict(), self.opt.latent2exp_weight)
-                    torch.save(self.latent2code.module.latent2albedo.state_dict(), self.opt.latent2albedo_weight)
-                    torch.save(self.latent2code.module.latent2lit.state_dict(),self.opt.latent2lit_weight)
+                self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
+                torch.save(self.latent2code.module.Latent2fea.state_dict(), self.opt.Latent2ShapeExpCode_weight)
+                torch.save(self.latent2code.module.latent2shape.state_dict(), self.opt.latent2shape_weight)
+                torch.save(self.latent2code.module.latent2exp.state_dict(), self.opt.latent2exp_weight)
+                torch.save(self.latent2code.module.latent2albedo.state_dict(), self.opt.latent2albedo_weight)
+                torch.save(self.latent2code.module.latent2lit.state_dict(),self.opt.latent2lit_weight)
                 # torch.save(self.latent2code.module.latent2pose.state_dict(),self.opt.latent2lit_weight)
 
     def test(self):
