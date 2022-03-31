@@ -19,7 +19,7 @@ def get_train( debug = False):
     traintest_threashhold = int(0.8*len(img_lists))
     for it, name in enumerate(tqdm(img_lists)):
         k = name[:-4]
-        flame_path = os.path.join(root_p, 'flame', str(k), 'flame_p.pickle')
+        flame_path = os.path.join(root_p, 'flame2', str(k), 'flame_p.pickle')
         if os.path.exists(flame_path):
             with open(flame_path, 'rb') as f:
                 flame_p = pickle.load(f, encoding='latin1')
@@ -84,7 +84,7 @@ def get_train( debug = False):
         with open( os.path.join(root_p, "ffhq_testlist.pkl" ), 'wb') as handle:
             pickle.dump(testlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-get_train(debug = False)
+get_train(debug = True)
 
 
 
