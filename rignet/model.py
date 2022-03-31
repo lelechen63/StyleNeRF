@@ -273,7 +273,7 @@ class RigNerft(nn.Module):
             th.nn.LeakyReLU( 0.2, inplace = True )
         )
         if len(weight) > 0:
-            print ('loading weights for WEncoder  network')
+            print ('loading weights for WEncoder  network, ' +weight )
             WEncoder.load_state_dict(torch.load(weight))
         return WEncoder
     
@@ -285,7 +285,7 @@ class RigNerft(nn.Module):
             th.nn.LeakyReLU( 0.2, inplace = True )
         )
         if len(weight) > 0:
-            print ('loading weights for ParamEncoder  network')
+            print ('loading weights for ParamEncoder  network, ' +weight )
             ParamEncoder.load_state_dict(torch.load(weight))
         return ParamEncoder
 
@@ -296,7 +296,7 @@ class RigNerft(nn.Module):
             LinearWN( 256, self.latent_dim ),
         )
         if len(weight) > 0:
-            print ('loading weights for WDecoder  network')
+            print ('loading weights for WDecoder  network, ' +weight )
             WDecoder.load_state_dict(torch.load(weight))
         return WDecoder
     
