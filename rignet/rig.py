@@ -275,89 +275,89 @@ class RigModule():
                 
                 # visualize the image close to v
                 image_v = vis_tensor(image_tensor= batch[0]['gt_image'], 
-                                        image_path = batch[0]['image_path'][0] +'---V-gtimg',
+                                        image_path = batch[0]['image_path'][0] +'-V-gtimg',
                                         device = self.device
                                          )
 
                 lmark_v = vis_tensor(image_tensor= batch[0]['gt_image'], 
-                                        image_path = batch[0]['image_path'][0] +'--V-landmark',
+                                        image_path = '-V-landmark',
                                         land_tensor = batch[0]['gt_landmark'],
                                         cam = batch[0]['cam'], 
                                         device = self.device
                                          )
                
                 image_w = vis_tensor(image_tensor= batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'---W-gtimg',
+                                        image_path = batch[1]['image_path'][0] +'-W-gtimg',
                                         device = self.device
                                          )
 
                 lmark_w = vis_tensor(image_tensor= batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'--W-gtlandmrk',
+                                        image_path = 'W-gtlandmrk',
                                         land_tensor = batch[1]['gt_landmark'],
                                         cam = batch[1]['cam'], 
                                         device = self.device
                                          )
 
                 recons_images_w = vis_tensor(image_tensor= recons_images_w, 
-                                        image_path = batch[1]['image_path'][0] +'---recons-W-img',
+                                        image_path = '-recons-W-img',
                                         device = self.device
                                          )
                 recons_images_v = vis_tensor(image_tensor= recons_images_v, 
-                                        image_path = batch[0]['image_path'][0] +'---recons-V-img',
+                                        image_path = 'recons-V-img',
                                         device = self.device
                                          )
 
                 genlmark_same = vis_tensor(image_tensor= batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'---same-W-landamrk',
+                                        image_path = 'same-W-landamrk',
                                         land_tensor = landmark_same,
                                         cam = batch[1]['cam'], 
                                         device = self.device
                                          )
         
                 genimage_same = vis_tensor(image_tensor= render_img_same, 
-                                        image_path = batch[1]['image_path'][0] +'-same-W-renderimg',
+                                        image_path = 'same-W-renderimg',
                                         device = self.device
                                          )
           
                 genlmark_w = vis_tensor(image_tensor= batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'-close-W-landmark',
+                                        image_path = 'close-W-landmark',
                                         land_tensor = landmark_w_,
                                         cam = batch[1]['cam'], 
                                         device = self.device
                                          )
 
                 genimage_w = vis_tensor(image_tensor= render_img_w_, 
-                                        image_path = batch[1]['image_path'][0] +'-close-W-renderimg',
+                                        image_path = 'close-W-renderimg',
                                         device = self.device
                                          )
 
                 genlmark_v = vis_tensor(image_tensor= batch[0]['gt_image'], 
-                                        image_path = batch[0]['image_path'][0] +'-close-V-landmark',
+                                        image_path = 'close-V-landmark',
                                         land_tensor = landmark_v_,
                                         cam = batch[0]['cam'], 
                                         device = self.device
                                          )
                 genimage_v = vis_tensor(image_tensor = render_img_v_, 
-                                        image_path = batch[0]['image_path'][0]+'-close-V-renderimg', 
+                                        image_path = 'close-V-renderimg', 
                                         device = self.device)
 
                 synsimg_v = vis_ganimg(image_tensor= syns_v, 
-                                        image_path = batch[0]['image_path'][0] +'-V-syns',
+                                        image_path = 'V-syns',
                                          )
 
-                synsimg_w = vis_ganimg(syns_w, 
-                                        image_path = batch[0]['image_path'][0] +'-W-syns',
+                synsimg_w = vis_ganimg(image_tensor= syns_w, 
+                                        image_path = '-W-syns',
                                          )
 
                 synsimg_w_same = vis_ganimg(image_tensor= syns_w_same, 
-                                        image_path = batch[0]['image_path'][0] +'-w-syns-same',
+                                        image_path = 'w-syns-same',
                                          )
 
                 synsimg_w_hat = vis_ganimg(image_tensor= syns_w_hat, 
-                                        image_path = batch[0]['image_path'][0] +'-W-hat-' + choice_dic[choice],
+                                        image_path ='-W-hat-' + choice_dic[choice],
                                          )
                 recons_images_w_hat = vis_tensor(image_tensor= recons_images_w_hat, 
-                                        image_path = batch[0]['image_path'][0] +'-recons-w-hat',
+                                        image_path = 'recons-w-hat',
                                         device = self.device
                                          )
 
