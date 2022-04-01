@@ -61,7 +61,7 @@ class RigModule():
 
     def train(self):
         t0 = time.time()
-        for epoch in range( 1000):
+        for epoch in range( 10000):
             for step, batch in enumerate(tqdm(self.data_loader)):
                 t1 = time.time()
                 landmark_same, render_img_same, \
