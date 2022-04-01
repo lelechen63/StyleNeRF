@@ -138,8 +138,10 @@ class FFHQDataset(torch.utils.data.Dataset):
                 data['image_path'] = name
             else:
                 data = self.total_data[name]
+                data['image_path'] = name
         else:
             data = self.total_data[name]
+            data['image_path'] = name
         return data
 
     def __len__(self):
