@@ -69,25 +69,25 @@ class RigModule():
                 landmark_v_, render_img_v_ , \
                 recons_images_v, recons_images_w \
                 = self.rig.forward(
-                            batch[0]['latent'].to(self.device),
-                            batch[1]['latent'].to(self.device),
-                            
-                            batch[0]['cam'].to(self.device), 
-                            batch[0]['pose'].to(self.device),
+                    batch[0]['latent'].to(self.device),
+                    batch[1]['latent'].to(self.device),
+                    
+                    batch[0]['cam'].to(self.device), 
+                    batch[0]['pose'].to(self.device),
 
-                            batch[0]['shape'].to(self.device),
-                            batch[0]['exp'].to(self.device),
-                            batch[0]['tex'].to(self.device),
-                            batch[0]['lit'].to(self.device),
+                    batch[0]['shape'].to(self.device),
+                    batch[0]['exp'].to(self.device),
+                    batch[0]['tex'].to(self.device),
+                    batch[0]['lit'].to(self.device),
 
-                            batch[1]['cam'].to(self.device), 
-                            batch[1]['pose'].to(self.device),
-                            
-                            batch[1]['shape'].to(self.device),
-                            batch[1]['exp'].to(self.device),
-                            batch[1]['tex'].to(self.device),
-                            batch[1]['lit'].to(self.device)
-                            )
+                    batch[1]['cam'].to(self.device), 
+                    batch[1]['pose'].to(self.device),
+                    
+                    batch[1]['shape'].to(self.device),
+                    batch[1]['exp'].to(self.device),
+                    batch[1]['tex'].to(self.device),
+                    batch[1]['lit'].to(self.device)
+                    )
                 t2 = time.time()
                 losses = {}
                 # keep batch[1], w the same
@@ -381,7 +381,7 @@ class RigModule():
                 ('synsimg_w', synsimg_w ),
                 ('synsimg_w_same', synsimg_w_same ),
                 ('synsimg_w_hat', synsimg_w_hat ),
-                ('synsimg_w_hat', recons_images_w_hat ),
+                ('recons_w_hat', recons_images_w_hat ),
                 ])
         
                 self.visualizer.display_current_results(visuals, step, self.opt.save_step) 
