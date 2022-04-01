@@ -84,7 +84,7 @@ def get_train( debug = False):
         with open( os.path.join(root_p, "ffhq_testlist.pkl" ), 'wb') as handle:
             pickle.dump(testlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-get_train(debug = True)
+get_train(debug = False)
 
 
 
