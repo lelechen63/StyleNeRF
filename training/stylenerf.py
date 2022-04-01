@@ -979,7 +979,7 @@ class VolumeRenderer(object):
         print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         print (vol_pixels.size(1))
         H.tgt_res, H.n_points = int(math.sqrt(vol_pixels.size(1))), pixels.size(1)
-        
+        print (H.tgt_res, H.n_points)
         
 
         # set up an frozen camera for background if necessary
