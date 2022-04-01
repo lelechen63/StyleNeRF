@@ -373,6 +373,8 @@ class RigNerft(nn.Module):
             p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
             _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
             _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
+            
+
 
         else:
             recons_images_v = render_img_w_
@@ -434,21 +436,19 @@ class RigNerft(nn.Module):
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
 
-        if flameshape_v != None:
-            p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
-            p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
-            _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
-            _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
+        p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
+        p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
+        _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
+        _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
 
-        else:
-            recons_images_v = render_img_w_
-            recons_images_w = render_img_w_
+        _, recons_images_hat = self.flame_render(p_w_mapped, pose_w, cam_w)
+
 
         return landmark_same, render_img_same, \
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
                 recons_images_v, recons_images_w,\
-                choice, syns_v, syns_w, syns_w_same, syns_w_hat
+                choice, syns_v, syns_w, syns_w_same, syns_w_hat, recons_images_hat
 
 
     def _initialize_weights(self):

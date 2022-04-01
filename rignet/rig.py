@@ -74,6 +74,7 @@ class RigModule():
                             
                             batch[0]['cam'].to(self.device), 
                             batch[0]['pose'].to(self.device),
+
                             batch[0]['shape'].to(self.device),
                             batch[0]['exp'].to(self.device),
                             batch[0]['tex'].to(self.device),
@@ -228,7 +229,7 @@ class RigModule():
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
                 recons_images_v, recons_images_w, \
-                choice, syns_v, syns_w, syns_w_same, syns_w_hat \
+                choice, syns_v, syns_w, syns_w_same, syns_w_hat, recons_image_w_hat \
                 = self.rig.test(
                             batch[0]['latent'].to(self.device),
                             batch[1]['latent'].to(self.device),
@@ -314,46 +315,50 @@ class RigModule():
                                          )
         
                 genimage_same = vis_tensor(image_tensor= render_img_same, 
-                                        image_path = batch[1]['image_path'][0] +'---same-W-renderimg',
+                                        image_path = batch[1]['image_path'][0] +'-same-W-renderimg',
                                         device = self.device
                                          )
           
                 genlmark_w = vis_tensor(image_tensor= batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'---close-W-landmark',
+                                        image_path = batch[1]['image_path'][0] +'-close-W-landmark',
                                         land_tensor = landmark_w_,
                                         cam = batch[1]['cam'], 
                                         device = self.device
                                          )
 
                 genimage_w = vis_tensor(image_tensor= render_img_w_, 
-                                        image_path = batch[1]['image_path'][0] +'---close-W-renderimg',
+                                        image_path = batch[1]['image_path'][0] +'-close-W-renderimg',
                                         device = self.device
                                          )
 
                 genlmark_v = vis_tensor(image_tensor= batch[0]['gt_image'], 
-                                        image_path = batch[0]['image_path'][0] +'---close-V-landmark',
+                                        image_path = batch[0]['image_path'][0] +'-close-V-landmark',
                                         land_tensor = landmark_v_,
                                         cam = batch[0]['cam'], 
                                         device = self.device
                                          )
                 genimage_v = vis_tensor(image_tensor = render_img_v_, 
-                                        image_path = batch[0]['image_path'][0]+'---close-V-renderimg', 
+                                        image_path = batch[0]['image_path'][0]+'-close-V-renderimg', 
                                         device = self.device)
 
                 synsimg_v = vis_ganimg(image_tensor= syns_v, 
-                                        image_path = batch[0]['image_path'][0] +'---V-syns',
+                                        image_path = batch[0]['image_path'][0] +'-V-syns',
                                          )
 
                 synsimg_w = vis_ganimg(syns_w, 
-                                        image_path = batch[0]['image_path'][0] +'---W-syns',
+                                        image_path = batch[0]['image_path'][0] +'-W-syns',
                                          )
 
                 synsimg_w_same = vis_ganimg(image_tensor= syns_w_same, 
-                                        image_path = batch[0]['image_path'][0] +'---w-syns-same',
+                                        image_path = batch[0]['image_path'][0] +'-w-syns-same',
                                          )
 
                 synsimg_w_hat = vis_ganimg(image_tensor= syns_w_hat, 
-                                        image_path = batch[0]['image_path'][0] +'---W-hat-' + choice_dic[choice],
+                                        image_path = batch[0]['image_path'][0] +'-W-hat-' + choice_dic[choice],
+                                         )
+                recons_images_w_hat = vis_tensor(image_tensor= recons_images_w_hat, 
+                                        image_path = batch[0]['image_path'][0] +'-recons-w-hat',
+                                        device = self.device
                                          )
 
                 visuals = OrderedDict([
