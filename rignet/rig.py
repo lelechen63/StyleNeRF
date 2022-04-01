@@ -381,6 +381,7 @@ class RigModule():
                 ('synsimg_w', synsimg_w ),
                 ('synsimg_w_same', synsimg_w_same ),
                 ('synsimg_w_hat', synsimg_w_hat ),
+                ('synsimg_w_hat', recons_images_w_hat ),
                 ])
         
                 self.visualizer.display_current_results(visuals, step, self.opt.save_step) 
