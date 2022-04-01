@@ -831,6 +831,7 @@ class VolumeRenderer(object):
         # sample points
         di = torch.linspace(0., 1., steps=H.n_steps).to(H.device)
         print (di.shape)
+        print (H.batch_size, H.n_points)
         di = repeat(di, 's -> b n s', b=H.batch_size, n=H.n_points)
         print (di.shape, '++++++----+++-----+++')
         if (H.training and (not H.get('disable_noise', False))) or H.get('force_noise', False):
