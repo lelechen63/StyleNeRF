@@ -1602,6 +1602,7 @@ class NeRFSynthesisNetwork(torch.nn.Module):
         self.reg_full = reg_full
         self.use_noise = block_kwargs.get('use_noise', False)
         
+        self.training = False
         # ---------------------------------- Initialize Modules ---------------------------------------- -#
         # camera module
         self.C = CameraRay(camera_kwargs, **block_kwargs)
