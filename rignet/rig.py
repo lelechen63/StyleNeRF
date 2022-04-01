@@ -229,7 +229,7 @@ class RigModule():
                 landmark_w_, render_img_w_ , \
                 landmark_v_, render_img_v_ , \
                 recons_images_v, recons_images_w, \
-                choice, syns_v, syns_w, syns_w_same, syns_w_hat, recons_image_w_hat \
+                choice, syns_v, syns_w, syns_w_same, syns_w_hat, recons_images_w_hat \
                 = self.rig.test(
                             batch[0]['latent'].to(self.device),
                             batch[1]['latent'].to(self.device),
