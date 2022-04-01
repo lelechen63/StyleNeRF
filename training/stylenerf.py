@@ -971,7 +971,9 @@ class VolumeRenderer(object):
 
         # prepare for pixels for generating images
         if isinstance(vol_pixels, tuple):
+            print ('-------')
             vol_pixels, rand_pixels = vol_pixels
+            print (vol_pixels.size() , rand_pixels.size())
             pixels    = torch.cat([vol_pixels, rand_pixels], 1)
             H.rnd_res = int(math.sqrt(rand_pixels.size(1)))
         else:
