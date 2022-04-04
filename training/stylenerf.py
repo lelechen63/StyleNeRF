@@ -830,15 +830,10 @@ class VolumeRenderer(object):
 
         # sample points
         di = torch.linspace(0., 1., steps=H.n_steps).to(H.device)
-        print (di.shape)
-        print (H.batch_size, H.n_points)
         di = repeat(di, 's -> b n s', b=H.batch_size, n=H.n_points)
-        print (di.shape, '++++++----+++-----+++')
         if (H.training and (not H.get('disable_noise', False))) or H.get('force_noise', False):
             di = self.C.add_noise_to_interval(di)
-        print (di.shape, '+++++++++-----+++')
         di_trs = self.C.get_transformed_depth(di)
-        print (di_trs.shape, '++++++++++++')
         p_i, r_i = self.C.get_evaluation_points(pixels_world, camera_world, di_trs)
 
         if nerf_input_feats is not None:

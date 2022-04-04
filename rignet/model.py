@@ -389,7 +389,6 @@ class RigNerft(nn.Module):
                     cam_v=None, pose_v=None, flameshape_v = None, flameexp_v = None, flametex_v = None,\
                     flamelit_v = None, cam_w=None, pose_w=None, flameshape_w = None, flameexp_w = None, flametex_w = None, flamelit_w = None):
         
-        print (latent_v.shape, '++++++')
         syns_v = self.G2.forward(styles = latent_v.view(-1, 21,512))['img']
 
         syns_w = self.G2.forward(styles = latent_w.view(-1, 21,512))['img']
