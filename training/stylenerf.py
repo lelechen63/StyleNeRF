@@ -567,9 +567,7 @@ class CameraRay(object):
             batch_size = pixels_world.shape[0]
             n_steps = di.shape[-1]
             ray_i = pixels_world - camera_world
-            print (camera_world.shape)
-            print (di.shape, ray_i.shape)
-            print ('=++++++')
+            
             p_i = camera_world.unsqueeze(-2).contiguous() + \
                 di.unsqueeze(-1).contiguous() * ray_i.unsqueeze(-2).contiguous()
             ray_i = ray_i.unsqueeze(-2).repeat(1, 1, n_steps, 1)
