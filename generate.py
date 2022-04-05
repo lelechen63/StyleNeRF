@@ -116,6 +116,8 @@ def generate_images(
         ws = np.load(projected_w)
         ws = torch.tensor(ws, device=device) # pylint: disable=not-callable
         img = G2(styles=ws, truncation_psi=truncation_psi, noise_mode=noise_mode, render_option=render_option)
+
+        print type(img)
         assert isinstance(img, List)
         imgs = [proc_img(i) for i in img]
         all_imgs += [imgs]
