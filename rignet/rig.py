@@ -87,9 +87,9 @@ class RigModule():
                     )
                 latent_w_same = return_list['latent_w_same'] 
                 landmark_w_ = return_list['landmark_w_']
-                render_img_w_ = return_list['render_img_w_']
+                render_img_w_ = return_list['render_img_w_'].float()
                 landmark_v_ = return_list['landmark_v_'] 
-                render_img_v_ = return_list['render_img_v_']
+                render_img_v_ = return_list['render_img_v_'].float()
 
                 t2 = time.time()
                 losses = {}
@@ -103,11 +103,11 @@ class RigModule():
                 losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
                 print (render_img_w_.dtype, batch[1]['gt_image'].to(self.device).dtype)
 
-                losses['photometric_texture_w_'] = l2loss(batch[1]['img_mask'].to(self.device) * render_img_w_.float(),  batch[1]['img_mask'].to(self.device) * batch[1]['gt_image'].to(self.device) ) * self.flame_config.w_pho
+                losses['photometric_texture_w_'] = l2loss(batch[1]['img_mask'].to(self.device) * render_img_w_),  batch[1]['img_mask'].to(self.device) * batch[1]['gt_image'].to(self.device) ) * self.flame_config.w_pho
                 
                 # close to v
                 losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_v_'] = l2loss(batch[0]['img_mask'].to(self.device) * render_img_v_.float(),  batch[0]['img_mask'].to(self.device) * batch[0]['gt_image'].to(self.device) ) * self.flame_config.w_pho
+                losses['photometric_texture_v_'] = l2loss(batch[0]['img_mask'].to(self.device) * render_img_v_,  batch[0]['img_mask'].to(self.device) * batch[0]['gt_image'].to(self.device) ) * self.flame_config.w_pho
 
                 for t in losses.keys():
                     print (t, losses[t].dtype)
