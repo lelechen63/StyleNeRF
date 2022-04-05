@@ -381,8 +381,7 @@ class RigNerft(nn.Module):
             return_list['landmark_same'] = landmark_same
             return_list['render_img_same'] = render_img_same
 
-        else:
-            return_list['p_w_same'] = p_w_same
+        return_list['p_w_same'] = p_w_same
         return_list['landmark_w_'] = landmark_w_
         return_list['render_img_w_'] = render_img_w_
         return_list['landmark_v_'] = landmark_v_
