@@ -409,9 +409,9 @@ class RigNerft(nn.Module):
         print('latent_w_same', latent_w_same.max(), latent_w_same.min())
 
         print (latent_w.shape,latent_w_same.shape )
-        np.save('./w.npy', latent_w.detach().cpu().numpy())
+        np.save('./w.npy', latent_w.view(-1, 21,512).detach().cpu().numpy())
 
-        np.save('./w_same.npy', latent_w_same.detach().cpu().numpy())
+        np.save('./w_same.npy', latent_w_same.view(-1, 21,512).detach().cpu().numpy())
         syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 21,512))['img']
 
         p_w_same = self.latent2params(latent_w_same)
