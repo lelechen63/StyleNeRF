@@ -107,7 +107,7 @@ class RigModule():
                 
                 # close to v
                 losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_v_'] = l2loss(batch[0]['img_mask'].to(self.device) * render_img_v_,  batch[0]['img_mask'].to(self.device) * batch[0]['gt_image'].to(self.device) ) * self.flame_config.w_pho
+                losses['photometric_texture_v_'] = l2loss(batch[0]['img_mask'].to(self.device) * render_img_v_.float(),  batch[0]['img_mask'].to(self.device) * batch[0]['gt_image'].to(self.device) ) * self.flame_config.w_pho
 
                 for t in losses.keys():
                     print (t, losses[t].dtype)
