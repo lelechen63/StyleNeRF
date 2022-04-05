@@ -262,7 +262,7 @@ class RigModule():
                 syns_w = return_list['syns_w']
                 syns_w_same = return_list['syns_w_same']
                 syns_w_hat = return_list['syns_w_hat']
-                recons_images_w_hat = return_list['recons_images_w_hat']
+                recons_images_w_hat = return_list['recons_images_hat']
 
                 losses = {}
                 # keep batch[1], w the same
