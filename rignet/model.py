@@ -407,6 +407,8 @@ class RigNerft(nn.Module):
         latent_w_same = self.rig(latent_w,  p_w)
         print ('latent_w', latent_w.max(),latent_w.min())
         print('latent_w_same', latent_w_same.max(), latent_w_same.min())
+
+        print (latent_w.shape,latent_w_same.shape )
         np.save('./w.npy', latent_w.detach().cpu().numpy())
 
         np.save('./w_same.npy', latent_w_same.detach().cpu().numpy())
