@@ -367,23 +367,27 @@ class RigNerft(nn.Module):
         landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
+        return_list = []
+        
 
         if flameshape_v != None:
             p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
             p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
             _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
             _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
-            
 
+            return_list['recons_images_v'] = recons_images_v
+            return_list['recons_images_w'] = recons_images_w
 
-        else:
-            recons_images_v = render_img_w_
-            recons_images_w = render_img_w_
+        return_list['landmark_same'] = landmark_same
+        return_list['render_img_same'] = render_img_same
+        return_list['landmark_w_'] = landmark_w_
+        return_list['render_img_w_'] = render_img_w_
+        return_list['landmark_v_'] = landmark_v_
+        return_list['render_img_v_'] = render_img_v_
+        
 
-        return landmark_same, render_img_same, \
-                landmark_w_, render_img_w_ , \
-                landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w
+        return return_list
     
     def test(self, latent_v, latent_w, \
                     cam_v=None, pose_v=None, flameshape_v = None, flameexp_v = None, flametex_v = None,\
@@ -403,7 +407,9 @@ class RigNerft(nn.Module):
         latent_w_same = self.rig(latent_w,  p_w)
         print ('latent_w', latent_w.max(),latent_w.min())
         print('latent_w_same', latent_w_same.max(), latent_w_same.min())
-        
+        np.save('./w.npy', latent_w.detach().cpu().numpy())
+
+        np.save('./w_same.npy', latent_w_same.detach().cpu().numpy())
         syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 21,512))['img']
 
         p_w_same = self.latent2params(latent_w_same)

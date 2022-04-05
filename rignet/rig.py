@@ -64,10 +64,7 @@ class RigModule():
         for epoch in range( 10000):
             for step, batch in enumerate(tqdm(self.data_loader)):
                 t1 = time.time()
-                landmark_same, render_img_same, \
-                landmark_w_, render_img_w_ , \
-                landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w \
+                return_list
                 = self.rig.forward(
                     batch[0]['latent'].to(self.device),
                     batch[1]['latent'].to(self.device),
@@ -88,6 +85,13 @@ class RigModule():
                     batch[1]['tex'].to(self.device),
                     batch[1]['lit'].to(self.device)
                     )
+                landmark_same = return_list['landmark_same'] 
+                render_img_same = return_list['render_img_same']
+                landmark_w_ = return_list['landmark_w_']
+                render_img_w_ = return_list['render_img_w_']
+                landmark_v_ = return_list['landmark_v_'] 
+                render_img_v_ = return_list['render_img_v_']
+
                 t2 = time.time()
                 losses = {}
                 # keep batch[1], w the same
@@ -225,12 +229,8 @@ class RigModule():
         choice_dic =["shape", "exp", "albedo", "lit"]
         for step, batch in enumerate(tqdm(self.data_loader)):
             with torch.no_grad():    
-                landmark_same, render_img_same, \
-                landmark_w_, render_img_w_ , \
-                landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w, \
-                choice, syns_v, syns_w, syns_w_same, syns_w_hat, recons_images_w_hat \
-                = self.rig.test(
+                
+                return_list = self.rig.test(
                             batch[0]['latent'].to(self.device),
                             batch[1]['latent'].to(self.device),
                             
@@ -249,6 +249,22 @@ class RigModule():
                             batch[1]['tex'].to(self.device),
                             batch[1]['lit'].to(self.device)
                             )
+                
+                landmark_same = return_list['landmark_same']
+                render_img_same =  return_list['render_img_same']
+                landmark_w_= return_list['landmark_w_']
+                render_img_w_ = return_list['render_img_w_']
+                landmark_v_ = return_list['landmark_v_']
+                render_img_v_ = return_list['render_img_v_']
+                recons_images_v = return_list['recons_images_v']
+                recons_images_w = return_list['recons_images_w']
+                choice = return_list['choice']
+                syns_v = return_list['syns_v']
+                syns_w = return_list['syns_w']
+                syns_w_same = return_list['syns_w_same']
+                syns_w_hat = return_list['syns_w_hat']
+                recons_images_w_hat = return_list['recons_images_w_hat']
+
                 losses = {}
                 # keep batch[1], w the same
                 losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
