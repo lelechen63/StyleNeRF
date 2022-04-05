@@ -397,12 +397,16 @@ class RigNerft(nn.Module):
     
         p_w = self.latent2params(latent_w)
 
+        # debug:
+
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
+        print ('pw', p_w.max(),p_w.min())
+        print('latent_w_same', latent_w_same.max(), latent_w_same.min())
         
         syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 21,512))['img']
 
-        p_w_same = self.latent2params(latent_w_same) 
+        p_w_same = self.latent2params(latent_w_same)
 
         # randomly choose one params to be edited
         choice = torch.randint(0, 4 ,(1,)).item()
@@ -416,6 +420,8 @@ class RigNerft(nn.Module):
                 p_w_replaced.append(p_v[i])
 
         latent_w_hat = self.rig(latent_w, p_w_replaced)
+
+        print('latent_w_hat', latent_w_hat.max(), latent_w_hat.min())
 
         syns_w_hat = self.G2.forward(styles = latent_w_hat.view(-1, 21,512))['img']
 
@@ -444,11 +450,27 @@ class RigNerft(nn.Module):
         _, recons_images_hat = self.flame_render(p_w_mapped, pose_w, cam_w)
 
 
-        return landmark_same, render_img_same, \
-                landmark_w_, render_img_w_ , \
-                landmark_v_, render_img_v_ , \
-                recons_images_v, recons_images_w,\
-                choice, syns_v, syns_w, syns_w_same, syns_w_hat, recons_images_hat
+        return_list = {}
+        return_list['landmark_same'] = landmark_same
+        return_list['render_img_same'] = render_img_same
+        return_list['landmark_w_'] = landmark_w_
+        return_list['render_img_w_'] = render_img_w_
+
+        return_list['landmark_v_'] = landmark_v_
+        return_list['render_img_v_'] = render_img_v_
+
+        return_list['recons_images_v'] = recons_images_v
+        return_list['recons_images_w'] = recons_images_w
+        return_list['choice'] = choice
+        return_list['syns_v'] = syns_v
+        return_list['syns_w'] = syns_w
+        return_list['syns_w_same'] = syns_w_same
+
+        return_list['syns_w_hat'] = syns_w_hat
+        return_list['recons_images_hat'] = recons_images_hat
+      
+
+        return return_list
 
 
     def _initialize_weights(self):
