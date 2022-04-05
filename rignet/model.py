@@ -401,7 +401,7 @@ class RigNerft(nn.Module):
 
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
-        print ('pw', p_w.max(),p_w.min())
+        print ('latent_w', latent_w.max(),latent_w.min())
         print('latent_w_same', latent_w_same.max(), latent_w_same.min())
         
         syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 21,512))['img']
