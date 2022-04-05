@@ -366,7 +366,7 @@ class RigNerft(nn.Module):
         
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
-        return_list = []
+        return_list = {}
 
 
         if flameshape_v != None:
