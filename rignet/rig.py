@@ -84,8 +84,7 @@ class RigModule():
                     batch[1]['tex'].to(self.device),
                     batch[1]['lit'].to(self.device)
                     )
-                landmark_same = return_list['landmark_same'] 
-                render_img_same = return_list['render_img_same']
+                p_w_same = return_list['p_w_same'] 
                 landmark_w_ = return_list['landmark_w_']
                 render_img_w_ = return_list['render_img_w_']
                 landmark_v_ = return_list['landmark_v_'] 
@@ -94,9 +93,9 @@ class RigModule():
                 t2 = time.time()
                 losses = {}
                 # keep batch[1], w the same
-                losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_same'] = (batch[1]['img_mask'].to(self.device) * (render_img_same - batch[1]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
-                
+                # losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
+                # losses['photometric_texture_same'] = (batch[1]['img_mask'].to(self.device) * (render_img_same - batch[1]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
+                loss['w_same'] = (p_w_same - batch[1]['latent'].to(self.device) ).abs()).mean()
                 # close to w
                 losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
                 losses['photometric_texture_w_'] = (batch[1]['img_mask'].to(self.device) * (render_img_w_ - batch[1]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
@@ -105,15 +104,14 @@ class RigModule():
                 losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
                 losses['photometric_texture_v_'] = (batch[0]['img_mask'].to(self.device) * (render_img_v_ - batch[0]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
                 
-                loss = losses['landmark_same'] + losses['photometric_texture_same'] + \
+                loss = losses['w_same'] + \
                        losses['landmark_w_'] + losses['photometric_texture_w_'] + \
                        losses['landmark_v_'] + losses['photometric_texture_v_']
                 
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-                tqdm_dict = {'landmark_same': losses['landmark_same'].data, \
-                             'photometric_texture_same': losses['photometric_texture_same'].data, \
+                tqdm_dict = {'w_same': losses['w_same'].data, \
                              'landmark_w_': losses['landmark_w_'].data, \
                              'photometric_texture_w_': losses['photometric_texture_w_'].data, \
                              'landmark_v_': losses['landmark_v_'].data, \
