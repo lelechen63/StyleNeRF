@@ -163,7 +163,7 @@ class RigModule():
 
                 genlmark_same = vis_tensor(image_tensor= batch[1]['gt_image'], 
                                         image_path = batch[1]['image_path'][0] +'---same-W-landamrk',
-                                        land_tensor = landmark_same,
+                                        land_tensor = return_list["landmark_same"],
                                         cam = batch[1]['cam'], 
                                         device = self.device
                                          )
