@@ -96,22 +96,15 @@ class RigModule():
                 # keep batch[1], w the same
                 # losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
                 # losses['photometric_texture_same'] = (batch[1]['img_mask'].to(self.device) * (render_img_same - batch[1]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
-                print (latent_w_same.dtype, batch[1]['latent'].to(self.device).dtype)
                 losses['w_same'] = l2loss(latent_w_same,batch[1]['latent'].to(self.device) )
                 # close to w
-                print (landmark_w_.dtype, batch[1]['gt_landmark'].to(self.device).dtype)
                 losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                print (render_img_w_.dtype, batch[1]['gt_image'].to(self.device).dtype)
 
                 losses['photometric_texture_w_'] = l2loss(batch[1]['img_mask'].to(self.device) * render_img_w_,  batch[1]['img_mask'].to(self.device) * batch[1]['gt_image'].to(self.device) ) * self.flame_config.w_pho
                 
                 # close to v
                 losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
                 losses['photometric_texture_v_'] = l2loss(batch[0]['img_mask'].to(self.device) * render_img_v_,  batch[0]['img_mask'].to(self.device) * batch[0]['gt_image'].to(self.device) ) * self.flame_config.w_pho
-
-                for t in losses.keys():
-                    print (t, losses[t].dtype)
-                    print ('=========')
 
                 loss = losses['w_same'] + \
                        losses['landmark_w_'] + losses['photometric_texture_w_'] + \
@@ -159,11 +152,11 @@ class RigModule():
                                         device = self.device
                                          )
 
-                recons_images_w = vis_tensor(image_tensor= recons_images_w, 
+                recons_images_w = vis_tensor(image_tensor= return_list['recons_images_w'], 
                                         image_path = batch[1]['image_path'][0] +'---recons-W-img',
                                         device = self.device
                                          )
-                recons_images_v = vis_tensor(image_tensor= recons_images_v, 
+                recons_images_v = vis_tensor(image_tensor= return_list["recons_images_v"], 
                                         image_path = batch[0]['image_path'][0] +'---recons-V-img',
                                         device = self.device
                                          )
@@ -175,7 +168,7 @@ class RigModule():
                                         device = self.device
                                          )
         
-                genimage_same = vis_tensor(image_tensor= render_img_same, 
+                genimage_same = vis_tensor(image_tensor= return_list["render_img_same"], 
                                         image_path = batch[1]['image_path'][0] +'---same-W-renderimg',
                                         device = self.device
                                          )
