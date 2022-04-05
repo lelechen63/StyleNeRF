@@ -64,8 +64,7 @@ class RigModule():
         for epoch in range( 10000):
             for step, batch in enumerate(tqdm(self.data_loader)):
                 t1 = time.time()
-                return_list
-                = self.rig.forward(
+                return_list = self.rig.forward(
                     batch[0]['latent'].to(self.device),
                     batch[1]['latent'].to(self.device),
                     
