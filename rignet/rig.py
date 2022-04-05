@@ -60,6 +60,7 @@ class RigModule():
         os.makedirs(self.ckpt_path, exist_ok = True)
 
     def train(self):
+        l2loss = nn.MSELoss()
         t0 = time.time()
         for epoch in range( 10000):
             for step, batch in enumerate(tqdm(self.data_loader)):
@@ -95,15 +96,15 @@ class RigModule():
                 # keep batch[1], w the same
                 # losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
                 # losses['photometric_texture_same'] = (batch[1]['img_mask'].to(self.device) * (render_img_same - batch[1]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
-                loss['w_same'] = (p_w_same - batch[1]['latent'].to(self.device) ).abs()).mean()
+                loss['w_same'] = l2loss(p_w_same,batch[1]['latent'].to(self.device) )
                 # close to w
                 losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_w_'] = (batch[1]['img_mask'].to(self.device) * (render_img_w_ - batch[1]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
+                losses['photometric_texture_w_'] = l2loss(batch[1]['img_mask'].to(self.device) * render_img_w_,  batch[1]['img_mask'].to(self.device) * batch[1]['gt_image'].to(self.device) ) * self.flame_config.w_pho
                 
                 # close to v
                 losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_v_'] = (batch[0]['img_mask'].to(self.device) * (render_img_v_ - batch[0]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
-                
+                losses['photometric_texture_v_'] = l2loss(batch[0]['img_mask'].to(self.device) * render_img_v_,  batch[0]['img_mask'].to(self.device) * batch[0]['gt_image'].to(self.device) ) * self.flame_config.w_pho
+
                 loss = losses['w_same'] + \
                        losses['landmark_w_'] + losses['photometric_texture_w_'] + \
                        losses['landmark_v_'] + losses['photometric_texture_v_']
