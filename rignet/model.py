@@ -366,7 +366,6 @@ class RigNerft(nn.Module):
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
         return_list = {}
 
-
         if flameshape_v != None:
             landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
             p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
@@ -401,7 +400,6 @@ class RigNerft(nn.Module):
         p_w = self.latent2params(latent_w)
 
         # debug:
-
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
 
