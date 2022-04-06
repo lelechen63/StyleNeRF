@@ -157,9 +157,7 @@ class Latent2Code(nn.Module):
 
             return_list['landmarks3d'] = landmarks3d
             return_list['predicted_images'] = predicted_images
-            
-            # return_list['pose'] = posecode
-            
+                        
         if flameshape != None:
             flamelit = flamelit.view(-1, 9,3)        
             recons_vertices, _, recons_landmarks3d = self.flame(shape_params=flameshape, expression_params=flameexp, pose_params=pose)
@@ -406,13 +404,7 @@ class RigNerft(nn.Module):
 
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  p_w)
-        print ('latent_w', latent_w.max(),latent_w.min())
-        print('latent_w_same', latent_w_same.max(), latent_w_same.min())
 
-        print (latent_w.shape,latent_w_same.shape )
-        np.save('./w.npy', latent_w.view(-1, 21,512).detach().cpu().numpy())
-
-        np.save('./w_same.npy', latent_w_same.view(-1, 21,512).detach().cpu().numpy())
         syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 21,512))['img']
 
         p_w_same = self.latent2params(latent_w_same)
@@ -429,8 +421,6 @@ class RigNerft(nn.Module):
                 p_w_replaced.append(p_v[i])
 
         latent_w_hat = self.rig(latent_w, p_w_replaced)
-
-        print('latent_w_hat', latent_w_hat.max(), latent_w_hat.min())
 
         syns_w_hat = self.G2.forward(styles = latent_w_hat.view(-1, 21,512))['img']
 
