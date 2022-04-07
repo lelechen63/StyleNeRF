@@ -18,8 +18,7 @@ loss_land_w = []
 
 axis =[]
 while l:
-    tmp = l[:-1].split(' ')
-    try:
+        tmp = l[:-1].split(' ')
         l2_v = tmp[-4]
         p_v =tmp[-2]
         land_v = tmp[-6]
@@ -38,14 +37,7 @@ while l:
 
         loss_land_w.append(float(land_w))
         loss_land_v.append(float(land_v))
-    except:
-        loss_l2_v = []
-        loss_p_v = []
-        loss_land_v = []
-
-        loss_l2_w = []
-        loss_p_w = []
-        loss_land_w = []
+    
     # ss += 1
     # if ss == 1000:
     #     break
