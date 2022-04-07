@@ -19,6 +19,7 @@ loss_land_w = []
 axis =[]
 while l:
         tmp = l[:-1].split(' ')
+        print (tmp)
         l2_v = tmp[-4]
         p_v =tmp[-2]
         land_v = tmp[-6]
@@ -44,7 +45,6 @@ reader.close()
 # loss_land = loss_land[100:]
 
 axis = [i for i in range(len(loss_l2_v))]
-print (axis)
 plt.plot(axis, loss_l2_v, 'r--', axis, loss_p_v, 'b--',axis, loss_land_v, 'g--', axis, loss_l2_w)# 'r*', axis, loss_p_w, 'b*',axis, loss_land_w, 'g*')
 plt.show()
 plt.savefig('./gg.png')
