@@ -289,6 +289,16 @@ class RigModule():
                 syns_w_hat = return_list['syns_w_hat']
                 recons_images_w_hat = return_list['recons_images_hat']
 
+
+                recons_gtimages_v = return_list['recons_gtimages_v'] 
+                recons_gtimages_w = return_list['recons_gtimages_w'] 
+
+                recons_realgtimages_v = return_list['recons_realgtimages_v'] 
+                recons_realgtimages_w = return_list['recons_realgtimages_w'] 
+
+
+
+
                 losses = {}
                 # keep batch[1], w the same
                 losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
@@ -381,6 +391,24 @@ class RigModule():
                                         image_path = 'close-V-renderimg', 
                                         device = self.device)
 
+                
+                genimage_v_sudo = vis_tensor(image_tensor = recons_gtimages_v, 
+                                        image_path = 'V-sudoflame-switch', 
+                                        device = self.device)
+
+                genimage_w_sudo = vis_tensor(image_tensor = recons_gtimages_w, 
+                                        image_path = 'W-sudoflame-switch', 
+                                        device = self.device)
+
+                genimage_v_gt = vis_tensor(image_tensor = recons_realgtimages_v, 
+                                        image_path = 'V-gtflame-switch', 
+                                        device = self.device)
+
+                genimage_w_gt = vis_tensor(image_tensor = recons_realgtimages_w, 
+                                        image_path = 'W-gtflame-switch', 
+                                        device = self.device)
+
+                
                 synsimg_v = vis_ganimg(image_tensor= syns_v, 
                                         image_path = 'V-syns',
                                          )
@@ -422,6 +450,11 @@ class RigModule():
                 ('synsimg_w_same', synsimg_w_same ),
                 ('synsimg_w_hat', synsimg_w_hat ),
                 ('recons_w_hat', recons_images_w_hat ),
+
+                ('genimage_v_sudo', genimage_v_sudo ),
+                ('genimage_w_sudo', genimage_v_sudo ),
+                ('genimage_v_gt', genimage_v_gt ),
+                ('genimage_w_gt', genimage_w_gt ),
                 ])
         
                 self.visualizer.display_current_results(visuals, step, self.opt.save_step) 

@@ -392,11 +392,12 @@ class RigNerft(nn.Module):
                     flamelit_v = None, cam_w=None, pose_w=None, flameshape_w = None, flameexp_w = None, flametex_w = None, flamelit_w = None):
         
         syns_v = self.G2.forward(styles = latent_v.view(-1, 21,512))['img']
-
         syns_w = self.G2.forward(styles = latent_w.view(-1, 21,512))['img']
 
+        p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
+        p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
+
         p_v = self.latent2params(latent_v)
-    
         p_w = self.latent2params(latent_w)
 
         # debug:
@@ -404,7 +405,6 @@ class RigNerft(nn.Module):
         latent_w_same = self.rig(latent_w,  p_w)
 
         syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 21,512))['img']
-
         p_w_same = self.latent2params(latent_w_same)
 
         # randomly choose one params to be edited
@@ -412,10 +412,28 @@ class RigNerft(nn.Module):
         
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
+        gt_switch_w = []
+        gt_switch_v =[]
+
+        realgt_switch_w = []
+        realgt_switch_v =[]
         for i in range(4):
             if i != choice:
+                gt_switch_w.append(p_w[i])
+                gt_switch_v.append(p_v[i])
+
+                realgt_switch_w.append(p_w_vis[i])
+                realgt_switch_v.append(p_v_vis[i])
+
+
                 p_w_replaced.append(p_w[i])
             else:
+                gt_switch_v.append(p_w[i])
+                gt_switch_v.append(p_v[i])
+
+                realgt_switch_w.append(p_v_vis[i])
+                realgt_switch_v.append(p_w_vis[i])
+
                 p_w_replaced.append(p_v[i])
 
         latent_w_hat = self.rig(latent_w, p_w_replaced)
@@ -439,10 +457,18 @@ class RigNerft(nn.Module):
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
 
-        p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
-        p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
+        
+
+        
+
         _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
         _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
+
+        _, recons_gtimages_v = self.flame_render(gt_switch_v, pose_v, cam_v)
+        _, recons_gtimages_w = self.flame_render(gt_switch_w, pose_w, cam_w)
+
+        _, recons_realgtimages_v = self.flame_render(realgt_switch_v, pose_v, cam_v)
+        _, recons_realgtimages_w = self.flame_render(realgt_switch_w, pose_w, cam_w)
 
         _, recons_images_hat = self.flame_render(p_w_mapped, pose_w, cam_w)
 
@@ -450,6 +476,7 @@ class RigNerft(nn.Module):
         return_list = {}
         return_list['landmark_same'] = landmark_same
         return_list['render_img_same'] = render_img_same
+        
         return_list['landmark_w_'] = landmark_w_
         return_list['render_img_w_'] = render_img_w_
 
@@ -458,9 +485,18 @@ class RigNerft(nn.Module):
 
         return_list['recons_images_v'] = recons_images_v
         return_list['recons_images_w'] = recons_images_w
+
+        return_list['recons_gtimages_v'] = recons_gtimages_v
+        return_list['recons_gtimages_w'] = recons_gtimages_w
+
+        return_list['recons_realgtimages_v'] = recons_realgtimages_v
+        return_list['recons_realgtimages_w'] = recons_realgtimages_w
+
         return_list['choice'] = choice
+
         return_list['syns_v'] = syns_v
         return_list['syns_w'] = syns_w
+        
         return_list['syns_w_same'] = syns_w_same
 
         return_list['syns_w_hat'] = syns_w_hat
