@@ -40,9 +40,10 @@ class RigModule():
             p.requires_grad = False  
         for p in self.rig.flametex.parameters():
             p.requires_grad = False  
+        for p in self.rig.render.parameters():
+            p.requires_grad = False  
         
        
-
         if opt.isTrain:
             self.rig =torch.nn.DataParallel(self.rig, device_ids=range(len(self.opt.gpu_ids)))
         self.rig = self.rig.to(self.device)
