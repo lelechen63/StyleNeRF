@@ -330,7 +330,7 @@ class RigModule():
                                          )
 
                 lmark_v = vis_tensor(image_tensor= batch[0]['gt_image'], 
-                                        image_path = '-V-landmark',
+                                        image_path = '-V-lmark' +  choice_dic[choice],
                                         land_tensor = batch[0]['gt_landmark'],
                                         cam = batch[0]['cam'], 
                                         device = self.device
@@ -422,7 +422,7 @@ class RigModule():
                                          )
 
                 synsimg_w_hat = vis_ganimg(image_tensor= syns_w_hat, 
-                                        image_path ='-W-hat-' + choice_dic[choice],
+                                        image_path ='-W-hat-',
                                          )
                 recons_images_w_hat = vis_tensor(image_tensor= recons_images_w_hat, 
                                         image_path = 'recons-w-hat',
@@ -430,7 +430,7 @@ class RigModule():
                                          )
 
                 visuals = OrderedDict([
-                ('image_v' + choice_dic[choice], image_v),
+                ('image_v', image_v),
                 ('lmark_v', lmark_v),
                 ('recons_images_v', recons_images_v),
 
