@@ -69,37 +69,16 @@ class RigModule():
             for step, batch in enumerate(tqdm(self.data_loader)):
                 t1 = time.time()
                 for key in batch[0].keys():
-                    print (key)
-                batch[0]['latent'] = batch[0]['latent'].to(self.device)
-                batch[1]['latent'] = batch[1]['latent'].to(self.device)
-
-                batch[0]['cam'] =batch[0]['cam'].to(self.device)
-                batch[0]['pose'] = batch[0]['pose'].to(self.device)
-
-                batch[0]['shape'] =batch[0]['shape'].to(self.device)
-                batch[0]['exp'] = batch[0]['exp'].to(self.device)
-                batch[0]['tex'] = batch[0]['tex'].to(self.device)
-                batch[0]['lit'] = batch[0]['lit'].to(self.device)
-
-                batch[1]['cam']= batch[1]['cam'].to(self.device)
-                batch[1]['pose'] = batch[1]['pose'].to(self.device)
-                    
-                batch[1]['shape'] = batch[1]['shape'].to(self.device)
-                batch[1]['exp'] = batch[1]['exp'].to(self.device)
-                batch[1]['tex'] = batch[1]['tex'].to(self.device)
-                batch[1]['lit'] = batch[1]['lit'].to(self.device)
-
-                batch[1]['gt_image'].to(self.device)
-                batch[1]['gt_image'].to(self.device)
-
-                batch[0]['img_mask']= batch[0]['img_mask'].to(self.device)
-                batch[1]['img_mask'] =batch[1]['img_mask'].to(self.device)
+                    if key !='image_path':
+                        batch[0][key] = batch[0][key].to(self.device)
+                        batch[1][key] = batch[1][key].to(self.device)
+    
 
                 return_list = self.rig.forward(
                     batch[0]['latent'],
                     batch[1]['latent'],
                     
-                    batch[0]['cam'].to(self.device), 
+                    batch[0]['cam'], 
                     batch[0]['pose'],
 
                     batch[0]['shape'],
@@ -129,18 +108,18 @@ class RigModule():
                 losses['w_same'] = MSE_Loss(latent_w_same,batch[1]['latent'] )
                 # close to w
                 losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
-                losses['photometric_texture_w_'] = MSE_Loss( render_img_w_,  batch[1]['img_mask'] * batch[1]['gt_image'].to(self.device) ) * self.flame_config.w_pho
+                losses['photometric_texture_w_'] = MSE_Loss( render_img_w_,  batch[1]['img_mask'] * batch[1]['gt_image']) * self.flame_config.w_pho
                 
                 print (render_img_w_.shape, render_img_w_.max(), render_img_w_.min())
-                print (  batch[1]['gt_image'].to(self.device).shape(),  batch[1]['gt_image'].to(self.device).max(),  batch[1]['gt_image'].to(self.device).min() )
+                print (  batch[1]['gt_image'].shape(),  batch[1]['gt_image'].max(),  batch[1]['gt_image'].min() )
                 print('=======================')
 
                 target_image_p  = F.interpolate(target_image, size=(256, 256), mode='area')
 
 
                 # close to v
-                losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_v_'] = MSE_Loss(  render_img_v_,  batch[0]['img_mask'].to(self.device) * batch[0]['gt_image'].to(self.device) ) * self.flame_config.w_pho
+                losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['photometric_texture_v_'] = MSE_Loss(  render_img_v_,  batch[0]['img_mask'] * batch[0]['gt_image'] ) * self.flame_config.w_pho
 
                 loss = losses['w_same'] + \
                        losses['landmark_w_'] + losses['photometric_texture_w_'] + \
@@ -263,26 +242,32 @@ class RigModule():
     
         choice_dic =["shape", "exp", "albedo", "lit"]
         for step, batch in enumerate(tqdm(self.data_loader)):
+            for key in batch[0].keys():
+                if key !='image_path':
+                    batch[0][key] = batch[0][key].to(self.device)
+                    batch[1][key] = batch[1][key].to(self.device)
+    
+
             with torch.no_grad():    
                 
                 return_list = self.rig.test(
-                            batch[0]['latent'].to(self.device),
-                            batch[1]['latent'].to(self.device),
+                            batch[0]['latent'],
+                            batch[1]['latent'],
                             
-                            batch[0]['cam'].to(self.device), 
-                            batch[0]['pose'].to(self.device),
-                            batch[0]['shape'].to(self.device),
-                            batch[0]['exp'].to(self.device),
-                            batch[0]['tex'].to(self.device),
-                            batch[0]['lit'].to(self.device),
+                            batch[0]['cam'], 
+                            batch[0]['pose'],
+                            batch[0]['shape'],
+                            batch[0]['exp'],
+                            batch[0]['tex'],
+                            batch[0]['lit'],
 
-                            batch[1]['cam'].to(self.device), 
-                            batch[1]['pose'].to(self.device),
+                            batch[1]['cam'], 
+                            batch[1]['pose'],
                             
-                            batch[1]['shape'].to(self.device),
-                            batch[1]['exp'].to(self.device),
-                            batch[1]['tex'].to(self.device),
-                            batch[1]['lit'].to(self.device)
+                            batch[1]['shape'],
+                            batch[1]['exp'],
+                            batch[1]['tex'],
+                            batch[1]['lit']
                             )
                 
                 landmark_same = return_list['landmark_same']
@@ -302,16 +287,16 @@ class RigModule():
 
                 losses = {}
                 # keep batch[1], w the same
-                losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_same'] = (batch[1]['img_mask'].to(self.device) * (render_img_same - batch[1]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
+                losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['photometric_texture_same'] = (batch[1]['img_mask'] * (render_img_same - batch[1]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
                 
                 # close to w
-                losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_w_'] = (batch[1]['img_mask'].to(self.device) * (render_img_w_ - batch[1]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
+                losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['photometric_texture_w_'] = (batch[1]['img_mask'] * (render_img_w_ - batch[1]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
                 
                 # close to v
-                losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                losses['photometric_texture_v_'] = (batch[0]['img_mask'].to(self.device) * (render_img_v_ - batch[0]['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
+                losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['photometric_texture_v_'] = (batch[0]['img_mask'] * (render_img_v_ - batch[0]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
                 
                 tqdm_dict = {'landmark_same': losses['landmark_same'].data, \
                              'photometric_texture_same': losses['photometric_texture_same'].data, \
