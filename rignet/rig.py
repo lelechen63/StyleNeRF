@@ -430,7 +430,7 @@ class RigModule():
                                          )
 
                 visuals = OrderedDict([
-                ('image_v', image_v),
+                ('image_v' + choice_dic[choice], image_v),
                 ('lmark_v', lmark_v),
                 ('recons_images_v', recons_images_v),
 
@@ -453,7 +453,7 @@ class RigModule():
 
                 ('genimage_v_sudo', genimage_v_sudo ),
                 ('genimage_w_sudo', genimage_w_sudo ),
-                
+
                 ('genimage_v_gt', genimage_v_gt ),
                 ('genimage_w_gt', genimage_w_gt ),
                 ])
