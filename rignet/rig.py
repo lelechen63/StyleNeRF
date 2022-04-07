@@ -62,7 +62,7 @@ class RigModule():
 
     def train(self):
         MSE_Loss   = nn.SmoothL1Loss(reduction='mean')
-        perceptual_net  = VGG16_for_Perceptual(n_layers=[2,4,14,21]).to(device)
+        perceptual_net  = VGG16_for_Perceptual(n_layers=[2,4,14,21]).to(self.device)
 
         t0 = time.time()
         for epoch in range( 10000):
