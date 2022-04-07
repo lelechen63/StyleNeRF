@@ -110,24 +110,20 @@ class RigModule():
                 losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_w_'] = MSE_Loss( render_img_w_,  batch[1]['img_mask'] * batch[1]['gt_image']) * self.flame_config.w_pho
                 
-                print (render_img_w_.shape, render_img_w_.max(), render_img_w_.min())
-                print (  batch[1]['gt_image'].shape,  batch[1]['gt_image'].max(),  batch[1]['gt_image'].min() )
-                print('=======================')
-
                 assert render_img_w_.shape[-1] == 256
                 # render_w_p  = F.interpolate(render_img_w_, size=(256, 256), mode='area')
 
                 render_w_features = perceptual_net(render_img_w_)
                 w_features = perceptual_net(batch[1]['img_mask'] * batch[1]['gt_image'])
                 
-                loss['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
+                losses['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
                 # close to v
                 losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_v_'] = MSE_Loss(  render_img_v_,  batch[0]['img_mask'] * batch[0]['gt_image'] ) * self.flame_config.w_pho
 
                 render_v_features = perceptual_net(render_img_v_)
                 v_features = perceptual_net(batch[0]['img_mask'] * batch[0]['gt_image'])
-                loss['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
+                losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
 
                 loss = losses['w_same'] + \
                        losses['landmark_w_'] + losses['photometric_texture_w_'] + \
