@@ -51,10 +51,12 @@ while l:
     #     break
     l = reader.readline()
 reader.close()
+
 # loss_tex = loss_tex[100:]
 # loss_land = loss_land[100:]
 
 axis = [i for i in range(len(loss_l2_v))]
+print (axis)
 plt.plot(axis, loss_l2_v, 'r--', axis, loss_p_v, 'b--',axis, loss_land_v, 'g--', axis, loss_l2_w, 'r*', axis, loss_p_w, 'b*',axis, loss_land_w, 'g*')
 plt.show()
 plt.savefig('./gg.png')
