@@ -113,27 +113,35 @@ class RigModule():
                 print (render_img_w_.shape, render_img_w_.max(), render_img_w_.min())
                 print (  batch[1]['gt_image'].shape,  batch[1]['gt_image'].max(),  batch[1]['gt_image'].min() )
                 print('=======================')
+                
+                assert render_img_w_.shape[-1] != 256
+                # render_w_p  = F.interpolate(render_img_w_, size=(256, 256), mode='area')
 
-                target_image_p  = F.interpolate(target_image, size=(256, 256), mode='area')
-
-
+                render_w_features = perceptual_net(render_img_w_)
+                w_features = perceptual_net(batch[1]['img_mask'] * batch[1]['gt_image'])
+                
+                loss['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
                 # close to v
                 losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_v_'] = MSE_Loss(  render_img_v_,  batch[0]['img_mask'] * batch[0]['gt_image'] ) * self.flame_config.w_pho
 
+                render_v_features = perceptual_net(render_img_v_)
+                v_features = perceptual_net(batch[0]['img_mask'] * batch[0]['gt_image'])
+                loss['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
+
                 loss = losses['w_same'] + \
                        losses['landmark_w_'] + losses['photometric_texture_w_'] + \
-                       losses['landmark_v_'] + losses['photometric_texture_v_']
+                       losses['landmark_v_'] + losses['photometric_texture_v_'] + \
+                       losses['percepture_w'] + losses['percepture_v']
                 
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-                tqdm_dict = {'w_same': losses['w_same'].data, \
-                             'landmark_w_': losses['landmark_w_'].data, \
-                             'photometric_texture_w_': losses['photometric_texture_w_'].data, \
-                             'landmark_v_': losses['landmark_v_'].data, \
-                             'photometric_texture_v_': losses['photometric_texture_v_'].data
-                               }
+                
+                tqdm_dic = {}
+                for key in losses.keys():
+                    tqdm_dic[key] = losses[key].data
+
                 errors = {k: v.data.item() if not isinstance(v, int) else v for k, v in tqdm_dict.items()} 
                 t3 = time.time()
                 self.visualizer.print_current_errors(epoch, step, errors, t1-t0, t2-t1, t3-t2)
@@ -246,10 +254,8 @@ class RigModule():
                 if key !='image_path':
                     batch[0][key] = batch[0][key].to(self.device)
                     batch[1][key] = batch[1][key].to(self.device)
-    
 
             with torch.no_grad():    
-                
                 return_list = self.rig.test(
                             batch[0]['latent'],
                             batch[1]['latent'],
@@ -452,20 +458,16 @@ def vis_tensor(image_tensor = None, image_path = None, land_tensor = None, cam =
 
 
         
-def caluclate_loss(synth_image, target_image, target_features, perceptual_net, MSE_Loss):
-     #calculate MSE Loss
-     mse_loss = MSE_Loss(synth_image, target_image) # (lamda_mse/N)*||G(w)-I||^2
-
+def caluclate_percepture_loss( output_fea, target_fea, MSE_Loss):
      #calculate Perceptual Loss
-     real_0, real_1, real_2, real_3 = target_features
-     synth_image_p = F.interpolate(synth_image, size=(256, 256), mode='area')
-     synth_0, synth_1, synth_2, synth_3 = perceptual_net(synth_image_p)
+     real_0, real_1, real_2, real_3 = target_fea
+     synth_0, synth_1, synth_2, synth_3 = output_fea
      perceptual_loss = 0
      perceptual_loss += MSE_Loss(synth_0, real_0)
      perceptual_loss += MSE_Loss(synth_1, real_1)
      perceptual_loss += MSE_Loss(synth_2, real_2)
      perceptual_loss += MSE_Loss(synth_3, real_3)
-     return mse_loss, perceptual_loss
+     return  perceptual_loss
 
 class VGG16_for_Perceptual(torch.nn.Module):
     def __init__(self,requires_grad=False,n_layers=[2,4,14,21]):
