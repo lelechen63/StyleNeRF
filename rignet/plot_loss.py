@@ -22,11 +22,10 @@ while l:
         l2_v = tmp[-4]
         p_v =tmp[-2]
         land_v = tmp[-6]
-        p_v =tmp[-2]
 
         l2_w = tmp[-10]
         p_w =tmp[-8]
-        land_v = tmp[-12]
+        land_w = tmp[-12]
 
 
         loss_l2_v.append(float(l2_v))
