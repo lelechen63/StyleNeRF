@@ -315,7 +315,7 @@ class RigNerft(nn.Module):
         return  delta_w + w
     
     def flame_render(self,p, pose, cam):
-        shapecode,expcode,albedocode, litcode = p[0],p[1],p[2],p[3]
+        shapecode,expcode,albedocode, litcode = p[0],p[1],p[2],p[3].view(-1, 9, 3)
         vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode, expression_params=expcode, pose_params=pose)
         trans_vertices = util.batch_orth_proj(vertices, cam)
         trans_vertices[..., 1:] = - trans_vertices[..., 1:]
@@ -454,12 +454,9 @@ class RigNerft(nn.Module):
                 p_v_.append(p_w_mapped[j])
         
         landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
+
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
-
-        
-
-        
 
         _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
         _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
