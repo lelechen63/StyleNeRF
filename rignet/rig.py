@@ -111,7 +111,7 @@ class RigModule():
                 losses['photometric_texture_w_'] = MSE_Loss( render_img_w_,  batch[1]['img_mask'] * batch[1]['gt_image']) * self.flame_config.w_pho
                 
                 print (render_img_w_.shape, render_img_w_.max(), render_img_w_.min())
-                print (  batch[1]['gt_image'].shape(),  batch[1]['gt_image'].max(),  batch[1]['gt_image'].min() )
+                print (  batch[1]['gt_image'].shape,  batch[1]['gt_image'].max(),  batch[1]['gt_image'].min() )
                 print('=======================')
 
                 target_image_p  = F.interpolate(target_image, size=(256, 256), mode='area')
