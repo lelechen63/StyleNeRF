@@ -105,7 +105,7 @@ class RigModule():
                 # keep batch[1], w the same
                 # losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 # losses['photometric_texture_same'] = (batch[1]['img_mask'] * (render_img_same - batch[1]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
-                losses['w_same'] = MSE_Loss(latent_w_same,batch[1]['latent'] )
+                losses['w_same'] = MSE_Loss(latent_w_same,batch[1]['latent'] ) * 20
                 # close to w
                 losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_w_'] = MSE_Loss( batch[1]['img_mask'] * render_img_w_,  batch[1]['img_mask'] * batch[1]['gt_image']) * self.flame_config.w_pho
