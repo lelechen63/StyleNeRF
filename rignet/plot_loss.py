@@ -38,10 +38,7 @@ while l:
         loss_land_w.append(float(land_w))
         loss_land_v.append(float(land_v))
     
-    # ss += 1
-    # if ss == 1000:
-    #     break
-    l = reader.readline()
+        l = reader.readline()
 reader.close()
 
 # loss_tex = loss_tex[100:]
