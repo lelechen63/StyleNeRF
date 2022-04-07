@@ -429,7 +429,7 @@ class RigNerft(nn.Module):
                 p_w_replaced.append(p_w[i])
             else:
                 gt_switch_v.append(p_w[i])
-                gt_switch_v.append(p_v[i])
+                gt_switch_w.append(p_v[i])
 
                 realgt_switch_w.append(p_v_vis[i])
                 realgt_switch_v.append(p_w_vis[i])
