@@ -114,8 +114,7 @@ class RigModule():
                 print (  batch[1]['gt_image'].shape,  batch[1]['gt_image'].max(),  batch[1]['gt_image'].min() )
                 print('=======================')
 
-                print  (render_img_w_.shape[-1])
-                assert render_img_w_.shape[-1] != 256
+                assert render_img_w_.shape[-1] == 256
                 # render_w_p  = F.interpolate(render_img_w_, size=(256, 256), mode='area')
 
                 render_w_features = perceptual_net(render_img_w_)
