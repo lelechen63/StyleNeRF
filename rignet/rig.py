@@ -115,11 +115,10 @@ class RigModule():
                 
                 assert render_img_w_.shape[-1] == 256
                 # render_w_p  = F.interpolate(render_img_w_, size=(256, 256), mode='area')
-
                 render_w_features = perceptual_net(batch[1]['img_mask'] *render_img_w_)
                 w_features = perceptual_net(batch[1]['img_mask'] * batch[1]['gt_image'])
-                
                 losses['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
+                
                 # close to v
                 losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_v_'] = MSE_Loss( batch[0]['img_mask'] * render_img_v_,  batch[0]['img_mask'] * batch[0]['gt_image'] ) * self.flame_config.w_pho

@@ -23,7 +23,7 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--lambda_pix', type=float, default=10, help='weight for feature texture loss')                
         self.parser.add_argument('--lambda_mesh', type=float, default=0.01, help='weight for feature mesh loss')                
         self.parser.add_argument('--lambda_code', type=float, default= 1, help='weight for feature code loss')  
-        self.parser.add_argument('--lambda_percep', type=float, default= 0.1, help='weight for feature code loss')  
+        self.parser.add_argument('--lambda_percep', type=float, default= 1, help='weight for feature code loss')  
 
         self.parser.add_argument('--nerfpkl', type=str, default='/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/checkpoints/ffhq_1024.pkl', help='nerf pickle path')
 
