@@ -113,7 +113,8 @@ class RigModule():
                 print (render_img_w_.shape, render_img_w_.max(), render_img_w_.min())
                 print (  batch[1]['gt_image'].shape,  batch[1]['gt_image'].max(),  batch[1]['gt_image'].min() )
                 print('=======================')
-                
+
+                print  (render_img_w_.shape[-1])
                 assert render_img_w_.shape[-1] != 256
                 # render_w_p  = F.interpolate(render_img_w_, size=(256, 256), mode='area')
 
@@ -137,7 +138,7 @@ class RigModule():
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-                
+
                 tqdm_dic = {}
                 for key in losses.keys():
                     tqdm_dic[key] = losses[key].data
