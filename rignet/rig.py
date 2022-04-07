@@ -452,7 +452,8 @@ class RigModule():
                 ('recons_w_hat', recons_images_w_hat ),
 
                 ('genimage_v_sudo', genimage_v_sudo ),
-                ('genimage_w_sudo', genimage_v_sudo ),
+                ('genimage_w_sudo', genimage_w_sudo ),
+                
                 ('genimage_v_gt', genimage_v_gt ),
                 ('genimage_w_gt', genimage_w_gt ),
                 ])
