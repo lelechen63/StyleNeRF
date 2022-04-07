@@ -134,9 +134,9 @@ class RigModule():
                 loss.backward()
                 self.optimizer.step()
 
-                tqdm_dic = {}
+                tqdm_dict = {}
                 for key in losses.keys():
-                    tqdm_dic[key] = losses[key].data
+                    tqdm_dict[key] = losses[key].data
 
                 errors = {k: v.data.item() if not isinstance(v, int) else v for k, v in tqdm_dict.items()} 
                 t3 = time.time()
