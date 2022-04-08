@@ -129,7 +129,7 @@ class RigModule():
 
                 loss = losses['w_same'] + \
                     losses['photometric_texture_v_'] + losses['photometric_texture_w_'] + \
-                    losses['landmark_v_'] + losses['landmark_w_'] + \
+                    # losses['landmark_v_'] + losses['landmark_w_'] + \
                     losses['percepture_w'] + losses['percepture_v']
                 
                 self.optimizer.zero_grad()
