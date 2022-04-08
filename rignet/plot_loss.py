@@ -31,3 +31,4 @@ for k in losses.keys():
         plt.plot(axis, losses[k], 'r--' )
         plt.show()
         plt.savefig('./gg/' + k[:-1] + '.png')
+        plt.clf()
