@@ -169,7 +169,7 @@ def varify( parse = parse):
 
     
     for i,p in enumerate(ps):
-        genimg = output(p,change_chart[i] )
+        genimage = output(p,change_chart[i] )
         img = cv2.hconcat([genimage, gtimage1, gtimage2])
         if i == 0:
             ff = img
