@@ -17,7 +17,7 @@ while l:
                 tmp = l[:-1].split(' ')[:-1]
                 print (tmp)
                 for i in range(0, len(tmp), 2):
-                        print (i)
+                        print (tmp[i])
                 
                 l2_v = tmp[-4]
                 p_v =tmp[-2]
