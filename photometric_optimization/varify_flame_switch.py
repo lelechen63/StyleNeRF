@@ -22,9 +22,6 @@ from FLAME import FLAME, FLAMETex
 from Flamerenderer import FlameRenderer as Renderer
 import util
 torch.backends.cudnn.benchmark = True
-sys.path.append('../scripts/')
-from dataset_tool import *
-sys.path.append('../utils/')
 import tensor_util
 import argparse
 
