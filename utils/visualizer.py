@@ -78,12 +78,10 @@ class Visualizer():
                     webpage.add_images(ims[num:], txts[num:], links[num:], width=self.win_size)
             webpage.save()
 
-   
-
   
     # errors: same format as |errors| of plotCurrentErrors
     def print_current_errors(self, epoch, i, errors, t1, t2, t3):
-        message = '(epoch: %d, iters: %d, data time: %.3f, network time: %.3f,loss time: %.3f, ) ' % (epoch, i, t1, t2, t3)
+        message = '(epoch: %d, iters: %d, data time: %.3f, network time: %.3f,loss time: %.3f)\n' % (epoch, i, t1, t2, t3)
         for k, v in errors.items():
             if v != 0:
                 message += '%s: %.6f ' % (k, v)
