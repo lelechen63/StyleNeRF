@@ -366,17 +366,19 @@ class RigNerft(nn.Module):
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
         return_list = {}
 
+
         if flameshape_v != None:
             landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
-            p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
-            p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
-            _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
-            _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
-
-            return_list['recons_images_v'] = recons_images_v
-            return_list['recons_images_w'] = recons_images_w
+            
             return_list['landmark_same'] = landmark_same
             return_list['render_img_same'] = render_img_same
+        p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
+        p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
+        _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
+        _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
+
+        return_list['recons_images_v'] = recons_images_v
+        return_list['recons_images_w'] = recons_images_w
 
         return_list['latent_w_same'] = latent_w_same
         return_list['landmark_w_'] = landmark_w_
