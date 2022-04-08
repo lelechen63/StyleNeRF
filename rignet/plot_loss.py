@@ -38,7 +38,7 @@ while l:
 
                 loss_land_w.append(float(land_w))
                 loss_land_v.append(float(land_v))
-        idnex +=1
+        index +=1
         l = reader.readline()
 reader.close()
 
