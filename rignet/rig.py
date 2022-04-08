@@ -123,11 +123,11 @@ class RigModule():
                 # close to v
                 # losses['landmark_v_']  = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 # losses['photometric_texture_v_'] = MSE_Loss( batch[0]['img_mask'] * render_img_v_,  batch[0]['img_mask'] * batch[0]['gt_image'] ) * self.flame_config.w_pho
-                losses['photometric_texture_v_'] = MSE_Loss(  render_img_v_,  return_list['recons_images_w'].detach().float() ) * self.flame_config.w_pho
+                losses['photometric_texture_v_'] = MSE_Loss(  render_img_v_,  return_list['recons_images_v'].detach().float() ) * self.flame_config.w_pho
 
                 # render_v_features = perceptual_net(batch[0]['img_mask'] *render_img_v_)
                 render_v_features = perceptual_net(render_img_v_)
-                v_features = perceptual_net( return_list['recons_images_w'].detach().float())
+                v_features = perceptual_net( return_list['recons_images_v'].detach().float())
 
                 losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
 
