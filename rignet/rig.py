@@ -110,7 +110,7 @@ class RigModule():
                 # losses['photometric_texture_same'] = (batch[1]['img_mask'] * (render_img_same - batch[1]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
                 losses['w_same'] = MSE_Loss(latent_w_same,batch[1]['latent'] ) * 20
                 # close to w
-                losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['landmark_w_'] = 0# util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_w_'] = MSE_Loss( batch[1]['img_mask'] * render_img_w_,  batch[1]['img_mask'] * batch[1]['gt_image']) * self.flame_config.w_pho
                 
                 assert render_img_w_.shape[-1] == 256
@@ -120,7 +120,7 @@ class RigModule():
                 losses['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
                 
                 # close to v
-                losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['landmark_v_'] = 0# = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_v_'] = MSE_Loss( batch[0]['img_mask'] * render_img_v_,  batch[0]['img_mask'] * batch[0]['gt_image'] ) * self.flame_config.w_pho
 
                 render_v_features = perceptual_net(batch[0]['img_mask'] *render_img_v_)
