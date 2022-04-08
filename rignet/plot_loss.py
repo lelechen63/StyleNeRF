@@ -19,14 +19,14 @@ while l:
                 print (tmp)
                 for i in range(0, len(tmp), 2):
                         print (tmp[i])
-                        if tmp[i] not in losses.key():
+                        if tmp[i] not in losses.keys():
                                 losses[tmp[i]] =[]
                         losses[tmp[i]].append(float(tmp[i+1]))
 
         index +=1
         l = reader.readline()
 reader.close()
-for k in losses.key():
+for k in losses.keys():
         axis = [i for i in range(len(losses[k]))]
         plt.plot(axis, losses[k], 'r--' )
         plt.show()
