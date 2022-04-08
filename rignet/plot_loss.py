@@ -12,29 +12,31 @@ ss = 0
 losses = []
 
 axis =[]
+index = 0
 while l:
-        tmp = l[:-1].split(' ')
-        print (tmp)
-        l2_v = tmp[-4]
-        p_v =tmp[-2]
-        land_v = tmp[-6]
+        if index % 1 == 0:
+                tmp = l[:-1].split(' ')
+                print (tmp)
+                l2_v = tmp[-4]
+                p_v =tmp[-2]
+                land_v = tmp[-6]
 
-        l2_w = tmp[-10]
-        p_w =tmp[-8]
-        land_w = tmp[-12]
+                l2_w = tmp[-10]
+                p_w =tmp[-8]
+                land_w = tmp[-12]
 
-        w = tmp[-14]
+                w = tmp[-14]
 
-        loss_w.append(float(w))
+                loss_w.append(float(w))
 
-        loss_l2_v.append(float(l2_v))
-        loss_l2_w.append(float(l2_w))
+                loss_l2_v.append(float(l2_v))
+                loss_l2_w.append(float(l2_w))
 
-        loss_p_v.append(float(p_v))
-        loss_p_w.append(float(p_w))
+                loss_p_v.append(float(p_v))
+                loss_p_w.append(float(p_w))
 
-        loss_land_w.append(float(land_w))
-        loss_land_v.append(float(land_v))
+                loss_land_w.append(float(land_w))
+                loss_land_v.append(float(land_v))
     
         l = reader.readline()
 reader.close()
