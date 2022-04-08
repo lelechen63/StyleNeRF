@@ -128,10 +128,9 @@ class RigModule():
                 losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
 
                 loss = losses['w_same'] + \
-                    losses['photometric_texture_v_'] + losses['photometric_texture_w_'] + \
-                    # losses['landmark_v_'] + losses['landmark_w_'] + \
+                    losses['photometric_texture_v_'] + losses['photometric_texture_w_'] +  \
                     losses['percepture_w'] + losses['percepture_v']
-                
+                # losses['landmark_v_'] + losses['landmark_w_'] + \
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
