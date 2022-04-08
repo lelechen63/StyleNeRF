@@ -14,39 +14,20 @@ axis =[]
 index = 0
 while l:
         if index % 2 == 1:
+                
                 tmp = l[:-1].split(' ')[:-1]
                 print (tmp)
                 for i in range(0, len(tmp), 2):
                         print (tmp[i])
-                
-                l2_v = tmp[-4]
-                p_v =tmp[-2]
-                land_v = tmp[-6]
+                        if tmp[i] not in losses.key():
+                                losses[tmp[i]] =[]
+                        losses[tmp[i]].append(float(tmp[i+1]))
 
-                l2_w = tmp[-10]
-                p_w =tmp[-8]
-                land_w = tmp[-12]
-
-                w = tmp[-14]
-
-                loss_w.append(float(w))
-
-                loss_l2_v.append(float(l2_v))
-                loss_l2_w.append(float(l2_w))
-
-                loss_p_v.append(float(p_v))
-                loss_p_w.append(float(p_w))
-
-                loss_land_w.append(float(land_w))
-                loss_land_v.append(float(land_v))
         index +=1
         l = reader.readline()
 reader.close()
-
-# loss_tex = loss_tex[100:]
-# loss_land = loss_land[100:]
-
-axis = [i for i in range(len(loss_l2_v))]
-plt.plot(axis, loss_w, 'r--' )#, axis, loss_p_v, 'b--',axis, loss_land_v, 'g--', axis, loss_l2_w)# 'r*', axis, loss_p_w, 'b*',axis, loss_land_w, 'g*')
-plt.show()
-plt.savefig('./gg.png')
+for k in losses.key():
+        axis = [i for i in range(len(losses[k]))]
+        plt.plot(axis, losses[k], 'r--' )
+        plt.show()
+        plt.savefig('./gg/' + k[:-1] + '.png')
