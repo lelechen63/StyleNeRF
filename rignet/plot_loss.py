@@ -8,15 +8,9 @@ reader = open(losstxt)
 l = reader.readline()
 l = reader.readline()
 ss = 0
-loss_l2_v = []
-loss_p_v = []
-loss_land_v = []
 
-loss_l2_w = []
-loss_p_w = []
-loss_land_w = []
+losses = []
 
-loss_w = []
 axis =[]
 while l:
         tmp = l[:-1].split(' ')
