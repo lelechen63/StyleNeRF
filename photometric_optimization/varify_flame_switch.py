@@ -87,7 +87,7 @@ def vis_tensor(image_tensor = None, image_path = None, land_tensor = None, cam =
     output = np.clip(output, 0, 255)
 
     return output
-
+device = torch.device("cuda")
 config.batch_size = 1
 config.image_size = parse.imgsize
 flame = FLAME(config).to(device)
@@ -95,7 +95,7 @@ flametex = FLAMETex(config).to(device)
 mesh_file = '/home/uss00022/lelechen/basic/flame_data/data/head_template_mesh.obj'
 render = Renderer(config.image_size, obj_filename=mesh_file).to(device)
 
-def output( p, idx, config = config, flame = flame, flametex = flametex, render = render  ):
+def output( p, idx, config = config, flame = flame, flametex = flametex, render = render, device = torch.device("cuda")  ):
     shape, exp,tex, lit, pose, cam = p[0], p[1],p[2],p[3],p[4],p[5]
 
     root = '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf'
