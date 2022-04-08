@@ -9,15 +9,16 @@ l = reader.readline()
 l = reader.readline()
 ss = 0
 
-losses = []
-
+losses = {}
 axis =[]
 index = 0
 while l:
-
         if index % 2 == 1:
-                tmp = l[:-1].split(' ')
+                tmp = l[:-1].split(' ')[:-1]
                 print (tmp)
+                for i in range(0, len(tmp), 2):
+                        print (i)
+                
                 l2_v = tmp[-4]
                 p_v =tmp[-2]
                 land_v = tmp[-6]
