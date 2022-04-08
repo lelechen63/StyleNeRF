@@ -167,14 +167,14 @@ def varify( parse = parse):
 
     change_chart =['shape', 'exp', 'tex', 'lit']    
 
+    genimage1 = output(p1,'p1' )
+    genimage2 = output(p2,'p2' )
+    ff = cv2.hconcat([genimage1, genimage1, genimage2])
     
     for i,p in enumerate(ps):
         genimage = output(p,change_chart[i] )
         img = cv2.hconcat([genimage, gtimage1, gtimage2])
-        if i == 0:
-            ff = img
-        else:
-            ff = cv2.vconcat([ff, img])
+        ff = cv2.vconcat([ff, img])
 
     cv2.imwrite('gg.png', ff)
 
