@@ -14,7 +14,8 @@ losses = []
 axis =[]
 index = 0
 while l:
-        if index % 1 == 0:
+        
+        if index % 2 == 1:
                 tmp = l[:-1].split(' ')
                 print (tmp)
                 l2_v = tmp[-4]
