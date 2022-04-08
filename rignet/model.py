@@ -16,7 +16,7 @@ sys.path.append('/home/uss00022/lelechen/github/StyleNeRF/photometric_optimizati
 from Flamerenderer import FlameRenderer
 import util
 from models.FLAME import FLAME, FLAMETex
-sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/utils')
+sys.path.append('/home/uss00022/lelechen/github/StyleNeRF/utils')
 from visualizer import Visualizer
 import tensor_util
 from blocks import *
