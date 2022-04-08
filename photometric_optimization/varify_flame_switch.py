@@ -158,3 +158,4 @@ def varify( parse = parse):
     
     
 
+varify()
