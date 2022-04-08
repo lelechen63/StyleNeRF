@@ -153,9 +153,4 @@ def varify( parse = parse):
     cv2.imwrite('gg.png', ff)
 
 
-
-
-    
-    
-
 varify()
