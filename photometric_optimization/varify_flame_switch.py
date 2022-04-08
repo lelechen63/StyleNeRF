@@ -46,6 +46,32 @@ def parse_args():
 parse = parse_args()
 
     
+config = {
+        # FLAME
+        "savefolder" : '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/flame2/',
+        'flame_model_path': '/home/uss00022/lelechen/basic/flame_data/data/generic_model.pkl',  # acquire it from FLAME project page
+        'flame_lmk_embedding_path': '/home/uss00022/lelechen/basic/flame_data/data/landmark_embedding.npy',
+        'tex_space_path': '/home/uss00022/lelechen/basic/flame_data/data/FLAME_texture.npz',  # acquire it from FLAME project page
+        'camera_params': 3,
+        'shape_params': 100,
+        'expression_params': 50,
+        'pose_params': 6,
+        'tex_params': 50,
+        'use_face_contour': True,
+
+        'batch_size': 1,
+        'image_size': parse.imgsize,
+        'e_lr': 0.005,
+        'e_wd': 0.0001,
+        'w_pho': 8,
+        'w_lmks': 1,
+        'w_shape_reg': 1e-4,
+        'w_expr_reg': 1e-4,
+        'w_pose_reg': 0,
+    }
+
+config = util.dict2obj(config)
+
 def vis_tensor(image_tensor = None, image_path = None, land_tensor = None, cam = None,  visind =0, device = torch.device("cuda")):
     if land_tensor is not None:
         lmark = util.batch_orth_proj(land_tensor.to(device), cam.to(device))
