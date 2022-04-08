@@ -14,7 +14,7 @@ losses = []
 axis =[]
 index = 0
 while l:
-        
+
         if index % 2 == 1:
                 tmp = l[:-1].split(' ')
                 print (tmp)
@@ -38,7 +38,7 @@ while l:
 
                 loss_land_w.append(float(land_w))
                 loss_land_v.append(float(land_v))
-    
+        idnex +=1
         l = reader.readline()
 reader.close()
 
