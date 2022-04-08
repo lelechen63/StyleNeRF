@@ -22,6 +22,8 @@ from FLAME import FLAME, FLAMETex
 from Flamerenderer import FlameRenderer as Renderer
 import util
 torch.backends.cudnn.benchmark = True
+sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/utils')
+
 import tensor_util
 import argparse
 
