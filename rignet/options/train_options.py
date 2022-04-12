@@ -8,7 +8,7 @@ class TrainOptions(BaseOptions):
 
         # for displays
         self.parser.add_argument('--debug', action='store_true', help='only do one epoch and displays at each iteration')
-        self.parser.add_argument('--save_step', type=int, default=5, help='load the pretrained model from the specified location')
+        self.parser.add_argument('--save_step', type=int, default=1000, help='load the pretrained model from the specified location')
 
         # for training
         self.parser.add_argument('--continue_train', action='store_true', help='continue training: load the latest model')
