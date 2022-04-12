@@ -355,7 +355,7 @@ class RigNerft(nn.Module):
             else:
                 p_w_replaced.append(p_v[i])
 
-        latent_w_hat = self.rig(latent_w, 0)
+        latent_w_hat = self.rig(latent_w, p_w_replaced)
         # map chagned w back to P
         p_w_mapped = self.latent2params(latent_w_hat)
 
