@@ -272,6 +272,7 @@ class RigNerft(nn.Module):
                 LinearWN( 256, self.latent_fea_dim ),
                 th.nn.LeakyReLU( 0.2, inplace = True )
                 ))
+            WEncoder = ModuleList(WEncoder)
         if len(weight) > 0:
             print ('loading weights for WEncoder  network, ' + weight )
             for i in rnage(self.layer):
@@ -287,7 +288,7 @@ class RigNerft(nn.Module):
                 LinearWN( 128, self.param_fea_dim ),
                 th.nn.LeakyReLU( 0.2, inplace = True )
             ))
-            
+            ParamEncoder = ModuleList(ParamEncoder)
         if len(weight) > 0:
             print ('loading weights for ParamEncoder  network, ' +weight )
             for i in range(self.layer):
@@ -301,6 +302,7 @@ class RigNerft(nn.Module):
             th.nn.LeakyReLU( 0.2, inplace = True ),
             LinearWN( 256, self.latent_dim ),
         )
+        WDecoder = ModuleList(WDecoder)
         if len(weight) > 0:
             print ('loading weights for WDecoder  network, ' +weight )
             for i in range(self.layer):
