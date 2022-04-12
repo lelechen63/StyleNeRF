@@ -317,7 +317,7 @@ class RigNerft(nn.Module):
         l_p = self.ParamEncoder(torch.cat([shapecode, expcode, albedocode, litcode], axis = 1))
         for i in range(self.layer):
             tmp = self.LatentEncoder[i](w[:,i,:])
-            print (tmp.shape )
+            print (tmp.shape , l_p.shape  )
             delta_w.append(self.LatentDecoder[i](torch.cat([l_p, tmp ], axis = 1)))
         delta_w = torch.stack(delta_w, 1)
         print (delta_w.shape)
