@@ -63,6 +63,32 @@ class RigModule():
         self.ckpt_path = os.path.join(opt.checkpoints_dir, opt.name)
         os.makedirs(self.ckpt_path, exist_ok = True)
 
+    def compute_loss(self, w,v,return_list, perceptual_net):
+        losses = {}
+        # keep w, w the same
+        losses['landmark_same'] = util.l2_distance(return_list['landmark_same'][:, 17:, :2], w['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+        losses['photometric_texture_same'] = MSE_Loss( w['img_mask'] * return_list['render_img_same'],  w['img_mask'] * w['gt_image']) * self.flame_config.w_pho
+        # close to w
+        losses['landmark_w_'] =  util.l2_distance(return_list['landmark_w_'][:, 17:, :2], w['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+        losses['photometric_texture_w_'] = MSE_Loss( w['img_mask'] * return_list['render_img_w_'] ,  w['img_mask'] * w['gt_image']) * self.flame_config.w_pho
+        
+        assert render_img_w_.shape[-1] == 256
+        render_w_features = perceptual_net(w['img_mask'] * return_list['render_img_w_'])
+        w_features = perceptual_net(w['img_mask'] * w['gt_image'])
+        losses['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
+        
+        # close to v
+        losses['landmark_v_']  = util.l2_distance(return_list['landmark_v_'][:, 17:, :2], v['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+        losses['photometric_texture_v_'] = MSE_Loss(  v['img_mask'] * return_list['render_img_v_'] , v['img_mask'] * v['gt_image'] ) * self.flame_config.w_pho
+
+        render_v_features = perceptual_net( v['img_mask'] * return_list['render_img_v_'])
+        v_features = perceptual_net( v['img_mask'] * v['gt_image'])
+        losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
+        return losses
+        
+        
+            
+
     def train(self):
         MSE_Loss   = nn.SmoothL1Loss(reduction='mean')
         perceptual_net  = VGG16_for_Perceptual(n_layers=[2,4,14,21]).to(self.device)
@@ -75,66 +101,16 @@ class RigModule():
                     if key !='image_path':
                         batch[0][key] = batch[0][key].to(self.device)
                         batch[1][key] = batch[1][key].to(self.device)
-    
-
-                return_list = self.rig.forward(
-                    batch[0]['latent'],
-                    batch[1]['latent'],
-                    
-                    batch[0]['cam'], 
-                    batch[0]['pose'],
-
-                    batch[0]['shape'],
-                    batch[0]['exp'],
-                    batch[0]['tex'],
-                    batch[0]['lit'],
-
-                    batch[1]['cam'], 
-                    batch[1]['pose'],
-                    
-                    batch[1]['shape'],
-                    batch[1]['exp'],
-                    batch[1]['tex'],
-                    batch[1]['lit']
-                    )
-                latent_w_same = return_list['latent_w_same'] 
-                landmark_w_ = return_list['landmark_w_']
-                render_img_w_ = return_list['render_img_w_'].float()
-                landmark_v_ = return_list['landmark_v_'] 
-                render_img_v_ = return_list['render_img_v_'].float()
-
+                v = batch[0]
+                w = batch[1]
+                return_list = self.rig.forward(v['latent'], w['latent'], v['cam'], v['pose'], v['shape'],v['exp'],v['tex'],v['lit'], \
+                                                                         w['cam'], w['pose'],w['shape'], w['exp'], w['tex'],w['lit'])
                 t2 = time.time()
-                losses = {}
-                # keep batch[1], w the same
-                # losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
-                # losses['photometric_texture_same'] = (batch[1]['img_mask'] * (render_img_same - batch[1]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
-                losses['w_same'] = MSE_Loss(latent_w_same,batch[1]['latent'] ) * 20
-                # close to w
-                # losses['landmark_w_'] =  util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
-                # losses['photometric_texture_w_'] = MSE_Loss( batch[1]['img_mask'] * render_img_w_,  batch[1]['img_mask'] * batch[1]['gt_image']) * self.flame_config.w_pho
-                losses['photometric_texture_w_'] = MSE_Loss( render_img_w_, return_list['recons_images_w'].detach().float() ) * self.flame_config.w_pho
-                
-                assert render_img_w_.shape[-1] == 256
-                render_w_features = perceptual_net(render_img_w_)
-                w_features = perceptual_net(return_list['recons_images_w'].detach().float())
-                
-                losses['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
-                
-                # close to v
-                # losses['landmark_v_']  = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
-                # losses['photometric_texture_v_'] = MSE_Loss( batch[0]['img_mask'] * render_img_v_,  batch[0]['img_mask'] * batch[0]['gt_image'] ) * self.flame_config.w_pho
-                losses['photometric_texture_v_'] = MSE_Loss(  render_img_v_,  return_list['recons_images_v'].detach().float() ) * self.flame_config.w_pho
+                losses = self.compute_loss(w,v,return_list)
+                loss = 0
+                for k in losses.keys():
+                    loss += losses[k]
 
-                # render_v_features = perceptual_net(batch[0]['img_mask'] *render_img_v_)
-                render_v_features = perceptual_net(render_img_v_)
-                v_features = perceptual_net( return_list['recons_images_v'].detach().float())
-
-                losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
-
-                loss = losses['w_same'] + \
-                    losses['photometric_texture_v_'] + losses['photometric_texture_w_'] +  \
-                    losses['percepture_w'] + losses['percepture_v']
-                # losses['landmark_v_'] + losses['landmark_w_'] + \
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
@@ -146,77 +122,94 @@ class RigModule():
                 errors = {k: v.data.item() if not isinstance(v, int) else v for k, v in tqdm_dict.items()} 
                 t3 = time.time()
                 self.visualizer.print_current_errors(epoch, step, errors, t1-t0, t2-t1, t3-t2)
+                
+                ### siamese training
+                w = batch[0]
+                v = batch[1]
+                return_list = self.rig.forward(v['latent'], w['latent'], v['cam'], v['pose'], v['shape'],v['exp'],v['tex'],v['lit'], \
+                                                                         w['cam'], w['pose'],w['shape'], w['exp'], w['tex'],w['lit'])
+                t2 = time.time()
+                losses = self.compute_loss(w,v,return_list)
+                loss = 0
+                for k in losses.keys():
+                    loss += losses[k]
+
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
                 t0 = time.time()
+
+
             if epoch % self.opt.save_step == 0:  
                 
                 visind = 0
                 # visualize the image close to v
-                image_v = vis_tensor(image_tensor= batch[0]['gt_image'], 
-                                        image_path = batch[0]['image_path'][0] +'-V-gtimg',
+                image_v = vis_tensor(image_tensor= v['gt_image'], 
+                                        image_path = v['image_path'][0] +'-V-gtimg',
                                         device = self.device
                                          )
 
-                lmark_v = vis_tensor(image_tensor= batch[0]['img_mask'] * batch[0]['gt_image'], 
-                                        image_path = batch[0]['image_path'][0] +'-V-landmark',
-                                        land_tensor = batch[0]['gt_landmark'],
-                                        cam = batch[0]['cam'], 
+                lmark_v = vis_tensor(image_tensor= v['img_mask'] * v['gt_image'], 
+                                        image_path = v['image_path'][0] +'-V-landmark',
+                                        land_tensor = v['gt_landmark'],
+                                        cam = v['cam'], 
                                         device = self.device
                                          )
                
 
-                image_w = vis_tensor(image_tensor= batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'-W-gtimg',
+                image_w = vis_tensor(image_tensor= w['gt_image'], 
+                                        image_path = w['image_path'][0] +'-W-gtimg',
                                         device = self.device
                                          )
 
-                lmark_w = vis_tensor(image_tensor= batch[1]['img_mask'] * batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'-W-gtlandmrk',
-                                        land_tensor = batch[1]['gt_landmark'],
-                                        cam = batch[1]['cam'], 
+                lmark_w = vis_tensor(image_tensor= w['img_mask'] * w['gt_image'], 
+                                        image_path = w['image_path'][0] +'-W-gtlandmrk',
+                                        land_tensor = w['gt_landmark'],
+                                        cam = w['cam'], 
                                         device = self.device
                                          )
 
                 recons_images_w = vis_tensor(image_tensor= return_list['recons_images_w'], 
-                                        image_path = batch[1]['image_path'][0] +'-recons-W-img',
+                                        image_path = w['image_path'][0] +'-recons-W-img',
                                         device = self.device
                                          )
                 recons_images_v = vis_tensor(image_tensor= return_list["recons_images_v"], 
-                                        image_path = batch[0]['image_path'][0] +'-recons-V-img',
+                                        image_path = v['image_path'][0] +'-recons-V-img',
                                         device = self.device
                                          )
 
-                genlmark_same = vis_tensor(image_tensor= batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'-same-W-landamrk',
+                genlmark_same = vis_tensor(image_tensor= w['gt_image'], 
+                                        image_path = w['image_path'][0] +'-same-W-landamrk',
                                         land_tensor = return_list["landmark_same"],
-                                        cam = batch[1]['cam'], 
+                                        cam = w['cam'], 
                                         device = self.device
                                          )
         
                 genimage_same = vis_tensor(image_tensor= return_list["render_img_same"], 
-                                        image_path = batch[1]['image_path'][0] +'-same-W-renderimg',
+                                        image_path = w['image_path'][0] +'-same-W-renderimg',
                                         device = self.device
                                          )
           
-                genlmark_w = vis_tensor(image_tensor= batch[1]['gt_image'], 
-                                        image_path = batch[1]['image_path'][0] +'-close-W-landmark',
-                                        land_tensor = landmark_w_,
-                                        cam = batch[1]['cam'], 
+                genlmark_w = vis_tensor(image_tensor= w['gt_image'], 
+                                        image_path = w['image_path'][0] +'-close-W-landmark',
+                                        land_tensor = return_list['landmark_w_'],
+                                        cam = w['cam'], 
                                         device = self.device
                                          )
 
-                genimage_w = vis_tensor(image_tensor= render_img_w_, 
-                                        image_path = batch[1]['image_path'][0] +'-close-W-renderimg',
+                genimage_w = vis_tensor(image_tensor= return_list['render_img_w_'], 
+                                        image_path = w['image_path'][0] +'-close-W-renderimg',
                                         device = self.device
                                          )
 
-                genlmark_v = vis_tensor(image_tensor= batch[0]['gt_image'], 
-                                        image_path = batch[0]['image_path'][0] +'-close-V-landmark',
-                                        land_tensor = landmark_v_,
-                                        cam = batch[0]['cam'], 
+                genlmark_v = vis_tensor(image_tensor= v['gt_image'], 
+                                        image_path = v['image_path'][0] +'-close-V-landmark',
+                                        land_tensor = return_list['landmark_v_'],
+                                        cam = v['cam'], 
                                         device = self.device
                                          )
-                genimage_v = vis_tensor(image_tensor = render_img_v_, 
-                                        image_path = batch[0]['image_path'][0]+'-close-V-renderimg', 
+                genimage_v = vis_tensor(image_tensor = return_list['render_img_v_'], 
+                                        image_path = v['image_path'][0]+'-close-V-renderimg', 
                                         device = self.device)
 
                 
