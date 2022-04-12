@@ -76,7 +76,7 @@ class Latent2CodeModule():
                 expcode, shapecode, litcode, albedocode = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode']
                 loss = 0
                 if self.opt.supervision =='render':
-                    landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
+                    landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images'].float()
                     losses['landmark'] = util.l2_distance(landmarks3d[:, 17:, :2], batch['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                     losses['photometric_texture'] = MSE_Loss( batch['img_mask'] * predicted_images ,  batch['img_mask'] * batch['gt_image']) * self.flame_config.w_pho                    
                     loss = losses['landmark'] + losses['photometric_texture'] #+ losses['lit_reg'] + losses['albedo_reg'] + losses['expression_reg'] + losses['shape_reg']
