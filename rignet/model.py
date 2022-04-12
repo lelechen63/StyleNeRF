@@ -314,13 +314,16 @@ class RigNerft(nn.Module):
     
     def rig(self,w, p):
         shapecode, expcode, albedocode, litcode = p[0], p[1],p[2], p[3].view(-1, 27)
-
-        l_w = self.LatentEncoder(w)
-       
+        print(w.shape)
+        # l_w = self.LatentEncoder(w)
+        delta_w = []
         l_p = self.ParamEncoder(torch.cat([shapecode, expcode, albedocode, litcode], axis = 1))
-       
-        delta_w = self.LatentDecoder(torch.cat([l_p, l_w], axis = 1))
+        for i in range(self.layer):
+            l_w.append(self.LatentEncoder[i](w[:,i,:]))
 
+            delta_w.append(self.LatentDecoder[i](torch.cat([l_p, self.LatentEncoder[i](w[:,i,:])], axis = 1)))
+        delta_w = torch.stack(delta_w, 1)
+        print (delta_w.shape)
         return  delta_w + w
     
     def flame_render(self,p, pose, cam):
