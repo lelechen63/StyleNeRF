@@ -67,7 +67,7 @@ class Latent2CodeModule():
 
                 #landmarks3d, predicted_images, recons_images 
                 return_list = self.latent2code.forward(
-                            batch['latent']
+                            batch['latent'],
                             batch['cam'], 
                             batch['pose']
                             )
