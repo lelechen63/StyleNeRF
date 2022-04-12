@@ -46,7 +46,7 @@ flame_config = {
         'savefolder': '/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg',
         # weights of losses and reg terms
         'w_pho': 10,
-        'w_lmks': 100,
+        'w_lmks': 10,
         'w_shape_reg': 1e-4,
         'w_expr_reg': 1e-4,
         'w_albedo_reg':1e-4,
