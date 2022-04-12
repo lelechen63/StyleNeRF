@@ -10,7 +10,6 @@ from visualizer import Visualizer
 import util
 from dataset import *
 import time
-print('@@@@@@@@@@@')
 class Latent2CodeModule():
     def __init__(self, flame_config, opt ):
         super().__init__()
