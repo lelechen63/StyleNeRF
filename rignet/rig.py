@@ -63,7 +63,7 @@ class RigModule():
         self.ckpt_path = os.path.join(opt.checkpoints_dir, opt.name)
         os.makedirs(self.ckpt_path, exist_ok = True)
 
-    def compute_loss(self, w,v,return_list, perceptual_net):
+    def compute_loss(self, w,v,return_list, perceptual_net, MSE_Loss):
         losses = {}
         # keep w, w the same
         losses['landmark_same'] = util.l2_distance(return_list['landmark_same'][:, 17:, :2], w['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
@@ -107,7 +107,7 @@ class RigModule():
                 return_list = self.rig.forward(v['latent'], w['latent'], v['cam'], v['pose'], v['shape'],v['exp'],v['tex'],v['lit'], \
                                                                          w['cam'], w['pose'],w['shape'], w['exp'], w['tex'],w['lit'])
                 t2 = time.time()
-                losses = self.compute_loss(w,v,return_list, perceptual_net)
+                losses = self.compute_loss(w,v,return_list, perceptual_net, MSE_Loss)
                 loss = 0
                 for k in losses.keys():
                     loss += losses[k]
@@ -130,7 +130,7 @@ class RigModule():
                 return_list = self.rig.forward(v['latent'], w['latent'], v['cam'], v['pose'], v['shape'],v['exp'],v['tex'],v['lit'], \
                                                                          w['cam'], w['pose'],w['shape'], w['exp'], w['tex'],w['lit'])
                 t2 = time.time()
-                losses = self.compute_loss(w,v,return_list, perceptual_net)
+                losses = self.compute_loss(w,v,return_list, perceptual_net, MSE_Loss)
                 loss = 0
                 for k in losses.keys():
                     loss += losses[k]
