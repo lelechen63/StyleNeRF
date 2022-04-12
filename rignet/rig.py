@@ -72,7 +72,7 @@ class RigModule():
         losses['landmark_w_'] =  util.l2_distance(return_list['landmark_w_'][:, 17:, :2], w['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
         losses['photometric_texture_w_'] = MSE_Loss( w['img_mask'] * return_list['render_img_w_'] ,  w['img_mask'] * w['gt_image']) * self.flame_config.w_pho
         
-        assert render_img_w_.shape[-1] == 256
+        assert return_list['render_img_w_'].shape[-1] == 256
         render_w_features = perceptual_net(w['img_mask'] * return_list['render_img_w_'])
         w_features = perceptual_net(w['img_mask'] * w['gt_image'])
         losses['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
