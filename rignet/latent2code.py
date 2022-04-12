@@ -61,11 +61,15 @@ class Latent2CodeModule():
             for step, batch in enumerate(tqdm(self.data_loader)):
                 t1 = time.time()
 
+                for key in batch.keys():
+                    if key !='image_path':
+                        batch[key] = batch[key].to(self.device)
+
                 #landmarks3d, predicted_images, recons_images 
                 return_list = self.latent2code.forward(
-                            batch['latent'].to(self.device),
-                            batch['cam'].to(self.device), 
-                            batch['pose'].to(self.device)
+                            batch['latent']
+                            batch['cam'], 
+                            batch['pose']
                             )
                 losses = {}
                 t2 = time.time()
@@ -73,15 +77,15 @@ class Latent2CodeModule():
                 loss = 0
                 if self.opt.supervision =='render':
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
-                    losses['landmark'] = util.l2_distance(landmarks3d[:, 17:, :2], batch['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
+                    losses['landmark'] = util.l2_distance(landmarks3d[:, 17:, :2], batch['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
                     losses['photometric_texture'] = MSE_Loss( batch['img_mask'] * predicted_images ,  batch['img_mask'] * batch['gt_image']) * self.flame_config.w_pho                    
                     loss = losses['landmark'] + losses['photometric_texture'] #+ losses['lit_reg'] + losses['albedo_reg'] + losses['expression_reg'] + losses['shape_reg']
                 else:
-                    losses['expcode'] = self.l2_loss(expcode, batch['exp'].to(self.device))
-                    losses['shapecode'] = self.l2_loss(shapecode, batch['shape'].to(self.device))
-                    losses['litcode'] = self.l2_loss(litcode, batch['lit'].to(self.device))
-                    losses['albedocode'] = self.l2_loss(albedocode, batch['tex'].to(self.device))
-                    # losses['pose'] = self.l2_loss(posecode, batch['pose'].to(self.device))
+                    losses['expcode'] = self.l2_loss(expcode, batch['exp'])
+                    losses['shapecode'] = self.l2_loss(shapecode, batch['shape'])
+                    losses['litcode'] = self.l2_loss(litcode, batch['lit'])
+                    losses['albedocode'] = self.l2_loss(albedocode, batch['tex'])
+                    # losses['pose'] = self.l2_loss(posecode, batch['pose'])
                     for key in losses.keys():
                         loss += losses[key]
                 
@@ -101,13 +105,13 @@ class Latent2CodeModule():
             
                 if iteration % self.opt.save_step == 0:
                     return_list = self.latent2code.forward(
-                            batch['latent'].to(self.device),
-                            batch['cam'].to(self.device), 
-                            batch['pose'].to(self.device),
-                            batch['shape'].to(self.device),
-                            batch['exp'].to(self.device),
-                            batch['tex'].to(self.device),
-                            batch['lit'].to(self.device))
+                            batch['latent'],
+                            batch['cam'], 
+                            batch['pose'],
+                            batch['shape'],
+                            batch['exp'],
+                            batch['tex'],
+                            batch['lit'])
 
                     visind = 0
                 
@@ -164,29 +168,33 @@ class Latent2CodeModule():
         for p in self.latent2code.parameters():
             p.requires_grad = False 
         for step, batch in enumerate(tqdm(self.data_loader)):
-            with torch.no_grad():   
+            with torch.no_grad():
+                for key in batch.keys():
+                    if key !='image_path':
+                        batch[key] = batch[key].to(self.device)
+
                 return_list = self.latent2code.forward(
-                            batch['latent'].to(self.device),
-                            batch['cam'].to(self.device), 
-                            batch['pose'].to(self.device),
-                            batch['shape'].to(self.device),
-                            batch['exp'].to(self.device),
-                            batch['tex'].to(self.device),
-                            batch['lit'].to(self.device))
+                            batch['latent'],
+                            batch['cam'], 
+                            batch['pose'],
+                            batch['shape'],
+                            batch['exp'],
+                            batch['tex'],
+                            batch['lit'])
                 losses = {}
                 if self.opt.supervision =='render':
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
                     
-                    losses['landmark'] = util.l2_distance(landmarks3d[:, 17:, :2], batch['gt_landmark'][:, 17:, :2].to(self.device)) * self.flame_config.w_lmks
-                    losses['photometric_texture'] = (batch['img_mask'].to(self.device) * (predicted_images - batch['gt_image'].to(self.device) ).abs()).mean() * self.flame_config.w_pho
+                    losses['landmark'] = util.l2_distance(landmarks3d[:, 17:, :2], batch['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                    losses['photometric_texture'] = (batch['img_mask'] * (predicted_images - batch['gt_image'] ).abs()).mean() * self.flame_config.w_pho
                     loss = losses['landmark'] + losses['photometric_texture']
                 else:
                 
                     expcode, shapecode, litcode, albedocode  = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode']
-                    losses['expcode'] = self.l2_loss(expcode, batch['exp'].to(self.device))
-                    losses['shapecode'] = self.l2_loss(shapecode, batch['shape'].to(self.device))
-                    losses['litcode'] = self.l2_loss(litcode, batch['lit'].to(self.device))
-                    losses['albedocode'] = self.l2_loss(albedocode, batch['tex'].to(self.device))
+                    losses['expcode'] = self.l2_loss(expcode, batch['exp'])
+                    losses['shapecode'] = self.l2_loss(shapecode, batch['shape'])
+                    losses['litcode'] = self.l2_loss(litcode, batch['lit'])
+                    losses['albedocode'] = self.l2_loss(albedocode, batch['tex'])
                 
                 loss = 0
                 for key in losses.keys():
