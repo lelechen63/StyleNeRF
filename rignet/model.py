@@ -279,15 +279,12 @@ class RigNerft(nn.Module):
         return WEncoder
     
     def build_ParamEncoder(self, weight = ''):
-        ParamEncoder = []
-        for i in range(self.layer):
-            ParamEncoder.append( th.nn.Sequential(
+        ParamEncoder =  th.nn.Sequential(
                 LinearWN( self.shape_dim + self.exp_dim + self.lit_dim + self.albedo_dim, 128 ),
                 th.nn.LeakyReLU( 0.2, inplace = True ),
                 LinearWN( 128, self.param_fea_dim ),
                 th.nn.LeakyReLU( 0.2, inplace = True )
-            ))
-            ParamEncoder = nn.ModuleList(ParamEncoder)
+            )
         if len(weight) > 0:
             print ('loading weights for ParamEncoder  network, ' +weight )
             ParamEncoder.load_state_dict(torch.load(weight))
