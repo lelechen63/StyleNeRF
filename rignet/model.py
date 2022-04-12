@@ -292,11 +292,12 @@ class RigNerft(nn.Module):
 
     def build_WDecoder(self, weight = ''):
         WDecoder = []
-        WDecoder = th.nn.Sequential(
-            LinearWN( self.latent_fea_dim + self.param_fea_dim , 256 ),
-            th.nn.LeakyReLU( 0.2, inplace = True ),
-            LinearWN( 256, self.latent_dim ),
-        )
+        for i in range(self.layer):
+            WDecoder.append( th.nn.Sequential(
+                LinearWN( self.latent_fea_dim + self.param_fea_dim , 256 ),
+                th.nn.LeakyReLU( 0.2, inplace = True ),
+                LinearWN( 256, self.latent_dim ),
+            ))
         WDecoder = nn.ModuleList(WDecoder)
         if len(weight) > 0:
             print ('loading weights for WDecoder  network, ' +weight )
