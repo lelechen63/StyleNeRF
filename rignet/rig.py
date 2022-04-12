@@ -94,6 +94,7 @@ class RigModule():
         perceptual_net  = VGG16_for_Perceptual(n_layers=[2,4,14,21]).to(self.device)
 
         t0 = time.time()
+        iteration = 0
         for epoch in range( 10000):
             for step, batch in enumerate(tqdm(self.data_loader)):
                 t1 = time.time()
@@ -140,104 +141,103 @@ class RigModule():
                 t0 = time.time()
 
 
-            if epoch % self.opt.save_step == 0:  
+                if iteration % self.opt.save_step == 0:  
                 
-                visind = 0
-                # visualize the image close to v
-                image_v = vis_tensor(image_tensor= v['gt_image'], 
-                                        image_path = v['image_path'][0] +'-V-gtimg',
-                                        device = self.device
-                                         )
+                    visind = 0
+                    # visualize the image close to v
+                    image_v = vis_tensor(image_tensor= v['gt_image'], 
+                                            image_path = v['image_path'][0] +'-V-gtimg',
+                                            device = self.device
+                                            )
 
-                lmark_v = vis_tensor(image_tensor= v['img_mask'] * v['gt_image'], 
-                                        image_path = v['image_path'][0] +'-V-landmark',
-                                        land_tensor = v['gt_landmark'],
-                                        cam = v['cam'], 
-                                        device = self.device
-                                         )
-               
-
-                image_w = vis_tensor(image_tensor= w['gt_image'], 
-                                        image_path = w['image_path'][0] +'-W-gtimg',
-                                        device = self.device
-                                         )
-
-                lmark_w = vis_tensor(image_tensor= w['img_mask'] * w['gt_image'], 
-                                        image_path = w['image_path'][0] +'-W-gtlandmrk',
-                                        land_tensor = w['gt_landmark'],
-                                        cam = w['cam'], 
-                                        device = self.device
-                                         )
-
-                recons_images_w = vis_tensor(image_tensor= return_list['recons_images_w'], 
-                                        image_path = w['image_path'][0] +'-recons-W-img',
-                                        device = self.device
-                                         )
-                recons_images_v = vis_tensor(image_tensor= return_list["recons_images_v"], 
-                                        image_path = v['image_path'][0] +'-recons-V-img',
-                                        device = self.device
-                                         )
-
-                genlmark_same = vis_tensor(image_tensor= w['gt_image'], 
-                                        image_path = w['image_path'][0] +'-same-W-landamrk',
-                                        land_tensor = return_list["landmark_same"],
-                                        cam = w['cam'], 
-                                        device = self.device
-                                         )
-        
-                genimage_same = vis_tensor(image_tensor= return_list["render_img_same"], 
-                                        image_path = w['image_path'][0] +'-same-W-renderimg',
-                                        device = self.device
-                                         )
-          
-                genlmark_w = vis_tensor(image_tensor= w['gt_image'], 
-                                        image_path = w['image_path'][0] +'-close-W-landmark',
-                                        land_tensor = return_list['landmark_w_'],
-                                        cam = w['cam'], 
-                                        device = self.device
-                                         )
-
-                genimage_w = vis_tensor(image_tensor= return_list['render_img_w_'], 
-                                        image_path = w['image_path'][0] +'-close-W-renderimg',
-                                        device = self.device
-                                         )
-
-                genlmark_v = vis_tensor(image_tensor= v['gt_image'], 
-                                        image_path = v['image_path'][0] +'-close-V-landmark',
-                                        land_tensor = return_list['landmark_v_'],
-                                        cam = v['cam'], 
-                                        device = self.device
-                                         )
-                genimage_v = vis_tensor(image_tensor = return_list['render_img_v_'], 
-                                        image_path = v['image_path'][0]+'-close-V-renderimg', 
-                                        device = self.device)
-
+                    lmark_v = vis_tensor(image_tensor= v['img_mask'] * v['gt_image'], 
+                                            image_path = v['image_path'][0] +'-V-landmark',
+                                            land_tensor = v['gt_landmark'],
+                                            cam = v['cam'], 
+                                            device = self.device
+                                            )
                 
-                visuals = OrderedDict([
-                ('image_v', image_v),
-                ('lmark_v', lmark_v),
-                ('recons_images_v', recons_images_v),
 
-                ('image_w', image_w),
-                ('lmark_w', lmark_w),
-                ('recons_images_w', recons_images_w),
-                
-                ('genlmark_same_W', genlmark_same ),
-                ('genimage_same_W', genimage_same),
+                    image_w = vis_tensor(image_tensor= w['gt_image'], 
+                                            image_path = w['image_path'][0] +'-W-gtimg',
+                                            device = self.device
+                                            )
 
-                ('genlmark_w', genlmark_w),
-                ('genimage_w', genimage_w ),
+                    lmark_w = vis_tensor(image_tensor= w['img_mask'] * w['gt_image'], 
+                                            image_path = w['image_path'][0] +'-W-gtlandmrk',
+                                            land_tensor = w['gt_landmark'],
+                                            cam = w['cam'], 
+                                            device = self.device
+                                            )
 
-                ('genlmark_v', genlmark_v),
-                ('genimage_v', genimage_v )
-                ])
-        
-                self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
+                    recons_images_w = vis_tensor(image_tensor= return_list['recons_images_w'], 
+                                            image_path = w['image_path'][0] +'-recons-W-img',
+                                            device = self.device
+                                            )
+                    recons_images_v = vis_tensor(image_tensor= return_list["recons_images_v"], 
+                                            image_path = v['image_path'][0] +'-recons-V-img',
+                                            device = self.device
+                                            )
 
-                torch.save(self.rig.module.LatentEncoder.state_dict(), self.opt.WEncoder_weight)
-                torch.save(self.rig.module.ParamEncoder.state_dict(),self.opt.ParamEncoder_weight)
-                torch.save(self.rig.module.LatentDecoder.state_dict(), self.opt.WDecoder_weight)
-               
+                    genlmark_same = vis_tensor(image_tensor= w['gt_image'], 
+                                            image_path = w['image_path'][0] +'-same-W-landamrk',
+                                            land_tensor = return_list["landmark_same"],
+                                            cam = w['cam'], 
+                                            device = self.device
+                                            )
+            
+                    genimage_same = vis_tensor(image_tensor= return_list["render_img_same"], 
+                                            image_path = w['image_path'][0] +'-same-W-renderimg',
+                                            device = self.device
+                                            )
+            
+                    genlmark_w = vis_tensor(image_tensor= w['gt_image'], 
+                                            image_path = w['image_path'][0] +'-close-W-landmark',
+                                            land_tensor = return_list['landmark_w_'],
+                                            cam = w['cam'], 
+                                            device = self.device
+                                            )
+
+                    genimage_w = vis_tensor(image_tensor= return_list['render_img_w_'], 
+                                            image_path = w['image_path'][0] +'-close-W-renderimg',
+                                            device = self.device
+                                            )
+
+                    genlmark_v = vis_tensor(image_tensor= v['gt_image'], 
+                                            image_path = v['image_path'][0] +'-close-V-landmark',
+                                            land_tensor = return_list['landmark_v_'],
+                                            cam = v['cam'], 
+                                            device = self.device
+                                            )
+                    genimage_v = vis_tensor(image_tensor = return_list['render_img_v_'], 
+                                            image_path = v['image_path'][0]+'-close-V-renderimg', 
+                                            device = self.device)
+
+                    
+                    visuals = OrderedDict([
+                    ('image_v', image_v),
+                    ('lmark_v', lmark_v),
+                    ('recons_images_v', recons_images_v),
+
+                    ('image_w', image_w),
+                    ('lmark_w', lmark_w),
+                    ('recons_images_w', recons_images_w),
+                    
+                    ('genlmark_same_W', genlmark_same ),
+                    ('genimage_same_W', genimage_same),
+
+                    ('genlmark_w', genlmark_w),
+                    ('genimage_w', genimage_w ),
+
+                    ('genlmark_v', genlmark_v),
+                    ('genimage_v', genimage_v )
+                    ])
+            
+                    self.visualizer.display_current_results(visuals, iteration, self.opt.save_step)
+                    torch.save(self.rig.module.LatentEncoder.state_dict(), self.opt.WEncoder_weight)
+                    torch.save(self.rig.module.ParamEncoder.state_dict(),self.opt.ParamEncoder_weight)
+                    torch.save(self.rig.module.LatentDecoder.state_dict(), self.opt.WDecoder_weight)
+                iteration += 1               
     def test(self):
         for p in self.rig.parameters():
             p.requires_grad = False 
