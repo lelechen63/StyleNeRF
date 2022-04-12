@@ -107,7 +107,7 @@ class RigModule():
                 return_list = self.rig.forward(v['latent'], w['latent'], v['cam'], v['pose'], v['shape'],v['exp'],v['tex'],v['lit'], \
                                                                          w['cam'], w['pose'],w['shape'], w['exp'], w['tex'],w['lit'])
                 t2 = time.time()
-                losses = self.compute_loss(w,v,return_list)
+                losses = self.compute_loss(w,v,return_list, perceptual_net)
                 loss = 0
                 for k in losses.keys():
                     loss += losses[k]
@@ -130,7 +130,7 @@ class RigModule():
                 return_list = self.rig.forward(v['latent'], w['latent'], v['cam'], v['pose'], v['shape'],v['exp'],v['tex'],v['lit'], \
                                                                          w['cam'], w['pose'],w['shape'], w['exp'], w['tex'],w['lit'])
                 t2 = time.time()
-                losses = self.compute_loss(w,v,return_list)
+                losses = self.compute_loss(w,v,return_list, perceptual_net)
                 loss = 0
                 for k in losses.keys():
                     loss += losses[k]
