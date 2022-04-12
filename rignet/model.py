@@ -61,7 +61,7 @@ class Latent2Code(nn.Module):
     
     def build_Latent2CodeFea(self, weight = ''):
         Latent2ShapeExpCode = th.nn.Sequential(
-            LinearWN( self.latent _dim , 256 ),
+            LinearWN( self.latent_dim , 256 ),
             th.nn.LeakyReLU( 0.2, inplace = True ),
             LinearWN( 256, 256 ),
             th.nn.LeakyReLU( 0.2, inplace = True ),
