@@ -61,7 +61,7 @@ class Latent2Code(nn.Module):
     
     def build_Latent2CodeFea(self, weight = ''):
         Latent2ShapeExpCode = th.nn.Sequential(
-            LinearWN( self.latent_dim , 256 ),
+            LinearWN( self.latent _dim , 256 ),
             th.nn.LeakyReLU( 0.2, inplace = True ),
             LinearWN( 256, 256 ),
             th.nn.LeakyReLU( 0.2, inplace = True ),
@@ -191,15 +191,15 @@ class RigNerft(nn.Module):
     def __init__(self, flame_config, opt ):
         super().__init__()
         self.opt = opt
-        
-        self.latent_dim = 512 * 21
+        self.layer = 21
+        self.latent_dim = 512
         self.shape_dim = 100
         self.exp_dim = 50
         self.albedo_dim = 50
         self.lit_dim = 27
 
-        self.latent_fea_dim = 256
-        self.param_fea_dim = 256
+        self.latent_fea_dim = 32
+        self.param_fea_dim = 32
 
         self.flame_config = flame_config
         self.image_size = self.flame_config.image_size
@@ -264,27 +264,33 @@ class RigNerft(nn.Module):
         return paramset
     
     def build_WEncoder(self, weight = ''):
-        WEncoder = th.nn.Sequential(
-            LinearWN( self.latent_dim , 256 ),
-            th.nn.LeakyReLU( 0.2, inplace = True ),
-            LinearWN( 256, self.latent_fea_dim ),
-            th.nn.LeakyReLU( 0.2, inplace = True )
-        )
+        WEncoder = []
+        for i in range(self.layer):
+            WEncoder.append(th.nn.Sequential(
+                LinearWN( self.latent_dim , 256 ),
+                th.nn.LeakyReLU( 0.2, inplace = True ),
+                LinearWN( 256, self.latent_fea_dim ),
+                th.nn.LeakyReLU( 0.2, inplace = True )
+                ))
         if len(weight) > 0:
-            print ('loading weights for WEncoder  network, ' +weight )
-            WEncoder.load_state_dict(torch.load(weight))
+            print ('loading weights for WEncoder  network, ' + weight )
+            for i in rnage(self.layer):
+                WEncoder[i].load_state_dict(torch.load(weight[:-4] + '%d.pth'%i ))
         return WEncoder
     
     def build_ParamEncoder(self, weight = ''):
-        ParamEncoder = th.nn.Sequential(
-            LinearWN( self.shape_dim + self.exp_dim + self.lit_dim + self.albedo_dim, 128 ),
-            th.nn.LeakyReLU( 0.2, inplace = True ),
-            LinearWN( 128, self.param_fea_dim ),
-            th.nn.LeakyReLU( 0.2, inplace = True )
-        )
+        ParamEncoder = []
+        for i in range(self.layer):
+            ParamEncoder.append( th.nn.Sequential(
+                LinearWN( self.shape_dim + self.exp_dim + self.lit_dim + self.albedo_dim, 128 ),
+                th.nn.LeakyReLU( 0.2, inplace = True ),
+                LinearWN( 128, self.param_fea_dim ),
+                th.nn.LeakyReLU( 0.2, inplace = True )
+            ))
         if len(weight) > 0:
             print ('loading weights for ParamEncoder  network, ' +weight )
-            ParamEncoder.load_state_dict(torch.load(weight))
+            for i in range(self.layer):
+                ParamEncoder.load_state_dict(torch.load(weight[:-4] +'%d.pth'%i))
         return ParamEncoder
 
     def build_WDecoder(self, weight = ''):
@@ -348,7 +354,7 @@ class RigNerft(nn.Module):
             else:
                 p_w_replaced.append(p_v[i])
 
-        latent_w_hat = self.rig(latent_w, p_w_replaced)
+        latent_w_hat = self.rig(latent_w, 0)
         # map chagned w back to P
         p_w_mapped = self.latent2params(latent_w_hat)
 
@@ -365,7 +371,6 @@ class RigNerft(nn.Module):
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
         return_list = {}
-
 
         if flameshape_v != None:
             landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)

@@ -20,7 +20,8 @@ def get_train( debug = False):
     for it, name in enumerate(tqdm(img_lists)):
         k = name[:-4]
         flame_path = os.path.join(root_p, 'flame2', str(k), 'flame_p.pickle')
-        if os.path.exists(flame_path):
+        # if os.path.exists(flame_path):
+        try:
             with open(flame_path, 'rb') as f:
                 flame_p = pickle.load(f, encoding='latin1')
             shape = flame_p['shape'].reshape(-1) #[1,100]
@@ -59,7 +60,7 @@ def get_train( debug = False):
                         'gt_landmark': landmark
                         }
                 testlist.append(name)
-        else:
+        except:
             print (flame_path, 'Does not exist!!!')
     print (len(traindata), len(testdata))
     if debug:
