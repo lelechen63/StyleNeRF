@@ -102,7 +102,6 @@ class Latent2CodeModule():
                 errors = {k: v.data.item() if not isinstance(v, int) else v for k, v in tqdm_dict.items()} 
                 self.visualizer.print_current_errors(epoch, step, errors, t1-t0, t2-t1, t3-t2 )
                 t0 = time.time()
-            
                 if iteration % self.opt.save_step == 0:
                     return_list = self.latent2code.forward(
                             batch['latent'],
@@ -156,7 +155,7 @@ class Latent2CodeModule():
                         ('genlmark', genlmark )
                         ])
 
-                    self.visualizer.display_current_results(visuals, epoch, self.opt.save_step) 
+                    self.visualizer.display_current_results(visuals, iteration, self.opt.save_step) 
                     torch.save(self.latent2code.module.Latent2fea.state_dict(), self.opt.Latent2ShapeExpCode_weight)
                     torch.save(self.latent2code.module.latent2shape.state_dict(), self.opt.latent2shape_weight)
                     torch.save(self.latent2code.module.latent2exp.state_dict(), self.opt.latent2exp_weight)
