@@ -275,8 +275,7 @@ class RigNerft(nn.Module):
             WEncoder = nn.ModuleList(WEncoder)
         if len(weight) > 0:
             print ('loading weights for WEncoder  network, ' + weight )
-            # for i in rnage(self.layer):
-        WEncoder.load_state_dict(torch.load(weight ))
+            WEncoder.load_state_dict(torch.load(weight ))
         return WEncoder
     
     def build_ParamEncoder(self, weight = ''):
@@ -291,7 +290,6 @@ class RigNerft(nn.Module):
             ParamEncoder = nn.ModuleList(ParamEncoder)
         if len(weight) > 0:
             print ('loading weights for ParamEncoder  network, ' +weight )
-            # for i in range(self.layer):
             ParamEncoder.load_state_dict(torch.load(weight))
         return ParamEncoder
 
@@ -305,7 +303,6 @@ class RigNerft(nn.Module):
         WDecoder = nn.ModuleList(WDecoder)
         if len(weight) > 0:
             print ('loading weights for WDecoder  network, ' +weight )
-            # for i in range(self.layer):
             WDecoder.load_state_dict(torch.load(weight))
         return WDecoder
     
