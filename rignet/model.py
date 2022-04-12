@@ -272,11 +272,11 @@ class RigNerft(nn.Module):
                 LinearWN( 256, self.latent_fea_dim ),
                 th.nn.LeakyReLU( 0.2, inplace = True )
                 ))
-            WEncoder = ModuleList(WEncoder)
+            WEncoder = nn.ModuleList(WEncoder)
         if len(weight) > 0:
             print ('loading weights for WEncoder  network, ' + weight )
-            for i in rnage(self.layer):
-                WEncoder[i].load_state_dict(torch.load(weight[:-4] + '%d.pth'%i ))
+            # for i in rnage(self.layer):
+        WEncoder.load_state_dict(torch.load(weight ))
         return WEncoder
     
     def build_ParamEncoder(self, weight = ''):
@@ -288,11 +288,11 @@ class RigNerft(nn.Module):
                 LinearWN( 128, self.param_fea_dim ),
                 th.nn.LeakyReLU( 0.2, inplace = True )
             ))
-            ParamEncoder = ModuleList(ParamEncoder)
+            ParamEncoder = nn.ModuleList(ParamEncoder)
         if len(weight) > 0:
             print ('loading weights for ParamEncoder  network, ' +weight )
-            for i in range(self.layer):
-                ParamEncoder[i].load_state_dict(torch.load(weight[:-4] +'%d.pth'%i))
+            # for i in range(self.layer):
+            ParamEncoder.load_state_dict(torch.load(weight))
         return ParamEncoder
 
     def build_WDecoder(self, weight = ''):
@@ -302,11 +302,11 @@ class RigNerft(nn.Module):
             th.nn.LeakyReLU( 0.2, inplace = True ),
             LinearWN( 256, self.latent_dim ),
         )
-        WDecoder = ModuleList(WDecoder)
+        WDecoder = nn.ModuleList(WDecoder)
         if len(weight) > 0:
             print ('loading weights for WDecoder  network, ' +weight )
-            for i in range(self.layer):
-                WDecoder[i].load_state_dict(torch.load(weight[:-4] +'%d.pth'%i))
+            # for i in range(self.layer):
+            WDecoder.load_state_dict(torch.load(weight))
         return WDecoder
     
   
