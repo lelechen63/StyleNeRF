@@ -35,10 +35,10 @@ class Latent2Code(nn.Module):
         # self.save_hyperparameters()
         self.flame_config = flame_config
 
-        self.litmean =  np.load(opt.dataroot + '/litmean.npy')
-        self.expmean = np.load(opt.dataroot + '/expmean.npy')
-        self.shapemean =  np.load(opt.dataroot + '/shapemean.npy')
-        self.albedomean = np.load(opt.dataroot + '/albedomean.npy')
+        self.litmean =  torch.Tensor(np.load(opt.dataroot + '/litmean.npy')).to('cuda')
+        self.expmean = torch.Tensor(np.load(opt.dataroot + '/expmean.npy')).to('cuda')
+        self.shapemean = torch.Tensor(np.load(opt.dataroot + '/shapemean.npy')).to('cuda')
+        self.albedomean = torch.Tensor(np.load(opt.dataroot + '/albedomean.npy')).to('cuda') 
         
         self.image_size = self.flame_config.image_size
         # networks
