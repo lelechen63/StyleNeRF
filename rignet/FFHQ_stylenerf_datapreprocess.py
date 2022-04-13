@@ -99,7 +99,7 @@ def get_mean(debug = False):
     _file.close()
     for k in total_data:
         tmp =total_data[k]
-        print (tmp.keys)
+        print (tmp.keys())
 get_mean(debug = True)
 # get_train(debug = False)
 
