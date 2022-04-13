@@ -150,7 +150,7 @@ class FFHQDataset(torch.utils.data.Dataset):
         data['lit'] = data['lit'] - self.litmean
         data['exp'] = data['exp'] - self.expmean
         data['tex'] = data['tex'] - self.albedomean
-        data['shape'] = data['shape'] - self.litmean
+        data['shape'] = data['shape'] - self.shapemean
         return data
 
     def __len__(self):
