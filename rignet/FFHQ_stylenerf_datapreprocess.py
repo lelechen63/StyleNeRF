@@ -100,7 +100,7 @@ def get_mean(debug = False):
     _file = open(zip_path, "rb")
     total_data = pickle.load(_file)
     _file.close()
-    for k in tadm(total_data):
+    for k in tqdm(total_data):
         tmp =total_data[k]
         lit.append(tmp['lit'])
         exp.append(tmp['exp'])
