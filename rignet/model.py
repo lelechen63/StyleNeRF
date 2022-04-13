@@ -164,7 +164,7 @@ class Latent2Code(nn.Module):
             return_list['predicted_images'] = predicted_images
                         
         if flameshape != None:
-            recons_vertices, _, recons_landmarks3d = self.flame(shape_params=flameshape+ self.shapemean ), expression_params=flameexp + self.expmean, pose_params=pose)
+            recons_vertices, _, recons_landmarks3d = self.flame(shape_params=flameshape+ self.shapemean, expression_params=flameexp + self.expmean, pose_params=pose)
             recons_trans_vertices = util.batch_orth_proj(recons_vertices, cam)
             recons_trans_vertices[..., 1:] = - recons_trans_vertices[..., 1:]
 
