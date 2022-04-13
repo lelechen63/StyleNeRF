@@ -34,7 +34,12 @@ class Latent2Code(nn.Module):
         self.opt = opt
         # self.save_hyperparameters()
         self.flame_config = flame_config
-    
+
+        self.litmean =  np.load(opt.dataroot + '/litmean.npy')
+        self.expmean = np.load(opt.dataroot + '/expmean.npy')
+        self.shapemean =  np.load(opt.dataroot + '/shapemean.npy')
+        self.albedomean = np.load(opt.dataroot + '/albedomean.npy')
+        
         self.image_size = self.flame_config.image_size
         # networks
         self.latent_dim = 512 * 21
@@ -146,27 +151,26 @@ class Latent2Code(nn.Module):
         return_list['albedocode'] = albedocode
 
         if self.opt.supervision =='render' or flameshape != None:
-            vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode, expression_params=expcode, pose_params=pose)
+            vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode + self.shapemean, expression_params=expcode + self.expmean, pose_params=pose)
             trans_vertices = util.batch_orth_proj(vertices, cam)
             trans_vertices[..., 1:] = - trans_vertices[..., 1:]
 
             ## render
-            albedos = self.flametex(albedocode, self.image_size) / 255.
-            ops = self.render(vertices, trans_vertices, albedos, litcode.view(-1, 9,3))
+            albedos = self.flametex(albedocode + self.albedomean, self.image_size) / 255.
+            ops = self.render(vertices, trans_vertices, albedos, (litcode + self.litmean).view(-1, 9,3))
             predicted_images = ops['images']
 
             return_list['landmarks3d'] = landmarks3d
             return_list['predicted_images'] = predicted_images
                         
         if flameshape != None:
-            flamelit = flamelit.view(-1, 9,3)        
-            recons_vertices, _, recons_landmarks3d = self.flame(shape_params=flameshape, expression_params=flameexp, pose_params=pose)
+            recons_vertices, _, recons_landmarks3d = self.flame(shape_params=flameshape+ self.shapemean ), expression_params=flameexp + self.expmean, pose_params=pose)
             recons_trans_vertices = util.batch_orth_proj(recons_vertices, cam)
             recons_trans_vertices[..., 1:] = - recons_trans_vertices[..., 1:]
 
             ## render
-            recons_albedos = self.flametex(flametex, self.image_size) / 255.
-            recons_ops = self.render(recons_vertices, recons_trans_vertices, recons_albedos, flamelit)
+            recons_albedos = self.flametex(flametex + self.albedomean, self.image_size) / 255.
+            recons_ops = self.render(recons_vertices, recons_trans_vertices, recons_albedos, (flamelit + self.litmean).view(-1, 9,3))
             recons_images = recons_ops['images']
             return_list['recons_images'] = recons_images
             

@@ -90,6 +90,11 @@ class FFHQDataset(torch.utils.data.Dataset):
         transform_list = [transforms.ToTensor()]
         self.transform = transforms.Compose(transform_list)
         
+        self.litmean =  np.load(opt.dataroot + '/litmean.npy')
+        self.expmean = np.load(opt.dataroot + '/expmean.npy')
+        self.shapemean =  np.load(opt.dataroot + '/shapemean.npy')
+        self.albedomean = np.load(opt.dataroot + '/albedomean.npy')
+    
         if opt.debug:
             self.data_list = self.data_list[:opt.datanum]
             for i in range(opt.datanum):
@@ -142,6 +147,10 @@ class FFHQDataset(torch.utils.data.Dataset):
         else:
             data = self.total_data[name]
             data['image_path'] = name
+        data['lit'] = data['lit'] - self.litmean
+        data['exp'] = data['exp'] - self.expmean
+        data['tex'] = data['tex'] - self.albedomean
+        data['shape'] = data['shape'] - self.litmean
         return data
 
     def __len__(self):
