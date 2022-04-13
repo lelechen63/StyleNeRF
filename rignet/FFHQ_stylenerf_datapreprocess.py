@@ -85,7 +85,22 @@ def get_train( debug = False):
         with open( os.path.join(root_p, "ffhq_testlist.pkl" ), 'wb') as handle:
             pickle.dump(testlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-get_train(debug = False)
+
+
+
+def get_mean(debug = False):
+    zip_path = os.path.join(dataroot, 'ffhq_train.pkl' )
+
+    if debug:
+        zip_path = zip_path[:-4] + '_debug.pkl'
+    _file = open(zip_path, "rb")
+    total_data = pickle.load(_file)
+    _file.close()
+    for k in total_data:
+        tmp =total_data[k]
+        print (tmp.keys)
+get_mean(debug = True)
+# get_train(debug = False)
 
 
 
