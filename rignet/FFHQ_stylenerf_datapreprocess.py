@@ -106,6 +106,7 @@ def get_mean(debug = False):
         exp.append(tmp['exp'])
         shape.append(tmp['exp'])
         albedo.append(tmp['tex'])
+    print (len(lit))
     litmean = np.mean(np.array(lit),axis=0) 
     expmean = np.mean(np.array(exp),axis=0)
     shapemean = np.mean(np.array(shape),axis=0)
@@ -114,7 +115,7 @@ def get_mean(debug = False):
     np.save(dataroot + '/expmean.npy', expmean)
     np.save(dataroot + '/shapemean.npy', shapemean)
     np.save(dataroot + '/albedomean.npy', albedomean)
-
+    print ('=============')
 get_mean(debug = False)
 # get_train(debug = False)
 
