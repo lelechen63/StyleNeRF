@@ -91,7 +91,10 @@ def get_train( debug = False):
 def get_mean(debug = False):
     dataroot = '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf'  
     zip_path = os.path.join(dataroot, 'ffhq_train.pkl' )
-
+    lit = []
+    exp = []
+    shape = []
+    albedo = []
     if debug:
         zip_path = zip_path[:-4] + '_debug.pkl'
     _file = open(zip_path, "rb")
@@ -100,6 +103,12 @@ def get_mean(debug = False):
     for k in total_data:
         tmp =total_data[k]
         print (tmp.keys())
+        lit.append(tmp['lit'])
+        exp.append(tmp['exp'])
+        shape.append(tmp['exp'])
+        albedo.append(tmp['tex'])
+    litmean = np.mean(np.array(lit),axis=0) 
+    print (litmean.shape)
 get_mean(debug = True)
 # get_train(debug = False)
 
