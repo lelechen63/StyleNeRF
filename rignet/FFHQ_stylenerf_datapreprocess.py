@@ -104,7 +104,7 @@ def get_mean(debug = False):
         tmp =total_data[k]
         lit.append(tmp['lit'])
         exp.append(tmp['exp'])
-        shape.append(tmp['exp'])
+        shape.append(tmp['shape'])
         albedo.append(tmp['tex'])
     print (len(lit))
     litmean = np.mean(np.array(lit),axis=0) 
