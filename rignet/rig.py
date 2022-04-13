@@ -86,8 +86,6 @@ class RigModule():
         losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
         return losses
         
-        
-            
 
     def train(self):
         MSE_Loss   = nn.SmoothL1Loss(reduction='mean')
