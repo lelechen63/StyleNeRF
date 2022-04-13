@@ -89,6 +89,7 @@ def get_train( debug = False):
 
 
 def get_mean(debug = False):
+    dataroot = '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf'  
     zip_path = os.path.join(dataroot, 'ffhq_train.pkl' )
 
     if debug:
