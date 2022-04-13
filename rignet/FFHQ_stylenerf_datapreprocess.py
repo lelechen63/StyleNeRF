@@ -100,9 +100,8 @@ def get_mean(debug = False):
     _file = open(zip_path, "rb")
     total_data = pickle.load(_file)
     _file.close()
-    for k in total_data:
+    for k in tadm(total_data):
         tmp =total_data[k]
-        print (tmp.keys())
         lit.append(tmp['lit'])
         exp.append(tmp['exp'])
         shape.append(tmp['exp'])
@@ -116,7 +115,7 @@ def get_mean(debug = False):
     np.save(dataroot + '/shapemean.npy', shapemean)
     np.save(dataroot + '/albedomean.npy', albedomean)
 
-get_mean(debug = True)
+get_mean(debug = False)
 # get_train(debug = False)
 
 
