@@ -134,14 +134,14 @@ def varify( parse = parse):
     k =  parse.k
     root = '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf'
     
-    idx1 = 23
+    idx1 = 8
     img_p1 = os.path.join( root, 'images', '%06d.png'%idx1)
     flame_path = config.savefolder + '/%06d/flame_p.pickle'%idx1
     with open(flame_path, 'rb') as f:
         flame_p = pickle.load(f, encoding='latin1')
     p1 = [flame_p['shape'], flame_p['exp'],flame_p['tex'], flame_p['lit'], flame_p['pose'], flame_p['cam']]
 
-    idx2 = 32
+    idx2 = 11
     img_p2 = os.path.join( root, 'images', '%06d.png'%idx2)
     flame_path = config.savefolder + '/%06d/flame_p.pickle'%idx2
     with open(flame_path, 'rb') as f:
