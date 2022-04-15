@@ -66,10 +66,10 @@ class RigModule():
     def compute_loss(self, w,v,return_list, perceptual_net, MSE_Loss):
         losses = {}
         # keep w, w the same
-        losses['landmark_same'] = util.l2_distance(return_list['landmark_same'][:, 17:, :2], w['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+        losses['landmark_same'] = util.l2_distance(return_list['landmark_same'][:, :, :2], w['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
         losses['photometric_texture_same'] = MSE_Loss( w['img_mask'] * return_list['render_img_same'].float(),  w['img_mask'] * w['gt_image']) * self.flame_config.w_pho
         # close to w
-        losses['landmark_w_'] =  util.l2_distance(return_list['landmark_w_'][:, 17:, :2], w['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+        losses['landmark_w_'] =  util.l2_distance(return_list['landmark_w_'][:, :, :2], w['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
         losses['photometric_texture_w_'] = MSE_Loss( w['img_mask'] * return_list['render_img_w_'].float() ,  w['img_mask'] * w['gt_image']) * self.flame_config.w_pho
         
         assert return_list['render_img_w_'].shape[-1] == 256
@@ -78,7 +78,7 @@ class RigModule():
         losses['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
         
         # close to v
-        losses['landmark_v_']  = util.l2_distance(return_list['landmark_v_'][:, 17:, :2], v['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+        losses['landmark_v_']  = util.l2_distance(return_list['landmark_v_'][:, :, :2], v['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
         losses['photometric_texture_v_'] = MSE_Loss(  v['img_mask'] * return_list['render_img_v_'].float() , v['img_mask'] * v['gt_image'] ) * self.flame_config.w_pho
 
         render_v_features = perceptual_net( v['img_mask'] * return_list['render_img_v_'].float())
@@ -211,7 +211,14 @@ class RigModule():
                                             image_path = v['image_path'][0]+'-close-V-renderimg', 
                                             device = self.device)
 
-                    
+                    synsimg_v = vis_ganimg(image_tensor= return_list['syns_v_'], 
+                                        image_path = 'V-syns',
+                                         )
+
+                    synsimg_w = vis_ganimg(image_tensor= return_list['syns_w_'], 
+                                            image_path = '-W-syns',
+                                            )
+
                     visuals = OrderedDict([
                     ('image_v', image_v),
                     ('lmark_v', lmark_v),
@@ -228,7 +235,11 @@ class RigModule():
                     ('genimage_w', genimage_w ),
 
                     ('genlmark_v', genlmark_v),
-                    ('genimage_v', genimage_v )
+                    ('genimage_v', genimage_v ),
+
+                    ('synsimg_v_', synsimg_v),
+                    ('synsimg_w_', synsimg_w )
+
                     ])
             
                     self.visualizer.display_current_results(visuals, iteration, self.opt.save_step)
