@@ -134,7 +134,7 @@ def varify( parse = parse):
     k =  parse.k
     root = '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf'
     
-    idx1 = 8
+    idx1 = 811
     img_p1 = os.path.join( root, 'images', '%06d.png'%idx1)
     flame_path = config.savefolder + '/%06d/flame_p.pickle'%idx1
     with open(flame_path, 'rb') as f:
