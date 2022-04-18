@@ -48,11 +48,11 @@ class Latent2Code(nn.Module):
         self.albedo_dim = 50
         self.lit_dim = 27
         self.pose_dim = 6
-        self.Latent2fea = self.build_Latent2CodeFea( weight = '' if opt.isTrain else opt.Latent2ShapeExpCode_weight)
-        self.latent2shape = self.build_latent2shape( weight = '' if opt.isTrain else opt.latent2shape_weight)
-        self.latent2exp = self.build_latent2exp(weight = '' if opt.isTrain else opt.latent2exp_weight)
-        self.latent2albedo = self.build_latent2albedo(weight = '' if opt.isTrain else opt.latent2albedo_weight)
-        self.latent2lit = self.build_latent2lit(weight = '' if opt.isTrain else opt.latent2lit_weight)
+        self.Latent2fea = self.build_Latent2CodeFea( weight = '' if opt.isTrain or opt.loadpre else opt.Latent2ShapeExpCode_weight)
+        self.latent2shape = self.build_latent2shape( weight = '' if opt.isTrain or opt.loadpre else opt.latent2shape_weight)
+        self.latent2exp = self.build_latent2exp(weight = '' if opt.isTrain or opt.loadpre else opt.latent2exp_weight)
+        self.latent2albedo = self.build_latent2albedo(weight = '' if opt.isTrain or opt.loadpre else opt.latent2albedo_weight)
+        self.latent2lit = self.build_latent2lit(weight = '' if opt.isTrain or opt.loadpre else opt.latent2lit_weight)
         # self.latent2pose = self.build_latent2pose(weight = '' if opt.isTrain else opt.latent2poses_weight)
 
         if opt.isTrain:
