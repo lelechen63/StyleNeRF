@@ -362,10 +362,13 @@ class RigNerft(nn.Module):
         p_w_same = self.latent2params(latent_w_same)
 
         # randomly choose one params to be edited
-        choice = torch.randint(0, 4 ,(1,)).item()
+        choices =[]
+        for i in range(latent_v.shape[0]):
+            choices.append( torch.randint(0, 4 ,(1,)).item())
         
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
+        print (p_w[0].shape.'!!!!')
         for i in range(4):
             if i != choice:
                 p_w_replaced.append(p_w[i])
@@ -391,7 +394,6 @@ class RigNerft(nn.Module):
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
         return_list = {}
         return_list['choice'] = choice
-        print (landmark_w_.shape,'@@@@@@@@@')
 
         if flameshape_v != None:
             landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
