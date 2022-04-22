@@ -1003,7 +1003,7 @@ class VolumeRenderer(object):
             # print(gg[i].shape)
         nerf_input_cams = gg
         
-        for len(gg):
+        for i in range(len(gg)):
             print (gg[i].shape, '====')
 
         # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
