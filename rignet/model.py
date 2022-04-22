@@ -73,7 +73,6 @@ class Latent2Code(nn.Module):
             LinearWN( 256, 256 ),
             th.nn.LeakyReLU( 0.2, inplace = True )
         )
-        print ('++++++++++++++here', len(weight))
         if len(weight) > 0:
             print ('============================================================')
             print ('loading weights for latent2ShapeExpCode feature extraction network')
@@ -232,18 +231,18 @@ class RigNerft(nn.Module):
         self.ckpt_path = os.path.join(opt.checkpoints_dir, opt.name)
         os.makedirs(self.ckpt_path, exist_ok = True)
 
-        if not self.opt.isTrain:
-            with dnnlib.util.open_url( self.opt.nerfpkl) as f:
-                network = legacy.load_network_pkl(f)
-                G = network['G_ema'].to('cuda') # type: ignore
-            
-            # avoid persistent classes... 
-            from training.networks import Generator
-            # from training.stylenerf import Discriminator
-            from torch_utils import misc
-            with torch.no_grad():
-                self.G2 = Generator(*G.init_args, **G.init_kwargs).to('cuda')
-                misc.copy_params_and_buffers(G, self.G2, require_all=False)
+        # if not self.opt.isTrain:
+        with dnnlib.util.open_url( self.opt.nerfpkl) as f:
+            network = legacy.load_network_pkl(f)
+            G = network['G_ema'].to('cuda') # type: ignore
+        
+        # avoid persistent classes... 
+        from training.networks import Generator
+        # from training.stylenerf import Discriminator
+        from torch_utils import misc
+        with torch.no_grad():
+            self.G2 = Generator(*G.init_args, **G.init_kwargs).to('cuda')
+            misc.copy_params_and_buffers(G, self.G2, require_all=False)
 
 
     def get_f(self,network):

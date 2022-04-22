@@ -95,7 +95,7 @@ class FFHQDataset(torch.utils.data.Dataset):
         self.shapemean =  np.load(opt.dataroot + '/shapemean.npy')
         self.albedomean = np.load(opt.dataroot + '/albedomean.npy')
     
-        if opt.debug:
+        if opt.debug or not opt.isTrain:
             self.data_list = self.data_list[:opt.datanum]
             for i in range(opt.datanum):
                 name = self.data_list[i]
