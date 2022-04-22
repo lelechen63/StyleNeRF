@@ -390,8 +390,8 @@ class RigNerft(nn.Module):
             return_list['landmark_same'] = landmark_same
             return_list['render_img_same'] = render_img_same
 
-            return_list['syns_v_'] = self.G2.forward(styles = p_v_.view(-1, self.layer,self.latent_dim))['img']
-            return_list['syns_w_'] = self.G2.forward(styles = p_w_.view(-1, self.layer,self.latent_dim))['img']
+            return_list['syns_w_same'] = self.G2.forward(styles = latent_w_same.view(-1, self.layer,self.latent_dim))['img']
+            return_list['syns_w_hat'] = self.G2.forward(styles = latent_w_hat.view(-1, self.layer,self.latent_dim))['img']
 
 
             p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
