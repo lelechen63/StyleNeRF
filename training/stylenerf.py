@@ -1000,12 +1000,9 @@ class VolumeRenderer(object):
         _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_4.pkl', "rb")
         tmp = pickle.load(_file)
         gg =[]
-        print ('!!!!', pixels[0].shape)
         for i in range(3):
-            gg.append(torch.Tensor(tmp[i][:1]).to(H.device).repeat(pixels[0].shape[0],1,1))
+            gg.append(torch.Tensor(tmp[i][:1]).to(H.device).repeat(pixels[0].shape[1],1,1))
         nerf_input_cams = gg
-        for i in range(len(nerf_input_cams)):
-            print (nerf_input_cams[i].shape, '---------')
         
         # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         H.fg_inf_depth = (self.no_background or not_render_background) and (not self.white_background)
