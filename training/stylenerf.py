@@ -563,7 +563,6 @@ class CameraRay(object):
             return d0.clip(min=0, max=1)
     
     def get_evaluation_points(self, pixels_world=None, camera_world=None, di=None, p_i=None, no_reshape=False, transform=None):
-        print (p_i.shape, '+++++=')
         if p_i is None:
             batch_size = pixels_world.shape[0]
             n_steps = di.shape[-1]
@@ -571,8 +570,9 @@ class CameraRay(object):
             
             p_i = camera_world.unsqueeze(-2).contiguous() + \
                 di.unsqueeze(-1).contiguous() * ray_i.unsqueeze(-2).contiguous()
+            print (p_i.shape, '=+++eeee+++')
             ray_i = ray_i.unsqueeze(-2).repeat(1, 1, n_steps, 1)
-
+            print (ray_i.shape, '=++++++')
         else:
             assert no_reshape, "only used to transform points to a warped space"
 
