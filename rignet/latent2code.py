@@ -17,7 +17,7 @@ class Latent2CodeModule():
         self.flame_config = flame_config
         self.visualizer = Visualizer(opt)
         self.l2_loss = nn.MSELoss()
-
+        self.MSE_Loss   = nn.SmoothL1Loss(reduction='mean')
         if opt.cuda:
             self.device = torch.device("cuda")
         self.latent2code = Latent2Code( flame_config, opt)
@@ -54,7 +54,7 @@ class Latent2CodeModule():
 
     def train(self):
         t0 = time.time()
-        MSE_Loss   = nn.SmoothL1Loss(reduction='mean')
+        
         iteration = 0
 
         for epoch in range( 100000):
@@ -78,7 +78,7 @@ class Latent2CodeModule():
                 if self.opt.supervision =='render':
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images'].float()
                     losses['landmark'] = util.l2_distance(landmarks3d[:, :, :2], batch['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
-                    losses['photometric_texture'] = MSE_Loss( batch['img_mask'] * predicted_images ,  batch['img_mask'] * batch['gt_image']) * self.flame_config.w_pho                    
+                    losses['photometric_texture'] = self.MSE_Loss( batch['img_mask'] * predicted_images ,  batch['img_mask'] * batch['gt_image']) * self.flame_config.w_pho                    
                     loss = losses['landmark'] + losses['photometric_texture'] #+ losses['lit_reg'] + losses['albedo_reg'] + losses['expression_reg'] + losses['shape_reg']
                 else:
                     losses['expcode'] = self.l2_loss(expcode, batch['exp'])
@@ -185,7 +185,7 @@ class Latent2CodeModule():
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
                     
                     losses['landmark'] = util.l2_distance(landmarks3d[:, :, :2], batch['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
-                    losses['photometric_texture'] = MSE_Loss( batch['img_mask'] * predicted_images ,  batch['img_mask'] * batch['gt_image']) * self.flame_config.w_pho  
+                    losses['photometric_texture'] = self.MSE_Loss( batch['img_mask'] * predicted_images ,  batch['img_mask'] * batch['gt_image']) * self.flame_config.w_pho  
                     loss = losses['landmark'] + losses['photometric_texture']
                 else:
                 
