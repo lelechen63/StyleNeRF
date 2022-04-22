@@ -143,8 +143,6 @@ class RigModule():
                 if iteration % self.opt.save_step == 0:  
                 
                     visind = 0
-                    print  (return_list['choice'],'!!!!!!')
-                    print (return_list["landmark_same"].shape)
                     # visualize the image close to v
                     image_v = vis_tensor(image_tensor= v['gt_image'], 
                                             image_path = v['image_path'][0] +'-V-gtimg',

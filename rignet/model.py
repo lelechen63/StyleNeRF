@@ -390,6 +390,7 @@ class RigNerft(nn.Module):
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
         return_list = {}
         return_list['choice'] = choice
+        print (landmark_w_.shape,'@@@@@@@@@')
 
         if flameshape_v != None:
             landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
