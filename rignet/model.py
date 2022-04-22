@@ -236,18 +236,18 @@ class RigNerft(nn.Module):
         self.ckpt_path = os.path.join(opt.checkpoints_dir, opt.name)
         os.makedirs(self.ckpt_path, exist_ok = True)
 
-        # if not self.opt.isTrain:
-        with dnnlib.util.open_url( self.opt.nerfpkl) as f:
-            network = legacy.load_network_pkl(f)
-            G = network['G_ema'].to('cuda') # type: ignore
-        
-        # avoid persistent classes... 
-        from training.networks import Generator
-        # from training.stylenerf import Discriminator
-        from torch_utils import misc
-        with torch.no_grad():
-            self.G2 = Generator(*G.init_args, **G.init_kwargs).to('cuda')
-            misc.copy_params_and_buffers(G, self.G2, require_all=False)
+        if not self.opt.isTrain:
+            with dnnlib.util.open_url( self.opt.nerfpkl) as f:
+                network = legacy.load_network_pkl(f)
+                G = network['G_ema'].to('cuda') # type: ignore
+            
+            # avoid persistent classes... 
+            from training.networks import Generator
+            # from training.stylenerf import Discriminator
+            from torch_utils import misc
+            with torch.no_grad():
+                self.G2 = Generator(*G.init_args, **G.init_kwargs).to('cuda')
+                misc.copy_params_and_buffers(G, self.G2, require_all=False)
 
 
     def get_f(self,network):
@@ -274,7 +274,7 @@ class RigNerft(nn.Module):
         albedocode = self.latent2albedo(fea) + self.albedomean.to(fea.device)
         litcode = self.latent2lit(fea).view(-1, 9,3) + self.litmean.view(-1, 9,3).to(fea.device)
         
-        print (shapecode.device, expcode.device, albedocode.device, litcode.device)
+        # print (shapecode.device, expcode.device, albedocode.device, litcode.device)
         paramset = [shapecode, expcode, albedocode, litcode]
         return paramset
     
@@ -397,8 +397,8 @@ class RigNerft(nn.Module):
             return_list['landmark_same'] = landmark_same
             return_list['render_img_same'] = render_img_same
             
-            return_list['syns_w_same'] = self.G2.forward(styles = latent_w_same.view(-1, self.layer,self.latent_dim))['img']
-            return_list['syns_w_hat'] = self.G2.forward(styles = latent_w_hat.view(-1, self.layer,self.latent_dim))['img']
+            # return_list['syns_w_same'] = self.G2.forward(styles = latent_w_same.view(-1, self.layer,self.latent_dim))['img']
+            # return_list['syns_w_hat'] = self.G2.forward(styles = latent_w_hat.view(-1, self.layer,self.latent_dim))['img']
 
             p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
             p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 

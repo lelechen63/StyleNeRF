@@ -211,13 +211,13 @@ class RigModule():
                                             image_path = v['image_path'][0]+'-close-V-renderimg', 
                                             device = self.device)
 
-                    synsimg_v = vis_ganimg(image_tensor= return_list['syns_w_hat'], 
-                                        image_path = 'syns_w_hat',
-                                         )
+                    # synsimg_v = vis_ganimg(image_tensor= return_list['syns_w_hat'], 
+                    #                     image_path = 'syns_w_hat',
+                    #                      )
 
-                    synsimg_w = vis_ganimg(image_tensor= return_list['syns_w_same'], 
-                                            image_path = 'syns_w_same',
-                                            )
+                    # synsimg_w = vis_ganimg(image_tensor= return_list['syns_w_same'], 
+                    #                         image_path = 'syns_w_same',
+                    #                         )
 
                     visuals = OrderedDict([
                     ('image_v', image_v),
@@ -237,8 +237,8 @@ class RigModule():
                     ('genlmark_v', genlmark_v),
                     ('genimage_v', genimage_v ),
 
-                    ('synsimg_v_', synsimg_v),
-                    ('synsimg_w_', synsimg_w )
+                    # ('synsimg_v_', synsimg_v),
+                    # ('synsimg_w_', synsimg_w )
 
                     ])
             
