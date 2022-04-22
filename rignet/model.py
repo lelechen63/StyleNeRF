@@ -73,6 +73,7 @@ class Latent2Code(nn.Module):
             LinearWN( 256, 256 ),
             th.nn.LeakyReLU( 0.2, inplace = True )
         )
+        print ('++++++++++++++here', len(weight))
         if len(weight) > 0:
             print ('============================================================')
             print ('loading weights for latent2ShapeExpCode feature extraction network')
