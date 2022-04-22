@@ -1002,6 +1002,9 @@ class VolumeRenderer(object):
             gg.append(torch.Tensor(tmp[i][:1]).to(H.device))
             # print(gg[i].shape)
         nerf_input_cams = gg
+        
+        for len(gg):
+            print (gg[i].shape, '====')
 
         # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         H.fg_inf_depth = (self.no_background or not_render_background) and (not self.white_background)
