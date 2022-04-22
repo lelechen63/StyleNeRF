@@ -18,6 +18,7 @@ class RigModule():
         self.opt = opt
         self.flame_config = flame_config
         self.visualizer = Visualizer(opt)
+        self.choice_dic =["shape", "exp", "albedo", "lit"]
         if opt.cuda:
             self.device = torch.device("cuda")
         self.rig = RigNerft( flame_config, opt)
@@ -149,13 +150,12 @@ class RigModule():
                                             )
 
                     lmark_v = vis_tensor(image_tensor= v['img_mask'] * v['gt_image'], 
-                                            image_path = v['image_path'][0] +'-V-landmark',
+                                            image_path = v['image_path'][0] +'-v' + self.choice_dic[ return_list['choice'][visind]],
                                             land_tensor = v['gt_landmark'],
                                             cam = v['cam'], 
                                             device = self.device
                                             )
                 
-
                     image_w = vis_tensor(image_tensor= w['gt_image'], 
                                             image_path = w['image_path'][0] +'-W-gtimg',
                                             device = self.device
@@ -306,15 +306,15 @@ class RigModule():
 
                 losses = {}
                 # keep batch[1], w the same
-                losses['landmark_same'] = util.l2_distance(landmark_same[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['landmark_same'] = util.l2_distance(landmark_same[:, :, :2], batch[1]['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_same'] = (batch[1]['img_mask'] * (render_img_same - batch[1]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
                 
                 # close to w
-                losses['landmark_w_'] = util.l2_distance(landmark_w_[:, 17:, :2], batch[1]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['landmark_w_'] = util.l2_distance(landmark_w_[:, :, :2], batch[1]['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_w_'] = (batch[1]['img_mask'] * (render_img_w_ - batch[1]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
                 
                 # close to v
-                losses['landmark_v_'] = util.l2_distance(landmark_v_[:, 17:, :2], batch[0]['gt_landmark'][:, 17:, :2]) * self.flame_config.w_lmks
+                losses['landmark_v_'] = util.l2_distance(landmark_v_[:, :, :2], batch[0]['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
                 losses['photometric_texture_v_'] = (batch[0]['img_mask'] * (render_img_v_ - batch[0]['gt_image'] ).abs()).mean() * self.flame_config.w_pho
                 
                 tqdm_dict = {'landmark_same': losses['landmark_same'].data, \
