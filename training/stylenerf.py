@@ -988,7 +988,7 @@ class VolumeRenderer(object):
             H.fixed_input_cams = None
         nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
         print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        for i in range(nerf_input_cams):
+        for i in range(len(nerf_input_cams)):
             print (nerf_input_cams[i].shape, '---------')
         # gg = []
         # for i in range(3):
