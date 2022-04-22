@@ -567,14 +567,9 @@ class CameraRay(object):
             batch_size = pixels_world.shape[0]
             n_steps = di.shape[-1]
             ray_i = pixels_world - camera_world
-            print (ray_i.shape, '====')
-            print (camera_world.shape ,'====' )
-            print (di.shape)
             p_i = camera_world.unsqueeze(-2).contiguous() + \
                 di.unsqueeze(-1).contiguous() * ray_i.unsqueeze(-2).contiguous()
-            print (p_i.shape, '=+++eeee+++')
             ray_i = ray_i.unsqueeze(-2).repeat(1, 1, n_steps, 1)
-            print (ray_i.shape, '=++++++')
         else:
             assert no_reshape, "only used to transform points to a warped space"
 
@@ -593,7 +588,6 @@ class CameraRay(object):
             
         if no_reshape:
             return p_i
-        print (p_i.shape, ray_i.shape)
         assert(p_i.shape == ray_i.shape)
         p_i = p_i.reshape(batch_size, -1, 3)
         ray_i = ray_i.reshape(batch_size, -1, 3)
@@ -834,7 +828,6 @@ class VolumeRenderer(object):
         if (H.training and (not H.get('disable_noise', False))) or H.get('force_noise', False):
             di = self.C.add_noise_to_interval(di)
         di_trs = self.C.get_transformed_depth(di)
-        print (di_trs.shape, '====+++++++=====')
         p_i, r_i = self.C.get_evaluation_points(pixels_world, camera_world, di_trs)
 
         if nerf_input_feats is not None:
