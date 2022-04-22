@@ -185,7 +185,7 @@ class Latent2CodeModule():
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
                     
                     losses['landmark'] = util.l2_distance(landmarks3d[:, :, :2], batch['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
-                    losses['photometric_texture'] = (batch['img_mask'] * (predicted_images - batch['gt_image'] ).abs()).mean() * self.flame_config.w_pho
+                    losses['photometric_texture'] = MSE_Loss( batch['img_mask'] * predicted_images ,  batch['img_mask'] * batch['gt_image']) * self.flame_config.w_pho  
                     loss = losses['landmark'] + losses['photometric_texture']
                 else:
                 
