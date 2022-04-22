@@ -591,7 +591,7 @@ class CameraRay(object):
             
         if no_reshape:
             return p_i
-
+        print (p_i.shape, ray_i.shap)
         assert(p_i.shape == ray_i.shape)
         p_i = p_i.reshape(batch_size, -1, 3)
         ray_i = ray_i.reshape(batch_size, -1, 3)
