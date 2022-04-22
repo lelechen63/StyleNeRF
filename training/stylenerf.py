@@ -987,11 +987,9 @@ class VolumeRenderer(object):
         else:
             H.fixed_input_cams = None
         nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
-        print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        print (pixels[0].shape,'====pixels')
-        print ( camera_matrices[0].shape, '---camera_matrices')
-        for i in range(len(nerf_input_cams)):
-            print (nerf_input_cams[i].shape, '---------')
+        # print ( camera_matrices[0].shape, '---camera_matrices')
+        # for i in range(len(nerf_input_cams)):
+        #     print (nerf_input_cams[i].shape, '---------')
         # gg = []
         # for i in range(3):
         #     tmp = nerf_input_cams[i].cpu().numpy()
@@ -1003,12 +1001,9 @@ class VolumeRenderer(object):
         tmp = pickle.load(_file)
         gg =[]
         for i in range(3):
-            gg.append(torch.Tensor(tmp[i][:1]).to(H.device))
+            gg.append(torch.Tensor(tmp[i][:1]).to(H.device).repeat(pixels[0].shape[0],1,1))
         nerf_input_cams = gg
-        
-        for i in range(len(gg)):
-            print (gg[i].shape, '=3333===')
-
+    
         # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         H.fg_inf_depth = (self.no_background or not_render_background) and (not self.white_background)
         assert(not (not_render_background and only_render_background))
