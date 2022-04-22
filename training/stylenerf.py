@@ -834,7 +834,7 @@ class VolumeRenderer(object):
         if (H.training and (not H.get('disable_noise', False))) or H.get('force_noise', False):
             di = self.C.add_noise_to_interval(di)
         di_trs = self.C.get_transformed_depth(di)
-        print (di_trs.shape, '=========')
+        print (di_trs.shape, '====+++++++=====')
         p_i, r_i = self.C.get_evaluation_points(pixels_world, camera_world, di_trs)
 
         if nerf_input_feats is not None:
