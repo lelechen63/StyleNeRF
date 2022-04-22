@@ -986,10 +986,10 @@ class VolumeRenderer(object):
             H.fixed_input_cams = self.C.get_origin_direction(pixels, fixed_camera)
         else:
             H.fixed_input_cams = None
-        nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
-        # print ( camera_matrices[0].shape, '---camera_matrices')
-        for i in range(len(nerf_input_cams)):
-            print (nerf_input_cams[i].shape, '---------')
+        # nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
+        # # print ( camera_matrices[0].shape, '---camera_matrices')
+        # for i in range(len(nerf_input_cams)):
+        #     print (nerf_input_cams[i].shape, '---------')
         # gg = []
         # for i in range(3):
         #     tmp = nerf_input_cams[i].cpu().numpy()
@@ -997,13 +997,15 @@ class VolumeRenderer(object):
         # with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
         #     pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
         # print (nerf_input_cams[0].shape, '+++')
-        # _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_4.pkl', "rb")
-        # tmp = pickle.load(_file)
-        # gg =[]
-        # for i in range(3):
-        #     gg.append(torch.Tensor(tmp[i][:1]).to(H.device).repeat(pixels[0].shape[0],1,1))
-        # nerf_input_cams = gg
-    
+        _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_4.pkl', "rb")
+        tmp = pickle.load(_file)
+        gg =[]
+        for i in range(3):
+            gg.append(torch.Tensor(tmp[i][:1]).to(H.device).repeat(pixels[0].shape[0],1,1))
+        nerf_input_cams = gg
+        for i in range(len(nerf_input_cams)):
+            print (nerf_input_cams[i].shape, '---------')
+        
         # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         H.fg_inf_depth = (self.no_background or not_render_background) and (not self.white_background)
         assert(not (not_render_background and only_render_background))
