@@ -209,6 +209,11 @@ class RigNerft(nn.Module):
         self.latent_fea_dim = 32
         self.param_fea_dim = 32
 
+        self.litmean =  torch.Tensor(np.load(opt.dataroot + '/litmean.npy')).to('cuda')
+        self.expmean = torch.Tensor(np.load(opt.dataroot + '/expmean.npy')).to('cuda')
+        self.shapemean = torch.Tensor(np.load(opt.dataroot + '/shapemean.npy')).to('cuda')
+        self.albedomean = torch.Tensor(np.load(opt.dataroot + '/albedomean.npy')).to('cuda') 
+
         self.flame_config = flame_config
         self.image_size = self.flame_config.image_size
         
@@ -264,10 +269,10 @@ class RigNerft(nn.Module):
     def latent2params(self, latent):
         fea = self.Latent2fea(latent)
 
-        shapecode = self.latent2shape(fea)
-        expcode = self.latent2exp(fea)
-        albedocode = self.latent2albedo(fea)
-        litcode = self.latent2lit(fea).view(-1, 9,3)
+        shapecode = self.latent2shape(fea) + self.shapemean
+        expcode = self.latent2exp(fea) + self.expmean
+        albedocode = self.latent2albedo(fea) + self.albedomean
+        litcode = self.latent2lit(fea).view(-1, 9,3) + self.litmean
         
         paramset = [shapecode, expcode, albedocode, litcode]
         return paramset
