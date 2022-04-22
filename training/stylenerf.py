@@ -573,7 +573,7 @@ class CameraRay(object):
             p_i = camera_world.unsqueeze(-2).contiguous() + \
                 di.unsqueeze(-1).contiguous() * ray_i.unsqueeze(-2).contiguous()
             print (p_i.shape, '=+++eeee+++')
-            ray_i = ray_i.unsqueeze(-2).repeat(batch_size, 1, n_steps, 1)
+            ray_i = ray_i.unsqueeze(-2).repeat(1, 1, n_steps, 1)
             print (ray_i.shape, '=++++++')
         else:
             assert no_reshape, "only used to transform points to a warped space"
