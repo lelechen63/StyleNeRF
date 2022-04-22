@@ -269,10 +269,10 @@ class RigNerft(nn.Module):
     def latent2params(self, latent):
         fea = self.Latent2fea(latent)
 
-        shapecode = self.latent2shape(fea) + self.shapemean
-        expcode = self.latent2exp(fea) + self.expmean
-        albedocode = self.latent2albedo(fea) + self.albedomean
-        litcode = self.latent2lit(fea).view(-1, 9,3) + self.litmean.view(-1, 9,3)
+        shapecode = self.latent2shape(fea) + self.shapemean.to(fea.device)
+        expcode = self.latent2exp(fea) + self.expmean.to(fea.device)
+        albedocode = self.latent2albedo(fea) + self.albedomean.to(fea.device)
+        litcode = self.latent2lit(fea).view(-1, 9,3) + self.litmean.view(-1, 9,3).to(fea.device)
         
         paramset = [shapecode, expcode, albedocode, litcode]
         return paramset
