@@ -86,7 +86,7 @@ class Latent2Code(nn.Module):
             LinearWN( 256, self.shape_dim )
         )
         if len(weight) > 0:
-             print ('============================================================')
+            print ('============================================================')
             print ('loading weights for latent2Shape network')
             latent2shape.load_state_dict(torch.load(weight))
         return latent2shape
