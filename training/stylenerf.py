@@ -563,6 +563,7 @@ class CameraRay(object):
             return d0.clip(min=0, max=1)
     
     def get_evaluation_points(self, pixels_world=None, camera_world=None, di=None, p_i=None, no_reshape=False, transform=None):
+        print (p_i.shape, '+++++=')
         if p_i is None:
             batch_size = pixels_world.shape[0]
             n_steps = di.shape[-1]
@@ -584,7 +585,6 @@ class CameraRay(object):
                 p_i, c[None, None, None, :], self.depth_range[1])
         
         elif transform == 'InverseWarp':
-            # https://arxiv.org/pdf/2111.12077.pdf
             p_n = p_i.norm(p=2, dim=-1, keepdim=True).clamp(min=1e-7)
             con = p_n.ge(1).type_as(p_n)
             p_i = p_i * (1 -con) + (2 - 1 / p_n) * (p_i / p_n) * con
