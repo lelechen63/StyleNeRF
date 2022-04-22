@@ -368,7 +368,7 @@ class RigNerft(nn.Module):
         
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
-        print (p_w[0].shape.'!!!!')
+        print (p_w[0].shape,'!!!!')
         for i in range(4):
             if i != choice:
                 p_w_replaced.append(p_w[i])
