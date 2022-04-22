@@ -74,6 +74,7 @@ class Latent2Code(nn.Module):
             th.nn.LeakyReLU( 0.2, inplace = True )
         )
         if len(weight) > 0:
+            print ('============================================================')
             print ('loading weights for latent2ShapeExpCode feature extraction network')
             Latent2ShapeExpCode.load_state_dict(torch.load(weight))
         return Latent2ShapeExpCode
@@ -85,6 +86,7 @@ class Latent2Code(nn.Module):
             LinearWN( 256, self.shape_dim )
         )
         if len(weight) > 0:
+             print ('============================================================')
             print ('loading weights for latent2Shape network')
             latent2shape.load_state_dict(torch.load(weight))
         return latent2shape
@@ -96,6 +98,7 @@ class Latent2Code(nn.Module):
             LinearWN( 256, self.exp_dim )
         )
         if len(weight) > 0:
+            print ('============================================================')
             print ('loading weights for latent2exp network')
             latent2exp.load_state_dict(torch.load(weight))
         return latent2exp
@@ -107,6 +110,7 @@ class Latent2Code(nn.Module):
             LinearWN( 256, self.albedo_dim )
         )
         if len(weight) > 0:
+            print ('============================================================')
             print ('loading weights for latent2albedo feature extraction network')
             latent2albedo.load_state_dict(torch.load(weight))
         return latent2albedo
@@ -242,6 +246,7 @@ class RigNerft(nn.Module):
 
 
     def get_f(self,network):
+        print ('============================================================')
         print (network)
         print ('loading weights for Latent2fea feature extraction network, ' + self.opt.Latent2ShapeExpCode_weight)
         network.Latent2fea.load_state_dict(torch.load(self.opt.Latent2ShapeExpCode_weight))
@@ -278,6 +283,7 @@ class RigNerft(nn.Module):
                 ))
             WEncoder = nn.ModuleList(WEncoder)
         if len(weight) > 0:
+            print ('============================================================')
             print ('loading weights for WEncoder  network, ' + weight )
             WEncoder.load_state_dict(torch.load(weight ))
         return WEncoder
@@ -290,6 +296,7 @@ class RigNerft(nn.Module):
                 th.nn.LeakyReLU( 0.2, inplace = True )
             )
         if len(weight) > 0:
+            print ('============================================================')
             print ('loading weights for ParamEncoder  network, ' +weight )
             ParamEncoder.load_state_dict(torch.load(weight))
         return ParamEncoder
@@ -304,6 +311,7 @@ class RigNerft(nn.Module):
             ))
         WDecoder = nn.ModuleList(WDecoder)
         if len(weight) > 0:
+            print ('============================================================')
             print ('loading weights for WDecoder  network, ' +weight )
             WDecoder.load_state_dict(torch.load(weight))
         return WDecoder
