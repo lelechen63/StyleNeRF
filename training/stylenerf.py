@@ -569,6 +569,7 @@ class CameraRay(object):
             ray_i = pixels_world - camera_world
             print (ray_i.shape, '====')
             print (camera_world.shape ,'====' )
+            print (di.shape)
             p_i = camera_world.unsqueeze(-2).contiguous() + \
                 di.unsqueeze(-1).contiguous() * ray_i.unsqueeze(-2).contiguous()
             print (p_i.shape, '=+++eeee+++')
