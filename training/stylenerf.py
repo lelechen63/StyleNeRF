@@ -986,8 +986,10 @@ class VolumeRenderer(object):
             H.fixed_input_cams = self.C.get_origin_direction(pixels, fixed_camera)
         else:
             H.fixed_input_cams = None
-        # nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
-        # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
+        print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        for i in range(nerf_input_cams):
+            print (nerf_input_cams[i].shape, '---------')
         # gg = []
         # for i in range(3):
         #     tmp = nerf_input_cams[i].cpu().numpy()
@@ -1000,7 +1002,6 @@ class VolumeRenderer(object):
         gg =[]
         for i in range(3):
             gg.append(torch.Tensor(tmp[i][:1]).to(H.device))
-            # print(gg[i].shape)
         nerf_input_cams = gg
         
         for i in range(len(gg)):
