@@ -378,6 +378,7 @@ class RigNerft(nn.Module):
 
         p_v_ = []
         p_w_ = []
+        print (p_w_mapped.shape,'#######')
         for j in range(4):
             if j != choice:
                 p_w_.append(p_w_mapped[j])
