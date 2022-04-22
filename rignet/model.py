@@ -274,6 +274,7 @@ class RigNerft(nn.Module):
         albedocode = self.latent2albedo(fea) + self.albedomean.to(fea.device)
         litcode = self.latent2lit(fea).view(-1, 9,3) + self.litmean.view(-1, 9,3).to(fea.device)
         
+        print (shapecode.device, expcode.device, albedomean.device, litcode.device)
         paramset = [shapecode, expcode, albedocode, litcode]
         return paramset
     
