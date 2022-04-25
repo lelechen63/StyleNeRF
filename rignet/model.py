@@ -370,7 +370,7 @@ class RigNerft(nn.Module):
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
         # print (p_w_mapped.shape,'#######')
-        for i in range(laten_v.shape[0]):
+        for i in range(latent_v.shape[0]):
             for j in range(4):
                 pass 
         print (gg)
