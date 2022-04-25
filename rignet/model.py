@@ -371,18 +371,29 @@ class RigNerft(nn.Module):
         # print (p_w_mapped.shape,'#######')
         print (type(p_w))
         print (type(p_w[0]))
+        p_w_ = []
+        p_v_ = []
         for i in range(4):
             print (p_w[i].shape)
-        for i in range(batchsize):
-            
+        for i in range(batchsize): 
+            tmp_v = []
+            tmp_w = []
             for j in range(4):
-                
                 if j == choices[i]:
                 #     p_w_replaced.append()
+                    tmp_v.append(p_w[j][i])
+                    tmp_w.append(p_v[j][i])
+                else:
+                    tmp_v.append(p_v[j][i])
+                    tmp_w.append(p_w[j][i])
+            tmp_w = torch.stack(tmp_w,0)
+            print (tmp_w.shape, '=======')
+            p_w_.append( tmp_w)
+            p_v_.append(torch.stack(tmp_v,0))
 
-                    
-                # else:
-
+        p_w_ = torch.stack(p_w_, 0)
+        print (p_w_.shape)
+            
 
 
                     pass 
