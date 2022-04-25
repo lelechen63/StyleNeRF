@@ -353,7 +353,7 @@ class RigNerft(nn.Module):
     def forward(self, latent_v, latent_w, \
                     cam_v=None, pose_v=None, flameshape_v = None, flameexp_v = None, flametex_v = None,\
                     flamelit_v = None, cam_w=None, pose_w=None, flameshape_w = None, flameexp_w = None, flametex_w = None, flamelit_w = None):
-        
+        batchsize =  latent_v.shape[0]    
         p_v = self.latent2params(latent_v)
         p_w = self.latent2params(latent_w)
 
@@ -363,15 +363,28 @@ class RigNerft(nn.Module):
 
         # randomly choose one params to be edited
         choices =[]
-        for i in range(latent_v.shape[0]):
+        for i in range(batchsize):
             choices.append( torch.randint(0, 4 ,(1,)).item())
         print (choices)
-        print (p_w[0].shape )
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
         # print (p_w_mapped.shape,'#######')
-        for i in range(latent_v.shape[0]):
+        print (type(p_w))
+        print (type(p_w[0]))
+        for i in range(4):
+            print (p_w[i].shape)
+        for i in range(batchsize):
+            
             for j in range(4):
+                
+                if j == choices[i]:
+                    p_w_replaced.append()
+
+                    
+                else:
+
+
+
                 pass 
         print (gg)
                 
