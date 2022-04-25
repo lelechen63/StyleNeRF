@@ -368,41 +368,17 @@ class RigNerft(nn.Module):
         print (choices)
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
-        # print (p_w_mapped.shape,'#######')
-        print (type(p_w))
-        print (type(p_w[0]))
-        p_w_ = []
-        p_v_ = []
+        
         for i in range(4):
-            print (p_w[i].shape)
+            p_w_replaced.append(torch.clone(p_w[i]))
+       
         for i in range(batchsize): 
             tmp_v = []
             tmp_w = []
             for j in range(4):
                 if j == choices[i]:
-                #     p_w_replaced.append()
-                    tmp_v.append(p_w[j][i])
-                    tmp_w.append(p_v[j][i])
-                else:
-                    tmp_v.append(p_v[j][i])
-                    tmp_w.append(p_w[j][i])
-            for i in tmp_w:
-                print(i.shape)
-            tmp_w = torch.stack(tmp_w,0)
-            print (tmp_w.shape, '=======')
-            p_w_.append( tmp_w)
-            p_v_.append(torch.stack(tmp_v,0))
-
-        p_w_ = torch.stack(p_w_, 0)
-        print (p_w_.shape)
-         
-        print (gg)
-                
-        for i in range(4):
-            if i != choice:
-                p_w_replaced.append(p_w[i])
-            else:
-                p_w_replaced.append(p_v[i])
+                    p_w_replaced[j][i] = p_v[j][i]
+        
 
         latent_w_hat = self.rig(latent_w, p_w_replaced)
         # map changed w back to P
@@ -410,15 +386,14 @@ class RigNerft(nn.Module):
 
         p_v_ = []
         p_w_ = []
-        
-
-        for j in range(4):
-            if j != choice:
-                p_w_.append(p_w_mapped[j])
-                p_v_.append(p_v[j])
-            else:
-                p_w_.append(p_w[j])
-                p_v_.append(p_w_mapped[j])
+        for i in range(4):
+            p_v_.append(torch.clone(p_v[i]))
+            p_w_.append(torch.clone(p_w_mapped[i]))
+        for i in range(batchsize):
+            for j in range(4):
+                if j == choices[i]:
+                    p_w_[i][j] = p_w[i][j]
+                    p_v_[i][j] = p_w_mapped[i][j]
         
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
