@@ -386,6 +386,8 @@ class RigNerft(nn.Module):
                 else:
                     tmp_v.append(p_v[j][i])
                     tmp_w.append(p_w[j][i])
+            for i in tmp_w:
+                print(i.shape)
             tmp_w = torch.stack(tmp_w,0)
             print (tmp_w.shape, '=======')
             p_w_.append( tmp_w)
