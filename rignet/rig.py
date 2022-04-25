@@ -150,7 +150,7 @@ class RigModule():
                                             )
 
                     lmark_v = vis_tensor(image_tensor= v['img_mask'] * v['gt_image'], 
-                                            image_path = v['image_path'][0] +'-v-land',
+                                            image_path = v['image_path'][0] +'-' +  self.choice_dic[return_list['choice'][0]],,
                                             land_tensor = v['gt_landmark'],
                                             cam = v['cam'], 
                                             device = self.device

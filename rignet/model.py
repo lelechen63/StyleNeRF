@@ -365,7 +365,6 @@ class RigNerft(nn.Module):
         choices =[]
         for i in range(batchsize):
             choices.append( torch.randint(0, 4 ,(1,)).item())
-        print (choices)
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
         
