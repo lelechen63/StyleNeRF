@@ -365,10 +365,16 @@ class RigNerft(nn.Module):
         choices =[]
         for i in range(latent_v.shape[0]):
             choices.append( torch.randint(0, 4 ,(1,)).item())
-        
+        print (choices)
+        print (p_w[0].shape )
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
-        print (p_w[0].shape,'!!!!')
+        # print (p_w_mapped.shape,'#######')
+        for i in range(laten_v.shape[0]):
+            for j in range(4):
+                pass 
+        print (gg)
+                
         for i in range(4):
             if i != choice:
                 p_w_replaced.append(p_w[i])
@@ -381,7 +387,8 @@ class RigNerft(nn.Module):
 
         p_v_ = []
         p_w_ = []
-        print (p_w_mapped.shape,'#######')
+        
+
         for j in range(4):
             if j != choice:
                 p_w_.append(p_w_mapped[j])
