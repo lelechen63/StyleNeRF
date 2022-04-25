@@ -378,14 +378,14 @@ class RigNerft(nn.Module):
             for j in range(4):
                 
                 if j == choices[i]:
-                    p_w_replaced.append()
+                #     p_w_replaced.append()
 
                     
-                else:
+                # else:
 
 
 
-                pass 
+                    pass 
         print (gg)
                 
         for i in range(4):
