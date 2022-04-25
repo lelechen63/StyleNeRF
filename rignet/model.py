@@ -392,22 +392,19 @@ class RigNerft(nn.Module):
         for i in range(batchsize):
             for j in range(4):
                 if j == choices[i]:
-                    p_w_[i][j] = p_w[i][j]
-                    p_v_[i][j] = p_w_mapped[i][j]
+                    p_w_[j][i] = p_w[j][i]
+                    p_v_[j][i] = p_w_mapped[j][i]
         
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
         return_list = {}
-        return_list['choice'] = choice
+        return_list['choice'] = choices
 
         if flameshape_v != None:
             landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
             
             return_list['landmark_same'] = landmark_same
             return_list['render_img_same'] = render_img_same
-            
-            # return_list['syns_w_same'] = self.G2.forward(styles = latent_w_same.view(-1, self.layer,self.latent_dim))['img']
-            # return_list['syns_w_hat'] = self.G2.forward(styles = latent_w_hat.view(-1, self.layer,self.latent_dim))['img']
 
             p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
             p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 

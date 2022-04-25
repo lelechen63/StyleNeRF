@@ -86,8 +86,6 @@ def get_train( debug = False):
             pickle.dump(testlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-
-
 def get_mean(debug = False):
     dataroot = '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf'  
     zip_path = os.path.join(dataroot, 'ffhq_train.pkl' )
