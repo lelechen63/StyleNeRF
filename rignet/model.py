@@ -393,10 +393,7 @@ class RigNerft(nn.Module):
 
         p_w_ = torch.stack(p_w_, 0)
         print (p_w_.shape)
-            
-
-
-                    pass 
+         
         print (gg)
                 
         for i in range(4):
