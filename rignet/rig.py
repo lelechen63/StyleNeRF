@@ -44,6 +44,9 @@ class RigModule():
         for p in self.rig.render.parameters():
             p.requires_grad = False  
         
+        self.perceptual_net  = VGG16_for_Perceptual(n_layers=[2,4,14,21]).to(self.device)
+        for p in self.perceptual_net.parameters():
+            p.requires_grad = False  
        
         if opt.isTrain:
             self.rig =torch.nn.DataParallel(self.rig, device_ids=range(len(self.opt.gpu_ids)))
@@ -69,6 +72,7 @@ class RigModule():
         # keep w, w the same
         losses['landmark_same'] = util.l2_distance(return_list['landmark_same'][:, :, :2], w['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
         losses['photometric_texture_same'] = MSE_Loss( w['img_mask'] * return_list['render_img_same'].float(),  w['img_mask'] * w['gt_image']) * self.flame_config.w_pho
+        
         # close to w
         losses['landmark_w_'] =  util.l2_distance(return_list['landmark_w_'][:, :, :2], w['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
         losses['photometric_texture_w_'] = MSE_Loss( w['img_mask'] * return_list['render_img_w_'].float() ,  w['img_mask'] * w['gt_image']) * self.flame_config.w_pho
@@ -79,18 +83,18 @@ class RigModule():
         losses['percepture_w']  = caluclate_percepture_loss( render_w_features, w_features, MSE_Loss) * self.opt.lambda_percep
         
         # close to v
-        losses['landmark_v_']  = util.l2_distance(return_list['landmark_v_'][:, :, :2], v['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
-        losses['photometric_texture_v_'] = MSE_Loss(  v['img_mask'] * return_list['render_img_v_'].float() , v['img_mask'] * v['gt_image'] ) * self.flame_config.w_pho
+        losses['landmark_v_']  = util.l2_distance(return_list['landmark_v_'][:, :, :2], v['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks * 10
+        losses['photometric_texture_v_'] = MSE_Loss(  v['img_mask'] * return_list['render_img_v_'].float() , v['img_mask'] * v['gt_image'] ) * self.flame_config.w_pho * 10
 
         render_v_features = perceptual_net( v['img_mask'] * return_list['render_img_v_'].float())
-        v_features = perceptual_net( v['img_mask'] * v['gt_image'])
-        losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep
+        v_features = perceptual_net( v['img_mask'] * v['gt_image']) 
+        losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep * 10
         return losses
         
 
     def train(self):
         MSE_Loss   = nn.SmoothL1Loss(reduction='mean')
-        perceptual_net  = VGG16_for_Perceptual(n_layers=[2,4,14,21]).to(self.device)
+        
 
         t0 = time.time()
         iteration = 0
@@ -106,7 +110,7 @@ class RigModule():
                 return_list = self.rig.forward(v['latent'], w['latent'], v['cam'], v['pose'], v['shape'],v['exp'],v['tex'],v['lit'], \
                                                                          w['cam'], w['pose'],w['shape'], w['exp'], w['tex'],w['lit'])
                 t2 = time.time()
-                losses = self.compute_loss(w,v,return_list, perceptual_net, MSE_Loss)
+                losses = self.compute_loss(w,v,return_list, self.perceptual_net, MSE_Loss)
                 loss = 0
                 for k in losses.keys():
                     loss += losses[k]
@@ -123,13 +127,14 @@ class RigModule():
                 t3 = time.time()
                 self.visualizer.print_current_errors(epoch, step, errors, t1-t0, t2-t1, t3-t2)
                 
+                
                 ### siamese training
                 w = batch[0]
                 v = batch[1]
                 return_list = self.rig.forward(v['latent'], w['latent'], v['cam'], v['pose'], v['shape'],v['exp'],v['tex'],v['lit'], \
                                                                          w['cam'], w['pose'],w['shape'], w['exp'], w['tex'],w['lit'])
                 t2 = time.time()
-                losses = self.compute_loss(w,v,return_list, perceptual_net, MSE_Loss)
+                losses = self.compute_loss(w,v,return_list, self.perceptual_net, MSE_Loss)
                 loss = 0
                 for k in losses.keys():
                     loss += losses[k]

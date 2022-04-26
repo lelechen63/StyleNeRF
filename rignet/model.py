@@ -372,8 +372,6 @@ class RigNerft(nn.Module):
             p_w_replaced.append(torch.clone(p_w[i]))
        
         for i in range(batchsize): 
-            tmp_v = []
-            tmp_w = []
             for j in range(4):
                 if j == choices[i]:
                     p_w_replaced[j][i] = p_v[j][i]
