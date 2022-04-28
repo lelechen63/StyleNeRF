@@ -214,6 +214,12 @@ class RigNerft(nn.Module):
         self.shapemean = torch.Tensor(np.load(opt.dataroot + '/shapemean.npy')).to('cuda')
         self.albedomean = torch.Tensor(np.load(opt.dataroot + '/albedomean.npy')).to('cuda') 
 
+        self.litzeors = torch.zeros(self.opt.batchSize, self.lit_dim).to('cuda') 
+        self.expzeors = torch.zeros(self.opt.batchSize, self.exp_dim).to('cuda') 
+        self.albedozeors = torch.zeros(self.opt.batchSize, self.albedo_dim).to('cuda') 
+        self.shapezeors = torch.zeros(self.opt.batchSize, self.shape_dim).view(-1, 9,3).to('cuda') 
+        self.p_zeros = [self.shapezeors,self.expzeors, self.albedozeors, slef.litzeors]
+
         self.flame_config = flame_config
         self.image_size = self.flame_config.image_size
         
@@ -357,8 +363,9 @@ class RigNerft(nn.Module):
         p_v = self.latent2params(latent_v)
         p_w = self.latent2params(latent_w)
 
+        
         # if we input paired W with P, output same W
-        latent_w_same = self.rig(latent_w,  p_w)
+        latent_w_same = self.rig(latent_w,  self.p_zeros)
         p_w_same = self.latent2params(latent_w_same)
 
         # randomly choose one params to be edited
@@ -369,7 +376,7 @@ class RigNerft(nn.Module):
         p_w_replaced = []
         
         for i in range(4):
-            p_w_replaced.append(torch.clone(p_w[i]))
+            p_w_replaced.append(torch.clone(self.p_zeros[i]))
        
         for i in range(batchsize): 
             for j in range(4):
@@ -386,6 +393,7 @@ class RigNerft(nn.Module):
         for i in range(4):
             p_v_.append(torch.clone(p_v[i]))
             p_w_.append(torch.clone(p_w_mapped[i]))
+            
         for i in range(batchsize):
             for j in range(4):
                 if j == choices[i]:
