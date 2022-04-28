@@ -139,7 +139,7 @@ class RigModule():
                 losses = self.compute_loss(w,v,return_list, self.perceptual_net, MSE_Loss)
                 loss = 0
                 for k in losses.keys():
-                    writer.add_scale(k, losses[k], iteration)
+                    writer.add_scalar(k, losses[k], iteration)
                     loss += losses[k]
 
                 self.optimizer.zero_grad()
