@@ -90,7 +90,7 @@ class RigModule():
 
         render_v_features = perceptual_net( v['img_mask'] * return_list['render_img_v_'].float())
         v_features = perceptual_net( v['img_mask'] * v['gt_image']) 
-        losses['percepture_v']  = caluclate_perce pture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep * 10
+        losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep * 10
         return losses
         
 
