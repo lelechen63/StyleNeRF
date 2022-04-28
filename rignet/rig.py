@@ -11,6 +11,8 @@ from visualizer import Visualizer
 import util
 from dataset import *
 import time 
+from torch.utils.tensorboard import SummaryWriter
+
 
 class RigModule():
     def __init__(self, flame_config, opt ):
@@ -88,13 +90,13 @@ class RigModule():
 
         render_v_features = perceptual_net( v['img_mask'] * return_list['render_img_v_'].float())
         v_features = perceptual_net( v['img_mask'] * v['gt_image']) 
-        losses['percepture_v']  = caluclate_percepture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep * 10
+        losses['percepture_v']  = caluclate_perce pture_loss( render_v_features, v_features, MSE_Loss) * self.opt.lambda_percep * 10
         return losses
         
 
     def train(self):
         MSE_Loss   = nn.SmoothL1Loss(reduction='mean')
-        
+        writer = SummaryWriter('./logs')
 
         t0 = time.time()
         iteration = 0
@@ -137,6 +139,7 @@ class RigModule():
                 losses = self.compute_loss(w,v,return_list, self.perceptual_net, MSE_Loss)
                 loss = 0
                 for k in losses.keys():
+                    writer.add_scale(k, losses[k], iteration)
                     loss += losses[k]
 
                 self.optimizer.zero_grad()
@@ -251,7 +254,8 @@ class RigModule():
                     torch.save(self.rig.module.LatentEncoder.state_dict(), self.opt.WEncoder_weight)
                     torch.save(self.rig.module.ParamEncoder.state_dict(),self.opt.ParamEncoder_weight)
                     torch.save(self.rig.module.LatentDecoder.state_dict(), self.opt.WDecoder_weight)
-                iteration += 1               
+                iteration += 1 
+        writer.close()           
     def test(self):
         for p in self.rig.parameters():
             p.requires_grad = False 
