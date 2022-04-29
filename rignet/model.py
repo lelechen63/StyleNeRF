@@ -363,7 +363,6 @@ class RigNerft(nn.Module):
         p_v = self.latent2params(latent_v)
         p_w = self.latent2params(latent_w)
 
-        
         # if we input paired W with P, output same W
         latent_w_same = self.rig(latent_w,  self.p_zeros)
         p_w_same = self.latent2params(latent_w_same)
