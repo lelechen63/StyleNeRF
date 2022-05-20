@@ -72,8 +72,11 @@ if opt.isTrain:
     print ( opt.name)
     model.train()
 else:
-    if opt.name == 'Latent2Code':
+    if opt.name == 'rig':
         model.test()
-    elif  opt.name == 'rig':
-        model.test()
+    elif  opt.name == 'Latent2Code':
+        if opt.inversefit:
+            model.inversefit()
+        else:
+            model.test()
         

@@ -268,7 +268,7 @@ class RigModule():
                     batch[1][key] = batch[1][key].to(self.device)
 
             with torch.no_grad():    
-                return_list = self.rig.test(
+                return_list = self.rig.forward(
                             batch[0]['latent'],
                             batch[1]['latent'],
                             
@@ -301,15 +301,9 @@ class RigModule():
                 syns_w = return_list['syns_w']
                 syns_w_same = return_list['syns_w_same']
                 syns_w_hat = return_list['syns_w_hat']
-                recons_images_w_hat = return_list['recons_images_hat']
 
-
-                recons_gtimages_v = return_list['recons_gtimages_v'] 
-                recons_gtimages_w = return_list['recons_gtimages_w'] 
-
-                recons_realgtimages_v = return_list['recons_realgtimages_v'] 
-                recons_realgtimages_w = return_list['recons_realgtimages_w'] 
-
+                recons_images_replace = return_list['landmark_w_r']
+                recons_landmark_replace = return_list['render_img_w_r']
 
 
 
@@ -406,13 +400,13 @@ class RigModule():
                                         device = self.device)
 
                 
-                genimage_v_sudo = vis_tensor(image_tensor = recons_gtimages_v, 
-                                        image_path = 'V-sudoflame-switch', 
-                                        device = self.device)
+                # genimage_v_sudo = vis_tensor(image_tensor = recons_gtimages_v, 
+                #                         image_path = 'V-sudoflame-switch', 
+                #                         device = self.device)
 
-                genimage_w_sudo = vis_tensor(image_tensor = recons_gtimages_w, 
-                                        image_path = 'W-sudoflame-switch', 
-                                        device = self.device)
+                # genimage_w_sudo = vis_tensor(image_tensor = recons_gtimages_w, 
+                #                         image_path = 'W-sudoflame-switch', 
+                #                         device = self.device)
 
                 genimage_v_gt = vis_tensor(image_tensor = recons_realgtimages_v, 
                                         image_path = 'V-gtflame-switch', 
@@ -463,13 +457,13 @@ class RigModule():
                 ('synsimg_w', synsimg_w ),
                 ('synsimg_w_same', synsimg_w_same ),
                 ('synsimg_w_hat', synsimg_w_hat ),
-                ('recons_w_hat', recons_images_w_hat ),
+                # ('recons_w_hat', recons_images_w_hat ),
 
-                ('genimage_v_sudo', genimage_v_sudo ),
-                ('genimage_w_sudo', genimage_w_sudo ),
+                # ('genimage_v_sudo', genimage_v_sudo ),
+                # ('genimage_w_sudo', genimage_w_sudo ),
 
-                ('genimage_v_gt', genimage_v_gt ),
-                ('genimage_w_gt', genimage_w_gt ),
+                # ('genimage_v_gt', genimage_v_gt ),
+                # ('genimage_w_gt', genimage_w_gt ),
                 ])
         
                 self.visualizer.display_current_results(visuals, step, self.opt.save_step) 

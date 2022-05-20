@@ -151,6 +151,14 @@ class FFHQDataset(torch.utils.data.Dataset):
         data['exp'] = data['exp'] - self.expmean
         data['tex'] = data['tex'] - self.albedomean
         data['shape'] = data['shape'] - self.shapemean
+
+        if self.opt.one_latent:
+            if data['latent'].shape[0] == 10752:
+                data['latent'] = data['latent'].reshape(21,512)
+                data['latent'] = data['latent'].mean(0)
+                # data['latent'] = data['latent'].reshape(-1)
+                # print (data['latent'].shape)
+
         return data
 
     def __len__(self):
@@ -245,7 +253,15 @@ class FFHQRigDataset(torch.utils.data.Dataset):
                 data2 = self.total_data[name2]
         else:
             data2 = self.total_data[name2]
+        data['latent'] = data['latent'].reshape(21,512)
+        data['latent'][:] = data['latent'].mean(0)
+        data['latent'] = data['latent'].reshape(-1)
 
+        data2['latent'] = data2['latent'].reshape(21,512)
+        data2['latent'][:] = data2['latent'].mean(0)
+        data2['latent'] = data2['latent'].reshape(-1)
+
+        print (data['latent'].shape, data2['latent'].shape)
 
         return [data, data2]
 

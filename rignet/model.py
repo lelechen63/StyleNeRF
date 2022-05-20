@@ -42,7 +42,10 @@ class Latent2Code(nn.Module):
         
         self.image_size = self.flame_config.image_size
         # networks
-        self.latent_dim = 512 * 21
+        if self.opt.one_latent:
+            self.latent_dim = 512 
+        else:
+            self.latent_dim = 512 * 21
         self.shape_dim = 100
         self.exp_dim = 50
         self.albedo_dim = 50
@@ -63,7 +66,20 @@ class Latent2Code(nn.Module):
 
         self.ckpt_path = os.path.join(opt.checkpoints_dir, opt.name)
         os.makedirs(self.ckpt_path, exist_ok = True)
-    
+        
+        if opt.inversefit:
+            with dnnlib.util.open_url( self.opt.nerfpkl) as f:
+                network = legacy.load_network_pkl(f)
+                G = network['G_ema'].to('cuda') # type: ignore
+            
+            # avoid persistent classes... 
+            from training.networks import Generator
+            # from training.stylenerf import Discriminator
+            from torch_utils import misc
+            with torch.no_grad():
+                self.G2 = Generator(*G.init_args, **G.init_kwargs).to('cuda')
+                misc.copy_params_and_buffers(G, self.G2, require_all=False)
+                
     def build_Latent2CodeFea(self, weight = ''):
         Latent2ShapeExpCode = th.nn.Sequential(
             LinearWN( self.latent_dim , 256 ),
@@ -115,16 +131,6 @@ class Latent2Code(nn.Module):
             latent2albedo.load_state_dict(torch.load(weight))
         return latent2albedo
 
-    # def build_latent2pose(self, weight = ''):
-    #     latent2pose= th.nn.Sequential(
-    #         LinearWN( 256 , 256 ),
-    #         th.nn.LeakyReLU( 0.2, inplace = True ),
-    #         LinearWN( 256, self.pose_dim )
-    #     )
-    #     if len(weight) > 0:
-    #         print ('loading weights for latent2pose feature extraction network')
-    #         latent2pose.load_state_dict(torch.load(weight))
-    #     return latent2pose
     def build_latent2lit(self, weight = ''):
         latent2lit= th.nn.Sequential(
             LinearWN( 256 , 256 ),
@@ -177,11 +183,8 @@ class Latent2Code(nn.Module):
             recons_ops = self.render(recons_vertices, recons_trans_vertices, recons_albedos, (flamelit + self.litmean).view(-1, 9,3))
             recons_images = recons_ops['images']
             return_list['recons_images'] = recons_images
-            
-        
         return return_list
     
-
     def _initialize_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -214,11 +217,11 @@ class RigNerft(nn.Module):
         self.shapemean = torch.Tensor(np.load(opt.dataroot + '/shapemean.npy')).to('cuda')
         self.albedomean = torch.Tensor(np.load(opt.dataroot + '/albedomean.npy')).to('cuda') 
 
-        self.litzeors = torch.zeros(self.opt.batchSize, self.lit_dim).to('cuda') 
+        self.litzeors = torch.zeros(self.opt.batchSize, self.lit_dim).view(-1, 9,3).to('cuda') 
         self.expzeors = torch.zeros(self.opt.batchSize, self.exp_dim).to('cuda') 
         self.albedozeors = torch.zeros(self.opt.batchSize, self.albedo_dim).to('cuda') 
-        self.shapezeors = torch.zeros(self.opt.batchSize, self.shape_dim).view(-1, 9,3).to('cuda') 
-        self.p_zeros = [self.shapezeors,self.expzeors, self.albedozeors, slef.litzeors]
+        self.shapezeors = torch.zeros(self.opt.batchSize, self.shape_dim).to('cuda') 
+        self.p_zeros = [self.shapezeors,self.expzeors, self.albedozeors, self.litzeors]
 
         self.flame_config = flame_config
         self.image_size = self.flame_config.image_size
@@ -417,6 +420,15 @@ class RigNerft(nn.Module):
             return_list['recons_images_v'] = recons_images_v
             return_list['recons_images_w'] = recons_images_w
 
+            syns_w_same = self.G2.forward(styles = latent_w_same.view(-1, 21,512))['img']
+            syns_v = self.G2.forward(styles = latent_v.view(-1, self.layer,self.latent_dim))['img']
+            syns_w = self.G2.forward(styles = latent_w.view(-1, self.layer,self.latent_dim))['img']
+            syns_w_hat = self.G2.forward(styles = latent_w_hat.view(-1, 21,512))['img']
+            return_list['syns_v'] = syns_v
+            return_list['syns_w'] = syns_w
+            return_list['syns_w_same'] = syns_w_same
+            return_list['syns_w_hat'] = syns_w_hat
+
         return_list['latent_w_same'] = latent_w_same
         return_list['landmark_w_'] = landmark_w_
         return_list['render_img_w_'] = render_img_w_
@@ -429,9 +441,9 @@ class RigNerft(nn.Module):
     def test(self, latent_v, latent_w, \
                     cam_v=None, pose_v=None, flameshape_v = None, flameexp_v = None, flametex_v = None,\
                     flamelit_v = None, cam_w=None, pose_w=None, flameshape_w = None, flameexp_w = None, flametex_w = None, flamelit_w = None):
-        
-        syns_v = self.G2.forward(styles = latent_v.view(-1, 21,512))['img']
-        syns_w = self.G2.forward(styles = latent_w.view(-1, 21,512))['img']
+        batchsize =  latent_v.shape[0]   
+        syns_v = self.G2.forward(styles = latent_v.view(-1, self.layer,self.latent_dim))['img']
+        syns_w = self.G2.forward(styles = latent_w.view(-1, self.layer,self.latent_dim))['img']
 
         p_v_vis = [flameshape_v, flameexp_v, flametex_v, flamelit_v.view(-1, 9,3)] 
         p_w_vis = [flameshape_w, flameexp_w, flametex_w, flamelit_w.view(-1, 9,3)] 
@@ -447,34 +459,20 @@ class RigNerft(nn.Module):
         p_w_same = self.latent2params(latent_w_same)
 
         # randomly choose one params to be edited
-        choice = torch.randint(0, 4 ,(1,)).item()
-        
+        choices =[]
+        for i in range(batchsize):
+            choices.append( torch.randint(0, 4 ,(1,)).item())
         # if we input W, and P_v, output hat_W
         p_w_replaced = []
-        gt_switch_w = []
-        gt_switch_v =[]
-
-        realgt_switch_w = []
-        realgt_switch_v =[]
+        
         for i in range(4):
-            if i != choice:
-                gt_switch_w.append(p_w[i])
-                gt_switch_v.append(p_v[i])
-
-                realgt_switch_w.append(p_w_vis[i])
-                realgt_switch_v.append(p_v_vis[i])
-
-
-                p_w_replaced.append(p_w[i])
-            else:
-                gt_switch_v.append(p_w[i])
-                gt_switch_w.append(p_v[i])
-
-                realgt_switch_w.append(p_v_vis[i])
-                realgt_switch_v.append(p_w_vis[i])
-
-                p_w_replaced.append(p_v[i])
-
+            p_w_replaced.append(torch.clone(self.p_zeros[i]))
+       
+        for i in range(batchsize): 
+            for j in range(4):
+                if j == choices[i]:
+                    p_w_replaced[j][i] = p_v[j][i]
+        
         latent_w_hat = self.rig(latent_w, p_w_replaced)
 
         syns_w_hat = self.G2.forward(styles = latent_w_hat.view(-1, 21,512))['img']
@@ -493,18 +491,14 @@ class RigNerft(nn.Module):
                 p_v_.append(p_w_mapped[j])
         
         landmark_same, render_img_same = self.flame_render(p_w_same, pose_w, cam_w)
+        landmark_replace, render_img_replace = self.flame_render(p_w_replaced, pose_w, cam_w)
+        
 
         landmark_w_, render_img_w_ = self.flame_render(p_w_, pose_w, cam_w)
         landmark_v_, render_img_v_ = self.flame_render(p_v_, pose_v, cam_v)
 
         _, recons_images_v = self.flame_render(p_v_vis, pose_v, cam_v)
-        _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)
-
-        _, recons_gtimages_v = self.flame_render(gt_switch_v, pose_v, cam_v)
-        _, recons_gtimages_w = self.flame_render(gt_switch_w, pose_w, cam_w)
-
-        _, recons_realgtimages_v = self.flame_render(realgt_switch_v, pose_v, cam_v)
-        _, recons_realgtimages_w = self.flame_render(realgt_switch_w, pose_w, cam_w)
+        _, recons_images_w = self.flame_render(p_w_vis, pose_w, cam_w)      
 
         _, recons_images_hat = self.flame_render(p_w_mapped, pose_w, cam_w)
 
@@ -519,17 +513,16 @@ class RigNerft(nn.Module):
         return_list['landmark_v_'] = landmark_v_
         return_list['render_img_v_'] = render_img_v_
 
+        return_list['landmark_w_r'] = landmark_replace
+        return_list['render_img_w_r'] = render_img_replace
+
         return_list['recons_images_v'] = recons_images_v
         return_list['recons_images_w'] = recons_images_w
 
-        return_list['recons_gtimages_v'] = recons_gtimages_v
-        return_list['recons_gtimages_w'] = recons_gtimages_w
-
-        return_list['recons_realgtimages_v'] = recons_realgtimages_v
-        return_list['recons_realgtimages_w'] = recons_realgtimages_w
-
         return_list['choice'] = choice
 
+        syns_v = self.G2.forward(styles = latent_v.view(-1, self.layer,self.latent_dim))['img']
+        syns_w = self.G2.forward(styles = latent_w.view(-1, self.layer,self.latent_dim))['img']
         return_list['syns_v'] = syns_v
         return_list['syns_w'] = syns_w
         
@@ -554,3 +547,9 @@ class RigNerft(nn.Module):
             elif isinstance(m, nn.Linear):
                 nn.init.normal_(m.weight, 0, 0.01)
                 nn.init.constant_(m.bias, 0)
+
+
+
+
+
+
