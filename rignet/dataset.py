@@ -142,10 +142,10 @@ class FFHQDataset(torch.utils.data.Dataset):
                 data['gt_image'] = self.transform(img)
                 data['image_path'] = name
             else:
-                data = self.total_data[name]
+                data = copy.copy(self.total_data[name])
                 data['image_path'] = name
         else:
-            data = self.total_data[name]
+            data = copy.copy(self.total_data[name])
             data['image_path'] = name
         data['lit'] = data['lit'] - self.litmean
         data['exp'] = data['exp'] - self.expmean
@@ -176,8 +176,8 @@ class FFHQRigDataset(torch.utils.data.Dataset):
             list_path = os.path.join(opt.dataroot, "ffhq_trainlist.pkl")
             zip_path = os.path.join(opt.dataroot, 'ffhq_train.pkl' )
         else:
-            list_path = os.path.join(opt.dataroot, "ffhq_trainlist.pkl")
-            zip_path = os.path.join(opt.dataroot, 'ffhq_train.pkl' )
+            list_path = os.path.join(opt.dataroot, "ffhq_testlist.pkl")
+            zip_path = os.path.join(opt.dataroot, 'ffhq_test.pkl' )
 
         if opt.debug:
             list_path = list_path[:-4] + '_debug.pkl'
@@ -213,6 +213,12 @@ class FFHQRigDataset(torch.utils.data.Dataset):
 
         print ('******************', len(self.data_list), len(self.total_data))
         self.total_t = []
+
+        self.litmean =  np.load(opt.dataroot + '/litmean.npy')
+        self.expmean = np.load(opt.dataroot + '/expmean.npy')
+        self.shapemean =  np.load(opt.dataroot + '/shapemean.npy')
+        self.albedomean = np.load(opt.dataroot + '/albedomean.npy')
+
     def __getitem__(self, index):
 
         name = self.data_list[index]
@@ -230,10 +236,14 @@ class FFHQRigDataset(torch.utils.data.Dataset):
                 data['gt_image'] = self.transform(img)
                 data['image_path'] = name
             else:
-                data = self.total_data[name]
+                data = copy.copy(self.total_data[name])
         else:
-            data = self.total_data[name]
-
+            data = copy.copy(self.total_data[name])
+        
+        data['lit'] = data['lit'] - self.litmean
+        data['exp'] = data['exp'] - self.expmean
+        data['tex'] = data['tex'] - self.albedomean
+        data['shape'] = data['shape'] - self.shapemean
         another_inx = torch.randint(0, self.__len__() ,(1,)).item()
         name2 = self.data_list[another_inx]
 
@@ -253,16 +263,28 @@ class FFHQRigDataset(torch.utils.data.Dataset):
                 data2 = self.total_data[name2]
         else:
             data2 = self.total_data[name2]
-        data['latent'] = data['latent'].reshape(21,512)
-        data['latent'][:] = data['latent'].mean(0)
-        data['latent'] = data['latent'].reshape(-1)
+        # data['latent'] = data['latent'].reshape(21,512)
+        # data['latent'][:] = data['latent'].mean(0)
+        # data['latent'] = data['latent'].reshape(-1)
 
-        data2['latent'] = data2['latent'].reshape(21,512)
-        data2['latent'][:] = data2['latent'].mean(0)
-        data2['latent'] = data2['latent'].reshape(-1)
+        # data2['latent'] = data2['latent'].reshape(21,512)
+        # data2['latent'][:] = data2['latent'].mean(0)
+        # data2['latent'] = data2['latent'].reshape(-1)
 
-        print (data['latent'].shape, data2['latent'].shape)
-
+        data2['lit'] = data2['lit'] - self.litmean
+        data2['exp'] = data2['exp'] - self.expmean
+        data2['tex'] = data2['tex'] - self.albedomean
+        data2['shape'] = data2['shape'] - self.shapemean
+        if self.opt.one_latent:
+            if data['latent'].shape[0] == 10752:
+                data['latent'] = data['latent'].reshape(21,512)
+                data['latent'] = data['latent'].mean(0)
+            
+            if data2['latent'].shape[0] == 10752:
+                data2['latent'] = data2['latent'].reshape(21,512)
+                data2['latent'] = data2['latent'].mean(0)
+        
+        
         return [data, data2]
 
     def __len__(self):

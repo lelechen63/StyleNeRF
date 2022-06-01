@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from torchvision import models 
 
 from model import *
-sys.path.append('/home/uss00022/lelechen/github/StyleNeRF/utils')
+sys.path.append('/home/us000218/lelechen/github/StyleNeRF/utils')
 from visualizer import Visualizer
 import util
 from dataset import *

@@ -364,7 +364,7 @@ class NeRFBlock(nn.Module):
 
         if height == width == 1:  # MLP
             p = p.squeeze(-1).squeeze(-1)
-            
+        
         net = self.fc_in(p, ws[:, 0] if ws is not None else None)
         if self.n_blocks > 1:
             for idx, layer in enumerate(self.blocks):
@@ -982,19 +982,19 @@ class VolumeRenderer(object):
         # nerf_input_cams = self.C.get_origin_direction(pixels, camera_matrices)
         # # print ( camera_matrices[0].shape, '---camera_matrices')
         # for i in range(len(nerf_input_cams)):
-        #     print (nerf_input_cams[i].shape, '---------')
+            # print (nerf_input_cams[i].shape, '---------')
         # gg = []
         # for i in range(3):
         #     tmp = nerf_input_cams[i].cpu().numpy()
         #     gg.append(tmp)
-        # with open('/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/uss00022/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
+        # with open('/home/us000218/lelechen/github/StyleNeRF/debug/nerf_input_cams_%d.pkl'%(len(os.listdir('/home/us000218/lelechen/github/StyleNeRF/debug/'))), 'wb') as handle:
         #     pickle.dump(gg, handle, protocol=pickle.HIGHEST_PROTOCOL)
         # print (nerf_input_cams[0].shape, '+++')
-        _file = open( '/home/uss00022/lelechen/github/StyleNeRF/debug/nerf_input_cams_4.pkl', "rb")
+        _file = open( '/home/us000218/lelechen/github/StyleNeRF/debug/nerf_input_cams_4.pkl', "rb")
         tmp = pickle.load(_file)
         gg =[]
         for i in range(3):
-            gg.append(torch.Tensor(tmp[i][:1]).to(H.device).repeat(pixels[0].shape[1],1,1))
+            gg.append(torch.Tensor(tmp[i][:1]).to(H.device).repeat(self.C.get_origin_direction(pixels, camera_matrices)[0].shape[0],1,1))
         nerf_input_cams = gg
         
         # print ('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')

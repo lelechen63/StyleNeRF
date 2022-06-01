@@ -84,7 +84,7 @@ class PhotometricFitting(object):
     def _setup_face_parser(self):
         self.parse_net = BiSeNet(n_classes=19)
         self.parse_net.cuda()
-        self.parse_net.load_state_dict(torch.load("/home/uss00022/lelechen/basic/flame_data/data/79999_iter.pth"))
+        self.parse_net.load_state_dict(torch.load("/home/us000218/lelechen/basic/flame_data/data/79999_iter.pth"))
         self.parse_net.eval()
         self.to_tensor = transforms.Compose([
             transforms.ToTensor(),
@@ -93,7 +93,7 @@ class PhotometricFitting(object):
         self.frontal_regions = [1, 2, 3, 4, 5, 10, 12, 13]
 
     def _setup_renderer(self):
-        mesh_file = '/home/uss00022/lelechen/basic/flame_data/data/head_template_mesh.obj'
+        mesh_file = '/home/us000218/lelechen/basic/flame_data/data/head_template_mesh.obj'
         self.render = Renderer(self.image_size, obj_filename=mesh_file).to(self.device)
 
     def get_face_landmarks(self, img):
@@ -310,9 +310,9 @@ class PhotometricFitting(object):
 config = {
         # FLAME
         "savefolder" : '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/flame2/',
-        'flame_model_path': '/home/uss00022/lelechen/basic/flame_data/data/generic_model.pkl',  # acquire it from FLAME project page
-        'flame_lmk_embedding_path': '/home/uss00022/lelechen/basic/flame_data/data/landmark_embedding.npy',
-        'tex_space_path': '/home/uss00022/lelechen/basic/flame_data/data/FLAME_texture.npz',  # acquire it from FLAME project page
+        'flame_model_path': '/home/us000218/lelechen/basic/flame_data/data/generic_model.pkl',  # acquire it from FLAME project page
+        'flame_lmk_embedding_path': '/home/us000218/lelechen/basic/flame_data/data/landmark_embedding.npy',
+        'tex_space_path': '/home/us000218/lelechen/basic/flame_data/data/FLAME_texture.npz',  # acquire it from FLAME project page
         'camera_params': 3,
         'shape_params': 100,
         'expression_params': 50,
@@ -335,12 +335,12 @@ config = util.dict2obj(config)
 
 
 def demo(config):
-    image_path = "/home/uss00022/lelechen/github/CIPS-3D/results/model_interpolation/0.png"
+    image_path = "/home/us000218/lelechen/github/CIPS-3D/results/model_interpolation/0.png"
     img = cv2.imread(image_path)
     img = cv2.resize(img, (512,512), interpolation = cv2.INTER_AREA)
 
     
-    config.savefolder=  '/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg'        
+    config.savefolder=  '/home/us000218/lelechen/github/CIPS-3D/photometric_optimization/gg'        
     
     k =  parse_args().k
     gpuid = k % 7
@@ -456,7 +456,7 @@ def varify(config = config, parse = parse):
     config.image_size = parse.imgsize
     flame = FLAME(config).to(device)
     flametex = FLAMETex(config).to(device)
-    mesh_file = '/home/uss00022/lelechen/basic/flame_data/data/head_template_mesh.obj'
+    mesh_file = '/home/us000218/lelechen/basic/flame_data/data/head_template_mesh.obj'
     render = Renderer(config.image_size, obj_filename=mesh_file).to(device)
 
     root = '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf'

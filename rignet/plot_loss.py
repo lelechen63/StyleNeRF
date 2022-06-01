@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-losstxt = '/home/uss00022/lelechen/github/StyleNeRF/rignet/checkpoints/rig/loss_log.txt'
+losstxt = '/home/us000218/lelechen/github/StyleNeRF/rignet/checkpoints/rig/loss_log.txt'
 reader = open(losstxt)
 l = reader.readline()
 l = reader.readline()

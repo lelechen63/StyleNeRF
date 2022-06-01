@@ -114,6 +114,10 @@ def get_mean(debug = False):
     np.save(dataroot + '/shapemean.npy', shapemean)
     np.save(dataroot + '/albedomean.npy', albedomean)
     print ('=============')
+
+def remove_mean():
+    pass
+
 # get_mean(debug = False)
 get_train(debug = False)
 

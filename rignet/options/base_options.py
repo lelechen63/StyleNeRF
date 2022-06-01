@@ -21,6 +21,8 @@ class BaseOptions():
         self.parser.add_argument('--local_rank', type=int, default=0, help='local rank for distributed training')
         self.parser.add_argument('--datanum', type=int, default=200, help='number of samples for training')
 
+        self.parser.add_argument('--fititer', type=int, default=1000, help='number of samples for training')
+
         self.parser.add_argument('--datasetname', type=str, default='ffhq')
 
         # for displays
@@ -36,7 +38,10 @@ class BaseOptions():
         self.parser.add_argument('--nThreads', default=1, type=int, help='# threads for loading data') 
         self.parser.add_argument('--isTrain', action='store_false', help='isTrain is for training')                
         self.parser.add_argument('--meannorm', action='store_true', help='weight for feature matching loss')          
-        self.parser.add_argument('--modeltype', type=int, default=2, help='number of clusters for features')        
+        self.parser.add_argument('--modeltype', type=int, default=2, help='number of clusters for features')      
+
+        self.parser.add_argument('--one_latent', action='store_true', help='use 1, 512 as latent code size')
+        self.parser.add_argument('--inversefit', action='store_true', help='inverse fit')
 
         self.initialized = True
 
@@ -79,8 +84,6 @@ class BaseOptions():
             print('%s: %s' % (str(k), str(v)))
         print('-------------- End ----------------')
 
-        
-            
         if save and not self.opt.continue_train:
             file_name = os.path.join(expr_dir, 'opt.txt')
             with open(file_name, 'wt') as opt_file:

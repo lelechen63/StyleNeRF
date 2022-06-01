@@ -10,7 +10,7 @@ import numpy as np
 import pickle
 import torch.nn.functional as F
 import sys
-sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/models')
+sys.path.append('/home/us000218/lelechen/github/CIPS-3D/photometric_optimization/models')
 
 from lbs import lbs, batch_rodrigues, vertices2landmarks
 

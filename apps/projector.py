@@ -21,7 +21,7 @@ import PIL.Image
 import torch
 import torch.nn.functional as F
 import sys
-sys.path.append('/nfs/home/uss00022/lelechen/github/StyleNeRF')
+sys.path.append('/nfs/home/us000218/lelechen/github/StyleNeRF')
 
 import dnnlib
 import legacy

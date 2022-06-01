@@ -3,7 +3,7 @@ import os
 import ntpath
 import time
 import sys
-sys.path.append('/home/uss00022/lelechen/github/CIPS-3D')
+sys.path.append('/home/us000218/lelechen/github/CIPS-3D')
 import util
 from utils import html_
 

@@ -16,7 +16,9 @@ from torch.utils.tensorboard import SummaryWriter
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set_theme()
 
-class Latent2CodeModule():
+
+
+class CodeAutoEncoderModule():
     def __init__(self, flame_config, opt ):
         super().__init__()
         self.opt = opt
@@ -26,14 +28,10 @@ class Latent2CodeModule():
         self.MSE_Loss   = nn.SmoothL1Loss(reduction='mean')
         if opt.cuda:
             self.device = torch.device("cuda")
-        self.latent2code = Latent2Code( flame_config, opt)
+        self.autoencoder = CodeAutoEncoder( flame_config, opt)
         
-        
-        self.optimizer = optim.Adam( list(self.latent2code.Latent2fea.parameters()) + \
-                                  list(self.latent2code.latent2shape.parameters()) + \
-                                  list(self.latent2code.latent2exp.parameters()) + \
-                                  list(self.latent2code.latent2albedo.parameters()) + \
-                                  list(self.latent2code.latent2lit.parameters()) \
+        self.optimizer = optim.Adam( list(self.autoencoder.encoder.parameters()) + \
+                                  list(self.autoencoder.decoder.parameters()) + \
                                   , lr= self.opt.lr , betas=(self.opt.beta1, 0.999))
         for p in self.latent2code.flame.parameters():
             p.requires_grad = False 
@@ -186,8 +184,6 @@ class Latent2CodeModule():
                 for key in batch.keys():
                     if key !='image_path':
                         batch[key] = batch[key].to(self.device)
-                print (batch['latent'].shape)
-                print (batch['shape'].shape)
                 return_list = self.latent2code.forward(
                             batch['latent'],
                             batch['cam'], 
@@ -201,6 +197,7 @@ class Latent2CodeModule():
                     landmarks3d, predicted_images  = return_list['landmarks3d'], return_list['predicted_images']
                     
                     losses['landmark'] = util.l2_distance(landmarks3d[:, :, :2], batch['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
+                    print (losses['landmark'],']=====')
                     losses['photometric_texture'] = self.MSE_Loss( batch['img_mask'] * predicted_images ,  batch['img_mask'] * batch['gt_image']) * self.flame_config.w_pho  
                     loss = losses['landmark'] + losses['photometric_texture']
                 else:
@@ -291,10 +288,9 @@ class Latent2CodeModule():
             ws.requires_grad = True
             batch_['img_mask'].requires_grad = False
             batch_['gt_image'].requires_grad = False
+            # batch_['pose'].requires_grad = True
             optimizer = optim.Adam([ws], lr=0.05, betas=(0.9,0.999), eps=1e-8)
             iter_num = self.opt.fititer
-
-            print (self.latent2code.G2)
             for iter in tqdm(range(iter_num)):
                 optimizer.zero_grad()
                 return_list = self.latent2code.forward(
@@ -307,49 +303,64 @@ class Latent2CodeModule():
                             batch_['lit'])
 
                 expcode, shapecode, litcode, albedocode  = return_list['expcode'], return_list['shapecode'], return_list['litcode'], return_list['albedocode']
+                # print(expcode.requires_grad)
+                # print(shapecode.requires_grad)
+
+                # print(albedocode.requires_grad)
+                # print(litcode.requires_grad)
+                # print ('======')
+                
+                
                 loss =0.0
                 losses = {}
                 # losses['expcode'] = self.l2_loss(expcode, batch_['exp'])
                 # losses['shapecode'] = self.l2_loss(shapecode, batch_['shape'])
                 # losses['litcode'] = self.l2_loss(litcode, batch_['lit'])
                 # losses['albedocode'] = self.l2_loss(albedocode, batch_['tex'])
-                
-                syns_img = self.latent2code.G2.forward(styles = ws.view(-1,1,512).repeat(1,21,1))['img']
-                syns_img = (F.interpolate(syns_img, size=(self.opt.imgsize, self.opt.imgsize), mode='bilinear') + 1 )/2
-
-                losses['syns_img'] = self.l2_loss(batch_['img_mask'] * syns_img, batch_['img_mask'] * batch_['gt_image'])
-
+                # losses['syns_img'] = self.l2_loss(  batch_['img_mask'] *  syns_img,  batch_['img_mask'] *  batch_['gt_image'])* self.flame_config.w_pho
+                # losses['syns_img'] = losses['syns_img'].type(torch.FloatTensor)
                 # flame from synthesized shape, exp, lit, albedo
+                # print((shapecode + self.shapemean).requires_grad) 
+                # print((expcode + self.expmean).requires_grad) 
+                # print(batch_['pose'].requires_grad) 
+                # print('********')
                 vertices, landmarks2d, landmarks3d = self.latent2code.flame(shape_params=shapecode + self.shapemean , expression_params=expcode + self.expmean, pose_params=batch_['pose'])
                 trans_vertices = util.batch_orth_proj(vertices, batch_['cam'])
                 trans_vertices[..., 1:] = - trans_vertices[..., 1:]
 
+                # landmarks3d = util.batch_orth_proj(landmarks3d, batch_['cam'])
+                # landmarks3d[..., 1:] = - landmarks3d[..., 1:]
+
+
                 ## render
                 albedos = self.latent2code.flametex(albedocode + self.albedomean, self.latent2code.image_size) / 255.
-                ops = self.latent2code.render(vertices, trans_vertices, albedos, (litcode + self.litmean).view(-1,9,3))
-                predicted_images = ops['images']
-
+                ops = self.latent2code.render(vertices, trans_vertices, albedos, (batch_['lit'] + self.litmean).view(-1,9,3))
+                predicted_images = ops['images'].type(expcode.type())
 
                 # flame from gt shape, exp, lit, albedo
-                vertices, landmarks2d, landmarks3d = self.latent2code.flame(shape_params=batch_['shape'] + self.shapemean , expression_params=batch_['exp'] + self.expmean, pose_params=batch_['pose'])
+                vertices, landmarks2d, _ = self.latent2code.flame(shape_params=batch_['shape'] + self.shapemean , expression_params=batch_['exp'] + self.expmean, pose_params=batch_['pose'])
                 trans_vertices = util.batch_orth_proj(vertices, batch_['cam'])
                 trans_vertices[..., 1:] = - trans_vertices[..., 1:]
+                # landmarks3d = util.batch_orth_proj(landmarks3d, batch_['cam'])
+                # landmarks3d[..., 1:] = - landmarks3d[..., 1:]
 
                 ## render
                 albedos = self.latent2code.flametex(batch_['tex'] + self.albedomean, self.latent2code.image_size) / 255.
                 ops = self.latent2code.render(vertices, trans_vertices, albedos, (batch_['lit'] + self.litmean).view(-1,9,3))
                 gterender = ops['images']
 
-                
-                # losses['landmark'] = torch.mean( (landmarks3d[:, :, :2] - batch_['gt_landmark'][:, :, :2]) **2, dim =[1,2]) * self.flame_config.w_lmks
-                # losses['photometric_texture'] = torch.mean((batch_['img_mask'] * (predicted_images - batch_['gt_image'] )) **2, dim=[1,2,3]) * self.flame_config.w_pho
+                losses['landmark'] = self.l2_loss(landmarks3d[:, :, :2], batch_['gt_landmark'][:, :, :2]) * self.flame_config.w_lmks
+                # losses['landmark'] = losses['landmark'].type(torch.FloatTensor)
+                losses['photometric_texture'] = self.l2_loss(batch_['img_mask'] *predicted_images, batch_['img_mask'] * batch_['gt_image']) * self.flame_config.w_pho
+                # losses['photometric_texture'] = losses['photometric_texture'].type(torch.FloatTensor)
                 # losses['ws'] = torch.mean((ws **2), dim =[1]) * 0.01
                 for k in losses.keys():
+                    # print (k, losses[k],'=========')
                     writer.add_scalar(k, losses[k], iter)
-                    loss += losses[k]
+                    loss += losses[k] 
                 loss.backward()
                 optimizer.step()
-                  
+                
 
                 if iter % 100 == 0:
                     print ( 'ews:', ws.max(),ws.min(), ws.mean(), 'gt: ' , batch_['latent'].max(), batch_['latent'].min(), batch_['latent'].mean() )
@@ -359,6 +370,9 @@ class Latent2CodeModule():
                     tmp1 = batch_['img_mask'] * predicted_images
                     tmp2 = batch_['img_mask'] * batch_['gt_image']
                     tmp3 = batch_['img_mask'] * gterender
+                    syns_img = self.latent2code.G2.forward(styles = ws.view(-1,1,512).repeat(1,21,1))['img']
+                    syns_img = (F.interpolate(syns_img, size=(self.opt.imgsize, self.opt.imgsize), mode='bilinear') + 1 )/2
+
                     # syns_img = self.latent2code.G2.forward(styles = ws.view(-1,1,512).repeat(1,21,1))['img']
                     recons_img = self.latent2code.G2.forward(styles =latent.view(-1,1,512).repeat(1,21,1))['img'] 
                     # syns_img = (F.interpolate(syns_img, size=(self.opt.imgsize, self.opt.imgsize), mode='bilinear') + 1 )/2
@@ -374,7 +388,7 @@ class Latent2CodeModule():
                     video.append_data(image)  
 
             video.close()
-            writer.close() 
+            writer.close()   
     def inversefit2(self):
         for p in self.latent2code.parameters():
             p.requires_grad = False

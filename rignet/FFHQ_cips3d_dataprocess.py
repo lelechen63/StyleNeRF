@@ -6,7 +6,7 @@ from tqdm import tqdm
 import cv2
 
 def debug_single():
-    with open("/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg/flame_p.pickle", 'rb') as f:
+    with open("/home/us000218/lelechen/github/CIPS-3D/photometric_optimization/gg/flame_p.pickle", 'rb') as f:
         flame_p = pickle.load(f, encoding='latin1')
 
     for key in flame_p.keys():
@@ -14,7 +14,7 @@ def debug_single():
         print (key, flame_p[key].shape )
         # print (flame_p[key])
 
-    with open("/home/uss00022/lelechen/github/CIPS-3D/results/model_interpolation/gt.pkl", 'rb') as handle:
+    with open("/home/us000218/lelechen/github/CIPS-3D/results/model_interpolation/gt.pkl", 'rb') as handle:
         info = pickle.load(handle)
     info = info['results/model_interpolation/0.png']
     for key in info.keys():
@@ -28,15 +28,15 @@ def debug_single():
 # debug_single()
 
 def get_debug():
-    with open("/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg/flame_p.pickle", 'rb') as f:
+    with open("/home/us000218/lelechen/github/CIPS-3D/photometric_optimization/gg/flame_p.pickle", 'rb') as f:
         flame_p = pickle.load(f, encoding='latin1')
 
-    with open("/home/uss00022/lelechen/github/CIPS-3D/results/model_interpolation/gt.pkl", 'rb') as handle:
+    with open("/home/us000218/lelechen/github/CIPS-3D/results/model_interpolation/gt.pkl", 'rb') as handle:
         info = pickle.load(handle)
     
     name = '0.png'
     info = info['results/model_interpolation/0.png']
-    img_p = '/home/uss00022/lelechen/github/CIPS-3D/results/model_interpolation/0.png'
+    img_p = '/home/us000218/lelechen/github/CIPS-3D/results/model_interpolation/0.png'
     img = cv2.imread(img_p)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     shape = flame_p['shape'].reshape(-1) #[1,100]
@@ -75,9 +75,9 @@ def get_debug():
                  'gt_landmark': landmark,
                  'img_mask':image_masks
                 }
-    with open("/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg/ffhq_train_debug.pkl", 'wb') as handle:
+    with open("/home/us000218/lelechen/github/CIPS-3D/photometric_optimization/gg/ffhq_train_debug.pkl", 'wb') as handle:
         pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open("/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg/ffhq_trainlist_debug.pkl", 'wb') as handle:
+    with open("/home/us000218/lelechen/github/CIPS-3D/photometric_optimization/gg/ffhq_trainlist_debug.pkl", 'wb') as handle:
         pickle.dump(ffhq_trainlist, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def get_flame_total(root_p, k, debug = False):

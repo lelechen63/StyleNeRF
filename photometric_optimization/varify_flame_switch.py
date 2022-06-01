@@ -22,7 +22,7 @@ from FLAME import FLAME, FLAMETex
 from Flamerenderer import FlameRenderer as Renderer
 import util
 torch.backends.cudnn.benchmark = True
-sys.path.append('/home/uss00022/lelechen/github/CIPS-3D/utils')
+sys.path.append('/home/us000218/lelechen/github/CIPS-3D/utils')
 
 import tensor_util
 import argparse
@@ -51,9 +51,9 @@ parse = parse_args()
 config = {
         # FLAME
         "savefolder" : '/nfs/STG/CodecAvatar/lelechen/FFHQ/generated_stylenerf/flame2/',
-        'flame_model_path': '/home/uss00022/lelechen/basic/flame_data/data/generic_model.pkl',  # acquire it from FLAME project page
-        'flame_lmk_embedding_path': '/home/uss00022/lelechen/basic/flame_data/data/landmark_embedding.npy',
-        'tex_space_path': '/home/uss00022/lelechen/basic/flame_data/data/FLAME_texture.npz',  # acquire it from FLAME project page
+        'flame_model_path': '/home/us000218/lelechen/basic/flame_data/data/generic_model.pkl',  # acquire it from FLAME project page
+        'flame_lmk_embedding_path': '/home/us000218/lelechen/basic/flame_data/data/landmark_embedding.npy',
+        'tex_space_path': '/home/us000218/lelechen/basic/flame_data/data/FLAME_texture.npz',  # acquire it from FLAME project page
         'camera_params': 3,
         'shape_params': 100,
         'expression_params': 50,
@@ -94,7 +94,7 @@ config.batch_size = 1
 config.image_size = parse.imgsize
 flame = FLAME(config).to(device)
 flametex = FLAMETex(config).to(device)
-mesh_file = '/home/uss00022/lelechen/basic/flame_data/data/head_template_mesh.obj'
+mesh_file = '/home/us000218/lelechen/basic/flame_data/data/head_template_mesh.obj'
 render = Renderer(config.image_size, obj_filename=mesh_file).to(device)
 
 def output( p, idx, config = config, flame = flame, flametex = flametex, render = render, device = torch.device("cuda")  ):

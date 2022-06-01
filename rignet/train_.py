@@ -29,9 +29,9 @@ opt = TrainOptions().parse()
 
 flame_config = {
         # FLAME
-        'flame_model_path': '/home/uss00022/lelechen/basic/flame_data/data/generic_model.pkl',  # acquire it from FLAME project page
-        'flame_lmk_embedding_path': '/home/uss00022/lelechen/basic/flame_data/data/landmark_embedding.npy',
-        'tex_space_path': '/home/uss00022/lelechen/basic/flame_data/data/FLAME_texture.npz',  # acquire it from FLAME project page
+        'flame_model_path': '/home/us000218/lelechen/basic/flame_data/data/generic_model.pkl',  # acquire it from FLAME project page
+        'flame_lmk_embedding_path': '/home/us000218/lelechen/basic/flame_data/data/landmark_embedding.npy',
+        'tex_space_path': '/home/us000218/lelechen/basic/flame_data/data/FLAME_texture.npz',  # acquire it from FLAME project page
         'camera_params': 3,
         'shape_params': 100,
         'expression_params': 50,
@@ -43,7 +43,7 @@ flame_config = {
         'image_size': opt.imgsize,
         'e_lr': 0.005,
         'e_wd': 0.0001,
-        'savefolder': '/home/uss00022/lelechen/github/CIPS-3D/photometric_optimization/gg',
+        'savefolder': '/home/us000218/lelechen/github/CIPS-3D/photometric_optimization/gg',
         # weights of losses and reg terms
         'w_pho': 10,
         'w_lmks': 100,

@@ -12,21 +12,198 @@ import pickle
 from PIL import Image
 import cv2
 import sys
-sys.path.append('/home/uss00022/lelechen/github/StyleNeRF/photometric_optimization/')
+sys.path.append('/home/us000218/lelechen/github/StyleNeRF/photometric_optimization/')
 from Flamerenderer import FlameRenderer
 import util
 from models.FLAME import FLAME, FLAMETex
-sys.path.append('/home/uss00022/lelechen/github/StyleNeRF/utils')
+sys.path.append('/home/us000218/lelechen/github/StyleNeRF/utils')
 from visualizer import Visualizer
 import tensor_util
 from blocks import *
 import face_alignment
 
-sys.path.append('/home/uss00022/lelechen/github/StyleNeRF')
+sys.path.append('/home/us000218/lelechen/github/StyleNeRF')
 import dnnlib
 import training
 import torch_utils
 import legacy
+
+
+
+class CodeAutoEncoder(nn.Module):
+    def __init__(self, flame_config, opt ):
+        super().__init__()
+        self.opt = opt
+        # self.save_hyperparameters()
+        self.flame_config = flame_config
+
+        self.litmean =  torch.Tensor(np.load(opt.dataroot + '/litmean.npy')).to('cuda')
+        self.expmean = torch.Tensor(np.load(opt.dataroot + '/expmean.npy')).to('cuda')
+        self.shapemean = torch.Tensor(np.load(opt.dataroot + '/shapemean.npy')).to('cuda')
+        self.albedomean = torch.Tensor(np.load(opt.dataroot + '/albedomean.npy')).to('cuda') 
+        
+        self.image_size = self.flame_config.image_size
+        # networks
+        if self.opt.one_latent:
+            self.latent_dim = 512 
+        else:
+            self.latent_dim = 512 * 21
+        self.shape_dim = 100
+        self.exp_dim = 50
+        self.albedo_dim = 50
+        self.lit_dim = 27
+        self.pose_dim = 6
+        self.Latent2fea = self.build_Latent2CodeFea( weight =  opt.Latent2ShapeExpCode_weight if not opt.isTrain or opt.loadpre else '')
+        self.latent2shape = self.build_latent2shape( weight =  opt.latent2shape_weight if not opt.isTrain or opt.loadpre else '')
+        self.latent2exp = self.build_latent2exp(weight = opt.latent2exp_weight if not opt.isTrain or  opt.loadpre else '')
+        self.latent2albedo = self.build_latent2albedo(weight = opt.latent2albedo_weight if not opt.isTrain or  opt.loadpre else '')
+        self.latent2lit = self.build_latent2lit(weight = opt.latent2lit_weight if not opt.isTrain or opt.loadpre else '')
+        # self.latent2pose = self.build_latent2pose(weight = '' if opt.isTrain else opt.latent2poses_weight)
+
+        if opt.isTrain:
+            self._initialize_weights()
+        self.flame = FLAME(self.flame_config).to('cuda')
+        self.flametex = FLAMETex(self.flame_config).to('cuda')
+        self._setup_renderer()
+
+        self.ckpt_path = os.path.join(opt.checkpoints_dir, opt.name)
+        os.makedirs(self.ckpt_path, exist_ok = True)
+        
+        if opt.inversefit:
+            with dnnlib.util.open_url( self.opt.nerfpkl) as f:
+                network = legacy.load_network_pkl(f)
+                G = network['G_ema'].to('cuda') # type: ignore
+            
+            # avoid persistent classes... 
+            from training.networks import Generator
+            # from training.stylenerf import Discriminator
+            from torch_utils import misc
+            with torch.no_grad():
+                self.G2 = Generator(*G.init_args, **G.init_kwargs).to('cuda')
+                misc.copy_params_and_buffers(G, self.G2, require_all=False)
+                
+    def build_Latent2CodeFea(self, weight = ''):
+        Latent2ShapeExpCode = th.nn.Sequential(
+            LinearWN( self.latent_dim , 256 ),
+            th.nn.LeakyReLU( 0.2, inplace = True ),
+            LinearWN( 256, 256 ),
+            th.nn.LeakyReLU( 0.2, inplace = True ),
+            LinearWN( 256, 256 ),
+            th.nn.LeakyReLU( 0.2, inplace = True )
+        )
+        if len(weight) > 0:
+            print ('============================================================')
+            print ('loading weights for latent2ShapeExpCode feature extraction network:', weight)
+            Latent2ShapeExpCode.load_state_dict(torch.load(weight))
+        return Latent2ShapeExpCode
+    
+    def build_latent2shape(self,  weight = ''):
+        latent2shape= th.nn.Sequential(
+            LinearWN( 256 , 256 ),
+            th.nn.LeakyReLU( 0.2, inplace = True ),
+            LinearWN( 256, self.shape_dim )
+        )
+        if len(weight) > 0:
+            print ('============================================================')
+            print ('loading weights for latent2Shape network:', weight)
+            latent2shape.load_state_dict(torch.load(weight))
+        return latent2shape
+    
+    def build_latent2exp(self, weight = ''):
+        latent2exp= th.nn.Sequential(
+            LinearWN( 256 , 256 ),
+            th.nn.LeakyReLU( 0.2, inplace = True ),
+            LinearWN( 256, self.exp_dim )
+        )
+        if len(weight) > 0:
+            print ('============================================================')
+            print ('loading weights for latent2exp network:', weight)
+            latent2exp.load_state_dict(torch.load(weight))
+        return latent2exp
+
+    def build_latent2albedo(self, weight = ''):
+        latent2albedo= th.nn.Sequential(
+            LinearWN( 256 , 256 ),
+            th.nn.LeakyReLU( 0.2, inplace = True ),
+            LinearWN( 256, self.albedo_dim )
+        )
+        if len(weight) > 0:
+            print ('============================================================')
+            print ('loading weights for latent2albedo feature extraction network:', weight)
+            latent2albedo.load_state_dict(torch.load(weight))
+        return latent2albedo
+
+    def build_latent2lit(self, weight = ''):
+        latent2lit= th.nn.Sequential(
+            LinearWN( 256 , 256 ),
+            th.nn.LeakyReLU( 0.2, inplace = True ),
+            LinearWN( 256, self.lit_dim )
+        )
+        if len(weight) > 0:
+            print ('loading weights for latent2lit feature extraction network')
+            latent2lit.load_state_dict(torch.load(weight))
+        return latent2lit
+
+    def _setup_renderer(self):
+        mesh_file = '/home/us000218/lelechen/basic/flame_data/data/head_template_mesh.obj'
+        self.render = FlameRenderer(self.image_size, obj_filename=mesh_file).to('cuda')
+    
+    def forward(self, latent, cam, pose, flameshape = None, flameexp= None, flametex= None, flamelit= None ):
+        
+        fea = self.Latent2fea(latent)
+        shapecode = self.latent2shape(fea)
+
+        expcode = self.latent2exp(fea)
+        
+        albedocode = self.latent2albedo(fea)
+        litcode = self.latent2lit(fea)
+        # posecode = self.latent2pose(fea)
+        return_list = {}
+        return_list['expcode'] = expcode
+        return_list['shapecode'] = shapecode
+        return_list['litcode'] = litcode
+        return_list['albedocode'] = albedocode
+        if self.opt.supervision =='render' or flameshape != None:
+
+            vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode + self.shapemean, expression_params=expcode + self.expmean, pose_params=pose)
+            trans_vertices = util.batch_orth_proj(vertices, cam)
+            trans_vertices[..., 1:] = - trans_vertices[..., 1:]
+
+            ## render
+            
+            albedos = self.flametex(albedocode + self.albedomean, self.image_size) / 255.
+            ops = self.render(vertices, trans_vertices, albedos, (litcode + self.litmean).view(-1, 9,3))
+            predicted_images = ops['images']
+
+            return_list['landmarks3d'] = landmarks3d
+            return_list['predicted_images'] = predicted_images
+                        
+        if flameshape != None:
+            recons_vertices, _, recons_landmarks3d = self.flame(shape_params=flameshape+ self.shapemean, expression_params=flameexp + self.expmean, pose_params=pose)
+            recons_trans_vertices = util.batch_orth_proj(recons_vertices, cam)
+            recons_trans_vertices[..., 1:] = - recons_trans_vertices[..., 1:]
+
+            ## render
+            recons_albedos = self.flametex(flametex + self.albedomean, self.image_size) / 255.
+            recons_ops = self.render(recons_vertices, recons_trans_vertices, recons_albedos, (flamelit + self.litmean).view(-1, 9,3))
+            recons_images = recons_ops['images']
+            return_list['recons_images'] = recons_images
+        return return_list
+    
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
+
+
 
 class Latent2Code(nn.Module):
     def __init__(self, flame_config, opt ):
@@ -91,7 +268,7 @@ class Latent2Code(nn.Module):
         )
         if len(weight) > 0:
             print ('============================================================')
-            print ('loading weights for latent2ShapeExpCode feature extraction network')
+            print ('loading weights for latent2ShapeExpCode feature extraction network:', weight)
             Latent2ShapeExpCode.load_state_dict(torch.load(weight))
         return Latent2ShapeExpCode
     
@@ -103,7 +280,7 @@ class Latent2Code(nn.Module):
         )
         if len(weight) > 0:
             print ('============================================================')
-            print ('loading weights for latent2Shape network')
+            print ('loading weights for latent2Shape network:', weight)
             latent2shape.load_state_dict(torch.load(weight))
         return latent2shape
     
@@ -115,7 +292,7 @@ class Latent2Code(nn.Module):
         )
         if len(weight) > 0:
             print ('============================================================')
-            print ('loading weights for latent2exp network')
+            print ('loading weights for latent2exp network:', weight)
             latent2exp.load_state_dict(torch.load(weight))
         return latent2exp
 
@@ -127,7 +304,7 @@ class Latent2Code(nn.Module):
         )
         if len(weight) > 0:
             print ('============================================================')
-            print ('loading weights for latent2albedo feature extraction network')
+            print ('loading weights for latent2albedo feature extraction network:', weight)
             latent2albedo.load_state_dict(torch.load(weight))
         return latent2albedo
 
@@ -143,12 +320,14 @@ class Latent2Code(nn.Module):
         return latent2lit
 
     def _setup_renderer(self):
-        mesh_file = '/home/uss00022/lelechen/basic/flame_data/data/head_template_mesh.obj'
+        mesh_file = '/home/us000218/lelechen/basic/flame_data/data/head_template_mesh.obj'
         self.render = FlameRenderer(self.image_size, obj_filename=mesh_file).to('cuda')
     
     def forward(self, latent, cam, pose, flameshape = None, flameexp= None, flametex= None, flamelit= None ):
+        
         fea = self.Latent2fea(latent)
         shapecode = self.latent2shape(fea)
+
         expcode = self.latent2exp(fea)
         
         albedocode = self.latent2albedo(fea)
@@ -159,13 +338,14 @@ class Latent2Code(nn.Module):
         return_list['shapecode'] = shapecode
         return_list['litcode'] = litcode
         return_list['albedocode'] = albedocode
-
         if self.opt.supervision =='render' or flameshape != None:
+
             vertices, landmarks2d, landmarks3d = self.flame(shape_params=shapecode + self.shapemean, expression_params=expcode + self.expmean, pose_params=pose)
             trans_vertices = util.batch_orth_proj(vertices, cam)
             trans_vertices[..., 1:] = - trans_vertices[..., 1:]
 
             ## render
+            
             albedos = self.flametex(albedocode + self.albedomean, self.image_size) / 255.
             ops = self.render(vertices, trans_vertices, albedos, (litcode + self.litmean).view(-1, 9,3))
             predicted_images = ops['images']
@@ -333,7 +513,7 @@ class RigNerft(nn.Module):
     
   
     def _setup_renderer(self):
-        mesh_file = '/home/uss00022/lelechen/basic/flame_data/data/head_template_mesh.obj'
+        mesh_file = '/home/us000218/lelechen/basic/flame_data/data/head_template_mesh.obj'
         self.render = FlameRenderer(self.image_size, obj_filename=mesh_file).to('cuda')
     
     def rig(self,w, p):
